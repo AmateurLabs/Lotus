@@ -7,6 +7,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Lotus</RootNamespace>
     <AssemblyName>Lotus</AssemblyName>
+    <StartupObject>Lotus.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
