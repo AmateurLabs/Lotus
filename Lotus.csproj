@@ -32,12 +32,17 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Program.cs" />
+    <Compile Include="Systems\HexGrid.cs" />
+    <Compile Include="Systems\Camera.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
       <HintPath>OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="SimplexNoise">
+      <HintPath>SimplexNoise.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config">
