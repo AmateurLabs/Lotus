@@ -6,57 +6,81 @@ using OpenTK.Graphics.OpenGL;
 namespace Lotus {
 	public class Camera {
 
+		public static Camera Main;
 		Matrix4 ProjectionMatrix;
-		Vector3 Position = -Vector3.UnitZ * 32f;
-		Vector3 Rotation = new Vector3((float)Math.PI, 0f, 0f);
-		float MoveSpeed = 0.1f;
+		public Vector3 Position;
+		public Quaternion Rotation;
+		float MoveSpeed = 10f;
 		float MouseSensitivity = 0.005f;
 
 		public Camera(GameWindow game) {
+			Main = this;
 			ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), (float)game.Width / (float)game.Height, 0.1f, 256f);
+			ProjectionMatrix *= Matrix4.CreateScale(-1f, -1f, 1f);
 		}
 
 		public Matrix4 ViewMatrix {
 			get {
-				Vector3 lookAt = new Vector3();
-				lookAt.X = (float)(Math.Sin(Rotation.X) * Math.Cos(Rotation.Y));
-				lookAt.Y = (float)(Math.Sin(Rotation.Y));
-				lookAt.Z = (float)(Math.Cos(Rotation.X) * Math.Cos(Rotation.Y));
-				return Matrix4.LookAt(Position, Position + lookAt, Vector3.UnitY);
+				return RotationMatrix * TranslationMatrix;
+			}
+		}
+
+		public Matrix4 TranslationMatrix {
+			get {
+				return Matrix4.CreateTranslation(Position);
+			}
+		}
+
+		public Matrix4 RotationMatrix {
+			get {
+				return Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y);
+			}
+		}
+
+		public Vector3 Forward {
+			get {
+				return Vector3.TransformPosition(-Vector3.UnitZ, RotationMatrix);
+			}
+		}
+
+		public Vector3 Right {
+			get {
+				return Vector3.TransformPosition(-Vector3.UnitX, RotationMatrix);
+			}
+		}
+
+		public Vector3 Up {
+			get {
+				return Vector3.TransformPosition(-Vector3.UnitY, RotationMatrix);
 			}
 		}
 
 		public void Move(float x, float y, float z) {
-			Vector3 forward = new Vector3((float)Math.Sin(Rotation.X), 0f, (float)Math.Cos(Rotation.X));
-			Vector3 right = new Vector3(-forward.Z, 0f, forward.X);
-			Vector3 offset = new Vector3();
-			offset += right * x;
-			offset += forward * y;
-			offset.Y += z;
-
-			offset.NormalizeFast();
-			offset = Vector3.Multiply(offset, MoveSpeed);
-			Position += offset;
+			var rot = RotationMatrix;
+			Position -= Vector3.TransformPosition(Vector3.UnitX, rot) * x * MoveSpeed;
+			Position -= Vector3.TransformPosition(Vector3.UnitY, rot) * y * MoveSpeed;
+			Position -= Vector3.TransformPosition(Vector3.UnitZ, rot) * z * MoveSpeed;
 		}
 
 		public void Rotate(float x, float y) {
 			x *= MouseSensitivity;
 			y *= MouseSensitivity;
-			Rotation.X = (Rotation.X + x) % ((float)Math.PI * 2f);
-			Rotation.Y = Math.Max(Math.Min(Rotation.Y + y, (float)Math.PI / 2f - 0.1f), (float)-Math.PI / 2f + 0.1f);
+			Rotation.Y = (Rotation.Y - x) % ((float)Math.PI * 2f);
+			Rotation.X = (Rotation.X - y) % ((float)Math.PI * 2f);
 		}
 
 		Vector2 lastMousePos = new Vector2();
 
 		public void Update(GameWindow game, float dt) {
-			if(game.Keyboard[Key.W]) Move(0f, dt, 0f);
-			if(game.Keyboard[Key.S]) Move(0f, -dt, 0f);
+			if(game.Keyboard[Key.W]) Move(0f, 0f, dt);
+			if(game.Keyboard[Key.S]) Move(0f, 0f, -dt);
 			if(game.Keyboard[Key.A]) Move(-dt, 0, 0f);
 			if(game.Keyboard[Key.D]) Move(dt, 0, 0f);
-			if(game.Keyboard[Key.Q]) Move(0f, 0f, dt);
-			if(game.Keyboard[Key.E]) Move(0f, 0f, -dt);
+			if(game.Keyboard[Key.Q]) Move(0f, dt, 0f);
+			if(game.Keyboard[Key.E]) Move(0f, -dt, 0f);
 
 			if(game.Focused) {
+				//game.Title = "" + MathHelper.RadiansToDegrees(Rotation.X) + ", " + MathHelper.RadiansToDegrees(Rotation.Y) + ", " + MathHelper.RadiansToDegrees(Rotation.Z);
 				Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 				Rotate(delta.X, delta.Y);
 				Mouse.SetPosition(game.Bounds.Left + game.Bounds.Width / 2, game.Bounds.Top + game.Bounds.Height / 2);
@@ -69,6 +93,7 @@ namespace Lotus {
 			GL.LoadMatrix(ref ProjectionMatrix);
 			GL.MatrixMode(MatrixMode.Modelview);
 			var viewMatrix = ViewMatrix;
+			viewMatrix.Invert();
 			GL.LoadMatrix(ref viewMatrix);
 			//GL.Ortho(-game.Width / 32.0, game.Width / 32.0, -game.Height / 32.0, game.Height / 32.0, 0.0, 4.0);
 		}

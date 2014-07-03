@@ -41,9 +41,25 @@ namespace Lotus {
 				game.RenderFrame += (sender, e) => {
 					GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 					GL.ClearColor(Color.CornflowerBlue);
+					GL.Enable(EnableCap.DepthTest);
 					cam.Draw();
 					grid.Draw();
+					GL.Begin(PrimitiveType.Lines);
+					GL.Color3(1f, 0f, 0f);
+					GL.Vertex3(0f, 0f, 0f);
+					GL.Color3(1f, 0f, 0f);
+					GL.Vertex3(1f, 0f, 0f);
+					GL.Color3(0f, 1f, 0f);
+					GL.Vertex3(0f, 0f, 0f);
+					GL.Color3(0f, 1f, 0f);
+					GL.Vertex3(0f, 1f, 0f);
+					GL.Color3(0f, 0f, 1f);
+					GL.Vertex3(0f, 0f, 0f);
+					GL.Color3(0f, 0f, 1f);
+					GL.Vertex3(0f, 0f, 1f);
+					GL.End();
 					game.SwapBuffers();
+					GL.Disable(EnableCap.DepthTest);
 				};
 
 				game.Closed += (sender, e) => {
