@@ -16,13 +16,15 @@ namespace Lotus {
         static Camera uiCam;
         static Text text;
 
-        double time = 0f;
-        double lastTime = 0f;
-        float frameRate = 0f;
+        double time = 0.0;
+        double lastTime = 0.0;
+        double accumFPS = 0.0;
+        int frameCount = 0;
+        double frameRate = 0.0;
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
-            VSync = VSyncMode.On;
+            VSync = VSyncMode.Off;
 
             grid = new HexGrid(256, 256);
             cam = new Camera((float)Width, (float)Height, false);
@@ -34,13 +36,23 @@ namespace Lotus {
 
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
-            time += e.Time;
-            frameRate = (float)(1 / e.Time);
-            lastTime = e.Time;
-            float dt = (float)e.Time;
             if (Keyboard[Key.Escape]) {
                 Exit();
             }
+
+            time += e.Time;
+            float dt = (float)e.Time;
+
+            lastTime += e.Time;
+            accumFPS += e.Time;
+            frameCount++;
+            if (lastTime > 0.25) {
+                frameRate = Math.Round(1.0/(accumFPS/frameCount));
+                accumFPS = 0.0;
+                frameCount = 0;
+                lastTime = 0.0;
+            }
+
             cam.Update(this, dt);
         }
 
@@ -67,7 +79,7 @@ namespace Lotus {
             GL.End();
             uiCam.Draw();
             text.Draw("Hello World", Vector2.Zero);
-            text.Draw("Frame Rate: " + frameRate, new Vector2(0,18));//framerate readout
+            text.Draw("Frame Rate: " + frameRate, new Vector2(0,18)); //framerate readout
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
         }

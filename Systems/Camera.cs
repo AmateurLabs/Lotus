@@ -8,14 +8,14 @@ namespace Lotus {
 
 		public static Camera Main; //Shortcut to the first camera registered, which should be the 'scene' view
         public static Camera Current; //The camera most recently set up with .Draw()
-        Matrix4 ProjectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
+        Matrix4 projectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
 		public Vector3 Position; //The position in 3D space that the camera occupies
         public Quaternion Rotation; //The quaternion rotation of the camera, applied in YXZ order
 
         //TODO: move camera controls to separate class
         public bool FreelookEnabled;
-		float MoveSpeed = 10f; //How fast the freelook camera moves around
-        float RotateSpeed = 0.005f; //How fast the freelook camera rotates
+		public float MoveSpeed = 10f; //How fast the freelook camera moves around
+        public float RotateSpeed = 0.005f; //How fast the freelook camera rotates
 
         public readonly bool IsOrthographic; //Whether this camera is orthographic; cannot be changed after initialization
 
@@ -27,12 +27,12 @@ namespace Lotus {
             IsOrthographic = ortho;
             if (Main == null) Main = this; //If this is the first created camera, designate it as the Main camera
             if (IsOrthographic) {
-                ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(0f, width, height, 0f, 0.1f, 256f);
+                projectionMatrix = Matrix4.CreateOrthographicOffCenter(0f, width, height, 0f, 0.1f, 256f);
                 //ProjectionMatrix *= Matrix4.CreateScale(-1f, -1f, 1f); //Invert X and Y to match screen coordinates
             }
             else {
-                ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), width / height, 0.1f, 256f);
-                ProjectionMatrix *= Matrix4.CreateScale(-1f, -1f, 1f); //Invert X and Y to match screen coordinates
+                projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), width / height, 0.1f, 256f);
+                projectionMatrix *= Matrix4.CreateScale(-1f, -1f, 1f); //Invert X and Y to match screen coordinates
             }
 		}
 
@@ -112,7 +112,7 @@ namespace Lotus {
 		public void Draw() {
             Current = this;
 			GL.MatrixMode(MatrixMode.Projection);
-			GL.LoadMatrix(ref ProjectionMatrix);
+			GL.LoadMatrix(ref projectionMatrix);
 			GL.MatrixMode(MatrixMode.Modelview);
 			var viewMatrix = ViewMatrix;
 			viewMatrix.Invert();
