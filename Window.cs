@@ -16,16 +16,11 @@ namespace Lotus {
         static Camera uiCam;
         static Text text;
 
-<<<<<<< HEAD
         double time = 0.0;
         double lastTime = 0.0;
         double accumFPS = 0.0;
         int frameCount = 0;
         double frameRate = 0.0;
-=======
-        double time = 0f;
-        float frameRate = 0f;
->>>>>>> origin/master
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
@@ -41,12 +36,7 @@ namespace Lotus {
 
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
-<<<<<<< HEAD
-=======
-            time += e.Time;
-            frameRate = (float)(1 / e.Time);
-            float dt = (float)e.Time;
->>>>>>> origin/master
+
             if (Keyboard[Key.Escape]) {
                 Exit();
             }
