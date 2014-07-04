@@ -127,6 +127,11 @@ namespace Lotus {
 			return worldPos;
 		}
 
+        public void Update() {
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+            //GL.BufferSubData(BufferTarget.ArrayBuffer, new IntPtr(32), new IntPtr(4), new float[] { (float)Math.Sin(time) });
+        }
+
 		public void Draw() {
 			GL.PushMatrix();
 			//GL.Rotate(90f, 1f, 0f, 0f);
