@@ -1,8 +1,0 @@
-C:\Users\Maroy\Desktop\Repos\Lotus\bin\Debug\Lotus.exe
-C:\Users\Maroy\Desktop\Repos\Lotus\bin\Debug\Lotus.pdb
-C:\Users\Maroy\Desktop\Repos\Lotus\obj\x86\Debug\Lotus.exe
-C:\Users\Maroy\Desktop\Repos\Lotus\obj\x86\Debug\Lotus.pdb
-C:\Users\Maroy\Desktop\Repos\Lotus\bin\Debug\OpenTK.dll.config
-C:\Users\Maroy\Desktop\Repos\Lotus\bin\Debug\OpenTK.dll
-C:\Users\Maroy\Desktop\Repos\Lotus\obj\x86\Debug\Lotus.csprojResolveAssemblyReference.cache
-C:\Users\Maroy\Desktop\Repos\Lotus\bin\Debug\SimplexNoise.dll
