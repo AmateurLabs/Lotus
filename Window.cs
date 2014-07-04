@@ -17,7 +17,6 @@ namespace Lotus {
         static Text text;
 
         double time = 0f;
-        double lastTime = 0f;
         float frameRate = 0f;
 
         protected override void OnLoad(EventArgs e) {
@@ -36,7 +35,6 @@ namespace Lotus {
             base.OnUpdateFrame(e);
             time += e.Time;
             frameRate = (float)(1 / e.Time);
-            lastTime = e.Time;
             float dt = (float)e.Time;
             if (Keyboard[Key.Escape]) {
                 Exit();
