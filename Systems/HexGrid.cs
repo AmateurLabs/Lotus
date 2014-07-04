@@ -15,11 +15,28 @@ namespace Lotus {
 		public readonly int VBOID;
 		public readonly int IBOID;
 
-		public HexGrid(int width, int height) {
+        public const int VERT_STRIDE = 32;
+
+        /*
+         * Vertex Layout: 
+         * 0-3: X Position
+         * 4-7: Y Position
+         * 8-11: Z Position
+         * 12: R
+         * 13: G
+         * 14: B
+         * 15: A
+         * 16-19: X Normal
+         * 20-23: Y Normal
+         * 24-27: Z Normal
+         * 28-31: 
+         */
+
+        public HexGrid(int width, int height) {
 			Width = width;
 			Height = height;
 
-			VBOArr = new byte[Width * Height * 7 * 16];
+            VBOArr = new byte[Width * Height * 7 * VERT_STRIDE];
 			VBOID = GL.GenBuffer();
 			IBOArr = new uint[Width * Height * 6 * 3];
 			IBOID = GL.GenBuffer();
@@ -40,13 +57,21 @@ namespace Lotus {
 			if(!disposed) Dispose();
 		}
 
+        public float GetHeight(float x, float y) {
+            return (Noise.Generate(x / 16f + 4096f, y / 16f + 4096f) + 1f) / 2f;
+        }
+
 		private int i = 0;
 		private int v = 0;
 		private int t = 0;
 
 		public void AddVertex(float x, float y) {
-			float z = (Noise.Generate(x / 16f + 4096f, y / 16f + 4096f) + 1f) / 2f;
-			byte gray = (byte)(z * 255f);
+			float z = GetHeight(x, y);
+            float dx = GetHeight(x - 0.5f, y)*8f - GetHeight(x + 0.5f, y)*8f;
+            float dy = GetHeight(x, y - 0.5f)*8f - GetHeight(x, y + 0.5f)*8f;
+            Vector3 normal = new Vector3(dx, dy, 1f).Normalized();
+            float dot = Vector3.Dot(normal, Vector3.UnitZ);
+			byte gray = (byte)(Math.Min(Math.Max(255f * dot, 0f), 255f));
 			//float height = (float)Math.Floor(z * 8f);
 			float height = z * 8f;
 			Buffer.BlockCopy(BitConverter.GetBytes(x), 0, VBOArr, i + 0, 4);
@@ -56,7 +81,7 @@ namespace Lotus {
 			VBOArr[i + 13] = gray;
 			VBOArr[i + 14] = gray;
 			VBOArr[i + 15] = 255;
-			i += 16;
+            i += VERT_STRIDE;
 		}
 
 		static Vector3[] HexVerts = {
@@ -110,25 +135,26 @@ namespace Lotus {
 			GL.EnableClientState(ArrayCap.ColorArray);
 			GL.EnableClientState(ArrayCap.IndexArray);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBOID);
-			GL.VertexPointer(3, VertexPointerType.Float, 16, 0);
-			GL.ColorPointer(4, ColorPointerType.UnsignedByte, 16, 12);
+            GL.VertexPointer(3, VertexPointerType.Float, VERT_STRIDE, 0);
+            GL.ColorPointer(4, ColorPointerType.UnsignedByte, VERT_STRIDE, 12);
+            GL.NormalPointer(NormalPointerType.Float, VERT_STRIDE, 16);
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBOID);
-			//GL.DrawElements(PrimitiveType.Triangles, t, DrawElementsType.UnsignedInt, 0);
-			GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 			GL.DrawElements(PrimitiveType.Triangles, t, DrawElementsType.UnsignedInt, 0);
-			GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 			Vector3 hex;
 			if(Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
 				//int j = (int)(hex.Y * Width + hex.X);
 				Vector3 p = ToWorld((int)hex.X, (int)hex.Y);
+				p.Z = 0f;
+				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 				GL.Begin(PrimitiveType.TriangleFan);
 				for(int k = 0; k < HexVerts.Length; k++) {
 					GL.Color3(1f, 0f, 1f);
-					GL.Vertex3(p + HexVerts[k]);
+					GL.Vertex3(p + HexVerts[k] + Vector3.UnitZ * (Noise.Generate((p + HexVerts[k]).X / 16f + 4096f, (p + HexVerts[k]).Y / 16f + 4096f) + 1f) / 2f * 8f);
 				}
 				GL.Color3(1f, 0f, 1f);
-				GL.Vertex3(p + HexVerts[1]);
+				GL.Vertex3(p + HexVerts[1] + Vector3.UnitZ * (Noise.Generate((p + HexVerts[1]).X / 16f + 4096f, (p + HexVerts[1]).Y / 16f + 4096f) + 1f) / 2f * 8f);
 				GL.End();
+				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 			}
 
 			GL.DisableClientState(ArrayCap.VertexArray);

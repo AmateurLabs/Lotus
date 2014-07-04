@@ -17,7 +17,7 @@ namespace Lotus {
 				game.Load += (sender, e) => {
 					game.VSync = VSyncMode.On;
 
-					grid = new HexGrid(32, 32);
+					grid = new HexGrid(256, 256);
 					cam = new Camera(game);
 				};
 
