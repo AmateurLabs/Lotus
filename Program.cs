@@ -9,6 +9,7 @@ namespace Lotus {
 
 		static HexGrid grid;
 		static Camera cam;
+        static Camera uiCam;
         static Text text;
 
 		[STAThread]
@@ -19,10 +20,10 @@ namespace Lotus {
 					game.VSync = VSyncMode.On;
 
 					grid = new HexGrid(256, 256);
-                    cam = new Camera((float)game.Width, (float)game.Height, true);
-                    cam.Move(0f, 0f, -10f);
-                    cam.Rotate(0f, 180f, 0f);
-                    cam.FreelookEnabled = false;
+                    cam = new Camera((float)game.Width, (float)game.Height, false);
+                    uiCam = new Camera((float)game.Width, (float)game.Height, true);
+                    uiCam.Move(0f, 0f, -10f);
+                    cam.FreelookEnabled = true;
                     text = new Text();
 				};
 
@@ -63,6 +64,7 @@ namespace Lotus {
 					GL.Color3(0f, 0f, 1f);
 					GL.Vertex3(0f, 0f, 1f);
 					GL.End();
+                    uiCam.Draw();
                     text.Draw("Hello World", Vector2.Zero);
 					game.SwapBuffers();
 					GL.Disable(EnableCap.DepthTest);

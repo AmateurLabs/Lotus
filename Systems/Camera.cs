@@ -7,7 +7,8 @@ namespace Lotus {
 	public class Camera {
 
 		public static Camera Main; //Shortcut to the first camera registered, which should be the 'scene' view
-		Matrix4 ProjectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
+        public static Camera Current; //The camera most recently set up with .Draw()
+        Matrix4 ProjectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
 		public Vector3 Position; //The position in 3D space that the camera occupies
         public Quaternion Rotation; //The quaternion rotation of the camera, applied in YXZ order
 
@@ -109,6 +110,7 @@ namespace Lotus {
 		}
 
 		public void Draw() {
+            Current = this;
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadMatrix(ref ProjectionMatrix);
 			GL.MatrixMode(MatrixMode.Modelview);
