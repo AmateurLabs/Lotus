@@ -9,9 +9,9 @@ namespace Lotus {
 		public static Camera Main;
 		Matrix4 ProjectionMatrix;
 		public Vector3 Position;
-		public Quaternion Rotation;
+        public Quaternion Rotation;
 		float MoveSpeed = 10f;
-		float MouseSensitivity = 0.005f;
+        float RotateSpeed = 0.005f;
 
 		public Camera(GameWindow game) {
 			Main = this;
@@ -36,6 +36,10 @@ namespace Lotus {
 				return Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y);
 			}
 		}
+
+        public Vector3 PitchAxis = Vector3.UnitX;
+        public Vector3 YawAxis = Vector3.UnitY;
+        public Vector3 RollAxis = Vector3.UnitZ;
 
 		public Vector3 Forward {
 			get {
@@ -62,11 +66,12 @@ namespace Lotus {
 			Position -= Vector3.TransformPosition(Vector3.UnitZ, rot) * z * MoveSpeed;
 		}
 
-		public void Rotate(float x, float y) {
-			x *= MouseSensitivity;
-			y *= MouseSensitivity;
-			Rotation.Y = (Rotation.Y - x) % ((float)Math.PI * 2f);
-			Rotation.X = (Rotation.X - y) % ((float)Math.PI * 2f);
+		public void Rotate(float x, float y, float z) {
+			x *= RotateSpeed;
+            y *= RotateSpeed;
+            Rotation -= Quaternion.FromAxisAngle(YawAxis, x);
+            Rotation -= Quaternion.FromAxisAngle(PitchAxis, y);
+            Rotation -= Quaternion.FromAxisAngle(RollAxis, z);
 		}
 
 		Vector2 lastMousePos = new Vector2();
@@ -82,7 +87,7 @@ namespace Lotus {
 			if(game.Focused) {
 				//game.Title = "" + MathHelper.RadiansToDegrees(Rotation.X) + ", " + MathHelper.RadiansToDegrees(Rotation.Y) + ", " + MathHelper.RadiansToDegrees(Rotation.Z);
 				Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-				Rotate(delta.X, delta.Y);
+				Rotate(delta.X, delta.Y, 0f);
 				Mouse.SetPosition(game.Bounds.Left + game.Bounds.Width / 2, game.Bounds.Top + game.Bounds.Height / 2);
 				lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 			}
