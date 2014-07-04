@@ -13,7 +13,7 @@ namespace Lotus {
         QFont font;
 
         public Text() {
-            font = new QFont(new Font(FontFamily.GenericSansSerif, 16f));
+            font = new QFont(new Font(FontFamily.GenericMonospace, 16f));
         }
 
         public void Draw(string text, OpenTK.Vector2 position) {
