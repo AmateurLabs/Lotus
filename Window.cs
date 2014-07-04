@@ -17,6 +17,8 @@ namespace Lotus {
         static Text text;
 
         double time = 0f;
+        double lastTime = 0f;
+        float frameRate = 0f;
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
@@ -33,6 +35,8 @@ namespace Lotus {
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
             time += e.Time;
+            frameRate = (float)(1 / e.Time);
+            lastTime = e.Time;
             float dt = (float)e.Time;
             if (Keyboard[Key.Escape]) {
                 Exit();
@@ -63,6 +67,7 @@ namespace Lotus {
             GL.End();
             uiCam.Draw();
             text.Draw("Hello World", Vector2.Zero);
+            text.Draw("Frame Rate: " + frameRate, new Vector2(0,18));//framerate readout
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
         }
