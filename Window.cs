@@ -24,7 +24,7 @@ namespace Lotus {
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
-            VSync = VSyncMode.Off;
+            VSync = VSyncMode.On;
 
             grid = new HexGrid(256, 256);
             cam = new Camera((float)Width, (float)Height, false);
@@ -81,6 +81,10 @@ namespace Lotus {
             uiCam.Draw();
             text.Draw("Hello World", Vector2.Zero);
             text.Draw("Frame Rate: " + frameRate, new Vector2(0,18)); //framerate readout
+            Vector3 hex;
+            if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
+                text.Draw("(" + hex.X + ", " + hex.Y + ")", new Vector2(0, 36));
+            }
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
         }

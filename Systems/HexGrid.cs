@@ -160,6 +160,7 @@ namespace Lotus {
 			Vector3 hex;
 			if(Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
 				//int j = (int)(hex.Y * Width + hex.X);
+
 				Vector3 p = ToWorld((int)hex.X, (int)hex.Y);
 				p.Y = 0f;
 				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
