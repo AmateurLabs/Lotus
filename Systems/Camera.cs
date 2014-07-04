@@ -6,54 +6,65 @@ using OpenTK.Graphics.OpenGL;
 namespace Lotus {
 	public class Camera {
 
-		public static Camera Main;
-		Matrix4 ProjectionMatrix;
-		public Vector3 Position;
-        public Quaternion Rotation;
-		float MoveSpeed = 10f;
-        float RotateSpeed = 0.005f;
+		public static Camera Main; //Shortcut to the first camera registered, which should be the 'scene' view
+		Matrix4 ProjectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
+		public Vector3 Position; //The position in 3D space that the camera occupies
+        public Quaternion Rotation; //The quaternion rotation of the camera, applied in YXZ order
 
-		public Camera(GameWindow game) {
-			Main = this;
-			ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), (float)game.Width / (float)game.Height, 0.1f, 256f);
-			ProjectionMatrix *= Matrix4.CreateScale(-1f, -1f, 1f);
+        //TODO: move camera controls to separate class
+		float MoveSpeed = 10f; //How fast the freelook camera moves around
+        float RotateSpeed = 0.005f; //How fast the freelook camera rotates
+
+        public bool Orthographic { //Whether this camera is orthographic; cannot be changed after initialization
+            public get;
+            readonly set;
+        }
+
+        public bool Perspective { //Whether this camera uses perspective projection
+            get { return !Orthographic;  }
+        }
+
+		public Camera(float width, float height, bool ortho) { //Creates a new camera, using the width and height of the screen and whether it is orthographic
+            Orthographic = ortho;
+            if (Main == null) Main = this; //If this is the first created camera, designate it as the Main camera
+            if (Orthographic)
+                ProjectionMatrix = Matrix4.CreateOrthographic(width, height, 0.1f, 256f);
+            else
+                ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), width / height, 0.1f, 256f);
+			ProjectionMatrix *= Matrix4.CreateScale(-1f, -1f, 1f); //Invert X and Y to match screen coordinates
 		}
 
-		public Matrix4 ViewMatrix {
+		public Matrix4 ViewMatrix { //The final view matrix used to draw the world
 			get {
 				return RotationMatrix * TranslationMatrix;
 			}
 		}
 
-		public Matrix4 TranslationMatrix {
+		public Matrix4 TranslationMatrix { //A matrix of the current position
 			get {
 				return Matrix4.CreateTranslation(Position);
 			}
 		}
 
-		public Matrix4 RotationMatrix {
+		public Matrix4 RotationMatrix { //A matrix of the current rotation
 			get {
 				return Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y);
 			}
 		}
 
-        public Vector3 PitchAxis = Vector3.UnitX;
-        public Vector3 YawAxis = Vector3.UnitY;
-        public Vector3 RollAxis = Vector3.UnitZ;
-
-		public Vector3 Forward {
+		public Vector3 Forward { //The direction the camera is facing in worldspace
 			get {
 				return Vector3.TransformPosition(-Vector3.UnitZ, RotationMatrix);
 			}
 		}
 
-		public Vector3 Right {
+		public Vector3 Right { //The direction to the right of the camera in worldspace
 			get {
 				return Vector3.TransformPosition(-Vector3.UnitX, RotationMatrix);
 			}
 		}
 
-		public Vector3 Up {
+		public Vector3 Up { //The direction to the top of the camera in worldspace
 			get {
 				return Vector3.TransformPosition(-Vector3.UnitY, RotationMatrix);
 			}
@@ -69,9 +80,10 @@ namespace Lotus {
 		public void Rotate(float x, float y, float z) {
 			x *= RotateSpeed;
             y *= RotateSpeed;
-            Rotation -= Quaternion.FromAxisAngle(YawAxis, x);
-            Rotation -= Quaternion.FromAxisAngle(PitchAxis, y);
-            Rotation -= Quaternion.FromAxisAngle(RollAxis, z);
+            z *= RotateSpeed;
+            Rotation -= Quaternion.FromAxisAngle(Vector3.UnitX, x); //Yaw
+            Rotation -= Quaternion.FromAxisAngle(Vector3.UnitY, y); //Pitch
+            Rotation -= Quaternion.FromAxisAngle(Vector3.UnitZ, z); //Roll
 		}
 
 		Vector2 lastMousePos = new Vector2();
@@ -87,7 +99,7 @@ namespace Lotus {
 			if(game.Focused) {
 				//game.Title = "" + MathHelper.RadiansToDegrees(Rotation.X) + ", " + MathHelper.RadiansToDegrees(Rotation.Y) + ", " + MathHelper.RadiansToDegrees(Rotation.Z);
 				Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-				Rotate(delta.X, delta.Y, 0f);
+				Rotate(delta.Y, delta.X, 0f); //Flipped because moving the mouse horizontally actually rotates on the Y axis, etc.
 				Mouse.SetPosition(game.Bounds.Left + game.Bounds.Width / 2, game.Bounds.Top + game.Bounds.Height / 2);
 				lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 			}

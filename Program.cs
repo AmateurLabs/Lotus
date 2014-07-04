@@ -19,7 +19,7 @@ namespace Lotus {
 					game.VSync = VSyncMode.On;
 
 					grid = new HexGrid(256, 256);
-					cam = new Camera(game);
+                    cam = new Camera((float)game.Width / (float)game.Height, false);
                     text = new Text();
 				};
 
