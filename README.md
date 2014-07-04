@@ -5,7 +5,7 @@ An Entity-Component-System genre-agnostic game engine.
 
 Entities
 -----
-Entities are just collections of Aspects with a little bit of metadata. Each Entity has a unique ID 
+Entities are just collections of Aspects with a little bit of metadata. Each Entity has a unique identification number, a list of its Aspects, and a list of connections between the Signals and Slots of its Aspects. Entities have no default Aspects or other game-related properties, but lightweight Entity wrappers which cache references to specific Aspects and provide other helper functions are acceptable.
 
 Aspects
 -----
@@ -25,4 +25,4 @@ Signals and Slots are components similar to events and event listeners that allo
 
 Future Considerations
 -----
-Does an Entity store its Aspects or reference its Aspects? Should Aspects be in the Entity, in EntityID-indexed arrays or dictionaries, or in AspectID-indexed arrays or dictionaries? Is locality of reference really that important in a managed language?
+Does an Entity store its Aspects or reference its Aspects? Should Aspects be in the Entity, in EntityID-indexed arrays or dictionaries, or in AspectID-indexed arrays or dictionaries? Is locality of reference really that important in a managed language? Should Managers have their own Slots and Signals? Should Managers be able to serialize data, or should they have to rely on Aspects alone?
