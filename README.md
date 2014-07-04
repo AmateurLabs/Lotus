@@ -9,19 +9,15 @@ Entities are just collections of Aspects with a little bit of metadata. Each Ent
 
 Aspects
 -----
-Aspects are mostly just collections of raw data. They also have methods for retrieving, modifying, and serializing their data. Aspects do not directly communicate with other Aspects or with Managers, but they can communicate indirectly with other Aspects via Signals and Slots. Aspects can be subclassed for objects with near-identical functionality when an 'is-a' relationship is more ideal than a 'has-a' relationship, but they must provide functionality to the same extent and scope as their parent class. Parent-child relationships and other external connections are exposed through relational Aspects.
-
-Templates
------
-Templates are a type of data that represents an Entity and its Aspects. Their primary use is in content saving and loading, where they can represent a snapshot of an Entity at a given point, a prefab for Entities that haven't been created yet, or any other representations of an Entity. Templates are the primary form of persistant data.
+Aspects are mostly just collections of raw data. They also have methods for retrieving, modifying, and serializing their data. Aspects do not directly communicate with other Aspects or with Managers, but they can communicate indirectly via Signals and Slots. Aspects can be subclassed for objects with near-identical functionality when an 'is-a' relationship is more ideal than a 'has-a' relationship, but they must provide functionality to the same extent and scope as their parent class. Parent-child relationships and other external connections are exposed through relational Aspects.
 
 Managers
 -----
-Managers are the backbone of the game logic and deal with the interaction between Aspects, as well a services like audio and rendering. Managers register themselves with the central engine code, which provides callbacks for when an Entity with Aspects matching a Manager-specified combination is created, destroyed, or no longer fits the criteria. Managers cannot communicate with each other directly, but they can manipulate Aspects and share data that way.
+Managers are the backbone of the game logic and deal with the interaction between Aspects, as well a services like audio and rendering. Managers register themselves for specific combinations of Aspects, and recieve callbacks when an Entity with a matching combination is created, destroyed, or no longer fits the criteria.
 
 Slots and Signals
 -----
-Signals and Slots are components similar to events and event listeners that allow simple, common interactions between Aspects. Signals can be wired to Slots by Managers, so when the Signal is emitted by the first Aspect the function of the Slot of the second Aspect will automatically fire. Parents and children can 'forward' Signals to Slots through relational Aspects, but strictly speaking Signals and Slots are confined to same-Entity components.
+Signals can be wired to Slots by Managers, so when the Signal is emitted by the first Aspect the function of the Slot of the second Aspect will automatically fire. Managers can also have Slots and Signals. Parents and children can 'forward' Signals to Slots through relational Aspects, but strictly speaking Signals and Slots are confined to same-Entity components.
 
 Future Considerations
 -----
