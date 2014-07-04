@@ -9,6 +9,7 @@ namespace Lotus {
 
 		static HexGrid grid;
 		static Camera cam;
+        static Text text;
 
 		[STAThread]
 		public static void Main(string[] args) {
@@ -19,6 +20,7 @@ namespace Lotus {
 
 					grid = new HexGrid(256, 256);
 					cam = new Camera(game);
+                    text = new Text();
 				};
 
 				game.Resize += (sender, e) => {
@@ -58,6 +60,7 @@ namespace Lotus {
 					GL.Color3(0f, 0f, 1f);
 					GL.Vertex3(0f, 0f, 1f);
 					GL.End();
+                    text.Draw("Hello World", Vector2.Zero);
 					game.SwapBuffers();
 					GL.Disable(EnableCap.DepthTest);
 				};

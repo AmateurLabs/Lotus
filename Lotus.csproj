@@ -34,12 +34,18 @@
     <Compile Include="Program.cs" />
     <Compile Include="Systems\HexGrid.cs" />
     <Compile Include="Systems\Camera.cs" />
+    <Compile Include="Systems\Text.cs" />
     <Compile Include="Systems\System.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
       <HintPath>OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="QuickFont, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\QuickFont.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="SimplexNoise">
       <HintPath>SimplexNoise.dll</HintPath>
