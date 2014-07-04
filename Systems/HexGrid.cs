@@ -57,30 +57,33 @@ namespace Lotus {
 			if(!disposed) Dispose();
 		}
 
-        public float GetHeight(float x, float y) {
-            return (Noise.Generate(x / 16f + 4096f, y / 16f + 4096f) + 1f) / 2f;
+        public float GetHeight(float x, float z) {
+            return (Noise.Generate(x / 16f + 4096f, z / 16f + 4096f) + 1f) / 2f;
         }
 
 		private int i = 0;
 		private int v = 0;
 		private int t = 0;
 
-		public void AddVertex(float x, float y) {
-			float z = GetHeight(x, y);
-            float dx = GetHeight(x - 0.5f, y)*8f - GetHeight(x + 0.5f, y)*8f;
-            float dy = GetHeight(x, y - 0.5f)*8f - GetHeight(x, y + 0.5f)*8f;
-            Vector3 normal = new Vector3(dx, dy, 1f).Normalized();
-            float dot = Vector3.Dot(normal, Vector3.UnitZ);
+		public void AddVertex(float x, float z) {
+			float y = GetHeight(x, z);
+            float dx = GetHeight(x - 0.5f, z)*8f - GetHeight(x + 0.5f, z)*8f;
+            float dz = GetHeight(x, z - 0.5f)*8f - GetHeight(x, z + 0.5f)*8f;
+            Vector3 normal = new Vector3(dx, 1f, dz).Normalized();
+            float dot = Vector3.Dot(normal, Vector3.UnitY);
 			byte gray = (byte)(Math.Min(Math.Max(255f * dot, 0f), 255f));
 			//float height = (float)Math.Floor(z * 8f);
-			float height = z * 8f;
+			float height = y * 8f;
 			Buffer.BlockCopy(BitConverter.GetBytes(x), 0, VBOArr, i + 0, 4);
-			Buffer.BlockCopy(BitConverter.GetBytes(y), 0, VBOArr, i + 4, 4);
-			Buffer.BlockCopy(BitConverter.GetBytes(height), 0, VBOArr, i + 8, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(height), 0, VBOArr, i + 4, 4);
+			Buffer.BlockCopy(BitConverter.GetBytes(z), 0, VBOArr, i + 8, 4);
 			VBOArr[i + 12] = gray;
 			VBOArr[i + 13] = gray;
 			VBOArr[i + 14] = gray;
 			VBOArr[i + 15] = 255;
+            Buffer.BlockCopy(BitConverter.GetBytes(normal.X), 0, VBOArr, i + 16, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(normal.Y), 0, VBOArr, i + 20, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(normal.Z), 0, VBOArr, i + 24, 4);
             i += VERT_STRIDE;
 		}
 
@@ -96,14 +99,14 @@ namespace Lotus {
 
 		public void AddHex(int mapX, int mapY) {
 			float x = ToWorld(mapX, mapY).X;
-			float y = ToWorld(mapX, mapY).Y;
-			AddVertex(x, y);
-			AddVertex(x, y + HEX_HEIGHT / 2f);
-			AddVertex(x + HEX_WIDTH / 2f, y + HEX_HEIGHT / 4f);
-			AddVertex(x + HEX_WIDTH / 2f, y - HEX_HEIGHT / 4f);
-			AddVertex(x, y - HEX_HEIGHT / 2f);
-			AddVertex(x - HEX_WIDTH / 2f, y - HEX_HEIGHT / 4f);
-			AddVertex(x - HEX_WIDTH / 2f, y + HEX_HEIGHT / 4f);
+			float z = ToWorld(mapX, mapY).Z;
+			AddVertex(x, z);
+			AddVertex(x, z + HEX_HEIGHT / 2f);
+			AddVertex(x + HEX_WIDTH / 2f, z + HEX_HEIGHT / 4f);
+			AddVertex(x + HEX_WIDTH / 2f, z - HEX_HEIGHT / 4f);
+			AddVertex(x, z - HEX_HEIGHT / 2f);
+			AddVertex(x - HEX_WIDTH / 2f, z - HEX_HEIGHT / 4f);
+			AddVertex(x - HEX_WIDTH / 2f, z + HEX_HEIGHT / 4f);
 			for(int j = 1; j < 7; j++) {
 				int k = (j + 1);
 				if(k > 6) k = 1;
@@ -115,16 +118,16 @@ namespace Lotus {
 			v += 7;
 		}
 
-		public Vector3 ToHex(float x, float y) {
+		public Vector3 ToHex(float x, float z) {
 			Vector3 hexPos = new Vector3();
-			hexPos.Y = (float)Math.Round(y / 0.75f / HEX_HEIGHT);
+			hexPos.Y = (float)Math.Round(z / 0.75f / HEX_HEIGHT);
 			hexPos.X = (float)Math.Round((x - hexPos.Y * HEX_WIDTH / 2f) / HEX_WIDTH);
 			return hexPos;
 		}
 
 		public Vector3 ToWorld(int x, int y) {
-			Vector3 worldPos = new Vector3(x * HEX_WIDTH + y * HEX_WIDTH / 2f, y * HEX_HEIGHT * 0.75f, 0f);
-			worldPos.Z = (Noise.Generate(worldPos.X / 16f + 4096f, worldPos.Y / 16f + 4096f) + 1f) / 2f * 8f;
+			Vector3 worldPos = new Vector3(x * HEX_WIDTH + y * HEX_WIDTH / 2f, 0f, y * HEX_HEIGHT * 0.75f);
+			worldPos.Y = GetHeight(worldPos.X, worldPos.Z) * 8f;
 			return worldPos;
 		}
 
@@ -144,15 +147,15 @@ namespace Lotus {
 			if(Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
 				//int j = (int)(hex.Y * Width + hex.X);
 				Vector3 p = ToWorld((int)hex.X, (int)hex.Y);
-				p.Z = 0f;
+				p.Y = 0f;
 				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 				GL.Begin(PrimitiveType.TriangleFan);
 				for(int k = 0; k < HexVerts.Length; k++) {
 					GL.Color3(1f, 0f, 1f);
-					GL.Vertex3(p + HexVerts[k] + Vector3.UnitZ * (Noise.Generate((p + HexVerts[k]).X / 16f + 4096f, (p + HexVerts[k]).Y / 16f + 4096f) + 1f) / 2f * 8f);
+					GL.Vertex3(p + HexVerts[k] + Vector3.UnitY * GetHeight(p.X + HexVerts[k].X, p.Z + HexVerts[k].Z) * 8f);
 				}
 				GL.Color3(1f, 0f, 1f);
-				GL.Vertex3(p + HexVerts[1] + Vector3.UnitZ * (Noise.Generate((p + HexVerts[1]).X / 16f + 4096f, (p + HexVerts[1]).Y / 16f + 4096f) + 1f) / 2f * 8f);
+                GL.Vertex3(p + HexVerts[1] + Vector3.UnitY * GetHeight(p.X + HexVerts[1].X, p.Z + HexVerts[1].Z) * 8f);
 				GL.End();
 				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 			}
@@ -170,16 +173,16 @@ namespace Lotus {
 			Vector3 p = origin;
 			Vector3 step = dir * RAY_STEP;
 			float d = 0f;
-			Vector3 h = ToHex(p.X, p.Y);
+			Vector3 h = ToHex(p.X, p.Z);
 			while(d < dist) {
 				Vector3 worldPos = ToWorld((int)h.X, (int)h.Y);
-				if(h.X >= 0 && h.Y >= 0 && h.X < Width && h.Y < Height && p.Z > worldPos.Z) {
+				if(h.X >= 0 && h.Y >= 0 && h.X < Width && h.Y < Height && p.Y > worldPos.Y) {
 					hit = true;
 					break;
 				}
 				p += step;
 				d += RAY_STEP;
-				h = ToHex(p.X, p.Y);
+				h = ToHex(p.X, p.Z);
 			}
 			hexPoint = h;
 			return hit;
