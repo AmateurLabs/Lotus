@@ -53,6 +53,7 @@ namespace Lotus {
 			GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(IBOArr.Length * 4), IBOArr, BufferUsageHint.DynamicDraw);
 		}
 
+        //If the hexgrid gets removed from memory without cleaning up after itself, prevent memory leaks
 		~HexGrid() {
 			if(!disposed) Dispose();
 		}
@@ -114,6 +115,7 @@ namespace Lotus {
 			v += 7;
 		}
 
+        //Gets the array indices of the hex column that the given worldspace point is in
 		public Vector3 ToHex(float x, float z) {
 			Vector3 hexPos = new Vector3();
 			hexPos.Y = (float)Math.Round(z / 0.75f / HEX_HEIGHT);
@@ -121,6 +123,7 @@ namespace Lotus {
 			return hexPos;
 		}
 
+        //Gets the worldspace location of the center vertex of the given hex column
 		public Vector3 ToWorld(int x, int y) {
 			Vector3 worldPos = new Vector3(x * HEX_WIDTH + y * HEX_WIDTH / 2f, 0f, y * HEX_HEIGHT * 0.75f);
 			worldPos.Y = GetHeight(worldPos.X, worldPos.Z) * 8f;
@@ -128,22 +131,32 @@ namespace Lotus {
 		}
 
         public void Update() {
+            //Primitive way of updating VBO data without resending everything; probably impractical
             //GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             //GL.BufferSubData(BufferTarget.ArrayBuffer, new IntPtr(32), new IntPtr(4), new float[] { (float)Math.Sin(time) });
         }
 
 		public void Draw() {
-			GL.PushMatrix();
-			//GL.Rotate(90f, 1f, 0f, 0f);
+
+            //We are drawing using vertex position data, color data, normal data, and triangle index data
 			GL.EnableClientState(ArrayCap.VertexArray);
 			GL.EnableClientState(ArrayCap.ColorArray);
+            GL.EnableClientState(ArrayCap.NormalArray);
 			GL.EnableClientState(ArrayCap.IndexArray);
+            
+            //Bind vertex buffer and load each type of info from it
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBOID);
             GL.VertexPointer(3, VertexPointerType.Float, VERT_STRIDE, 0);
             GL.ColorPointer(4, ColorPointerType.UnsignedByte, VERT_STRIDE, 12);
             GL.NormalPointer(NormalPointerType.Float, VERT_STRIDE, 16);
+
+            //Bind triangle index buffer
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBOID);
+
+            //Draw polygons as specified by the triangle index buffer
 			GL.DrawElements(PrimitiveType.Triangles, t, DrawElementsType.UnsignedInt, 0);
+
+            //Raycast from the center of the camera and display cursor
 			Vector3 hex;
 			if(Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
 				//int j = (int)(hex.Y * Width + hex.X);
@@ -161,14 +174,17 @@ namespace Lotus {
 				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 			}
 
+            //Stop using arrays so we don't contaminate future draws
 			GL.DisableClientState(ArrayCap.VertexArray);
 			GL.DisableClientState(ArrayCap.ColorArray);
+            GL.DisableClientState(ArrayCap.NormalArray);
 			GL.DisableClientState(ArrayCap.IndexArray);
-			GL.PopMatrix();
 		}
 
+        //How far the ray in Raycast() travels each loop; smaller values are more precise but slower
 		public const float RAY_STEP = 0.1f;
 
+        //Casts a ray from an origin point toward a direction for a maximum distance. Returns true if it intersected any hex column, and if so 'out's the hex-grid coordinates
 		public bool Raycast(Vector3 origin, Vector3 dir, out Vector3 hexPoint, float dist) {
 			bool hit = false;
 			Vector3 p = origin;
@@ -177,6 +193,7 @@ namespace Lotus {
 			Vector3 h = ToHex(p.X, p.Z);
 			while(d < dist) {
 				Vector3 worldPos = ToWorld((int)h.X, (int)h.Y);
+                //If the point is actually on the grid and the ray has intersected the top of the column
 				if(h.X >= 0 && h.Y >= 0 && h.X < Width && h.Y < Height && p.Y > worldPos.Y) {
 					hit = true;
 					break;
@@ -189,8 +206,10 @@ namespace Lotus {
 			return hit;
 		}
 
+        //Has the grid already been Dispose()'d?
 		private bool disposed;
 
+        //De-allocate the buffers so we don't cause a VRAM memory leak
 		public void Dispose() {
 			if(disposed) return;
 			disposed = true;
