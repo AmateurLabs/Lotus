@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -11,12 +7,18 @@ using OpenTK.Input;
 namespace Lotus {
     public class Window : GameWindow {
 
-        static HexGrid grid;
-        static Camera cam;
-        static Camera uiCam;
-        static Text text;
+        public static Window Main;
+        HexGrid grid;
+        Camera cam;
+        Camera uiCam;
+        Text text;
+        public string DebugMessage = "Hello World!";
 
         double time = 0f;
+
+        public Window() : base() {
+                Main = this;
+        }
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
@@ -47,7 +49,7 @@ namespace Lotus {
             GL.Enable(EnableCap.DepthTest);
             cam.Draw();
             grid.Draw();
-            GL.Begin(PrimitiveType.Lines);
+            GL.Begin(PrimitiveType.Lines); //Draws the axis widget for debugging
             GL.Color3(1f, 0f, 0f);
             GL.Vertex3(0f, 0f, 0f);
             GL.Color3(1f, 0f, 0f);
@@ -62,7 +64,7 @@ namespace Lotus {
             GL.Vertex3(0f, 0f, 1f);
             GL.End();
             uiCam.Draw();
-            text.Draw("Hello World", Vector2.Zero);
+            text.Draw(DebugMessage, Vector2.Zero);
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
         }

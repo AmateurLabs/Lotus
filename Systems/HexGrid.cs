@@ -118,6 +118,7 @@ namespace Lotus {
 			Vector3 hexPos = new Vector3();
 			hexPos.Y = (float)Math.Round(z / 0.75f / HEX_HEIGHT);
 			hexPos.X = (float)Math.Round((x - hexPos.Y * HEX_WIDTH / 2f) / HEX_WIDTH);
+            hexPos.Z = -(hexPos.X + hexPos.Y);
 			return hexPos;
 		}
 
@@ -147,6 +148,7 @@ namespace Lotus {
 			Vector3 hex;
 			if(Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
 				//int j = (int)(hex.Y * Width + hex.X);
+                Window.Main.DebugMessage = "(" + hex.X + ", " + hex.Y + ")";
 				Vector3 p = ToWorld((int)hex.X, (int)hex.Y);
 				p.Y = 0f;
 				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
