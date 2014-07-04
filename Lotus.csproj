@@ -36,7 +36,6 @@
     <Compile Include="Systems\Camera.cs" />
     <Compile Include="Systems\Text.cs" />
     <Compile Include="Systems\System.cs" />
-    <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
