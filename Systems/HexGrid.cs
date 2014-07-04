@@ -89,24 +89,20 @@ namespace Lotus {
 
 		static Vector3[] HexVerts = {
 			new Vector3(0f, 0f, 0f),
-			new Vector3(0f, HEX_HEIGHT / 2f, 0f),
-			new Vector3(HEX_WIDTH / 2f, HEX_HEIGHT / 4f, 0f),
-			new Vector3(HEX_WIDTH / 2f, -HEX_HEIGHT / 4f, 0f),
-			new Vector3(0f, -HEX_HEIGHT / 2f, 0f),
-			new Vector3(-HEX_WIDTH / 2f, -HEX_HEIGHT / 4f, 0f),
-			new Vector3(-HEX_WIDTH / 2f, HEX_HEIGHT / 4f, 0f),
+			new Vector3(0f, 0f, HEX_HEIGHT / 2f),
+			new Vector3(HEX_WIDTH / 2f, 0f, HEX_HEIGHT / 4f),
+			new Vector3(HEX_WIDTH / 2f, 0f, -HEX_HEIGHT / 4f),
+			new Vector3(0f, 0f, -HEX_HEIGHT / 2f),
+			new Vector3(-HEX_WIDTH / 2f, 0f, -HEX_HEIGHT / 4f),
+			new Vector3(-HEX_WIDTH / 2f, 0f, HEX_HEIGHT / 4f),
 		};
 
 		public void AddHex(int mapX, int mapY) {
 			float x = ToWorld(mapX, mapY).X;
 			float z = ToWorld(mapX, mapY).Z;
-			AddVertex(x, z);
-			AddVertex(x, z + HEX_HEIGHT / 2f);
-			AddVertex(x + HEX_WIDTH / 2f, z + HEX_HEIGHT / 4f);
-			AddVertex(x + HEX_WIDTH / 2f, z - HEX_HEIGHT / 4f);
-			AddVertex(x, z - HEX_HEIGHT / 2f);
-			AddVertex(x - HEX_WIDTH / 2f, z - HEX_HEIGHT / 4f);
-			AddVertex(x - HEX_WIDTH / 2f, z + HEX_HEIGHT / 4f);
+            for (int j = 0; j < 7; j++) {
+                AddVertex(x + HexVerts[j].X, z + HexVerts[j].Z);
+            }
 			for(int j = 1; j < 7; j++) {
 				int k = (j + 1);
 				if(k > 6) k = 1;
