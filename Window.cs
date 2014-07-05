@@ -89,14 +89,26 @@ namespace Lotus {
             GL.Vertex3(0f, 0f, 1f);
             GL.End();
             uiCam.Draw();
-            text.Draw("Hello World", Vector2.Zero);
-            text.Draw("Frame Rate: " + frameRate, new Vector2(0,18)); //framerate readout
-            Vector3 hex;
-            if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
-                text.Draw("(" + hex.X + ", " + hex.Y + ")", new Vector2(0, 36));
-            }
+            DebugReadout();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
+        }
+
+        private void DebugReadout()//basic dubug readout.
+        {
+            int n = 0;
+            int spacing = 18;
+            text.Draw("DEBUG READOUT", new Vector2(0, spacing * n++));
+            text.Draw("Camera Location || Camera Rotation", new Vector2(0, spacing * n++));
+            text.Draw(("X: " + cam.Position.X).PadRight(15) + " || X:" + cam.Rotation.X %(2*Math.PI), new Vector2(0, spacing * n++));
+            text.Draw(("Y: " + cam.Position.Y).PadRight(15) + " || Y:" + cam.Rotation.Y % (2 * Math.PI), new Vector2(0, spacing * n++));
+            text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + cam.Rotation.Z % (2 * Math.PI), new Vector2(0, spacing * n++));
+            text.Draw("Frame Rate: " + frameRate, new Vector2(0, spacing * n++)); //framerate readout
+            Vector3 hex;
+            if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f))
+            {
+                text.Draw("(" + hex.X + ", " + hex.Y + ")", new Vector2(0, spacing * n++));
+            }
         }
 
         protected override void OnResize(EventArgs e) {
