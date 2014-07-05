@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 using System.Drawing;
 using OpenTK;
@@ -16,6 +17,7 @@ namespace Lotus {
         static Camera uiCam;
         static Text text;
 
+        bool cursorShow = true; // DO NOT MODIFY THIS OUTSIDE OF cursorCurtain()!
         double time = 0.0;
         double lastTime = 0.0;
         double accumFPS = 0.0;
@@ -32,6 +34,8 @@ namespace Lotus {
             uiCam.Move(0f, 0f, -10f);
             cam.FreelookEnabled = true;
             text = new Text();
+            cursorCurtain();
+            
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e) {
@@ -44,18 +48,24 @@ namespace Lotus {
             time += e.Time;
             float dt = (float)e.Time;
 
+            CalcAvgFrameRate(e);
+
+            cam.Update(this, dt);
+        }
+
+        private void CalcAvgFrameRate(FrameEventArgs e)
+        {
             lastTime += e.Time;
             accumFPS += e.Time;
             frameCount++;
-            if (lastTime > 0.25) {
-                frameRate = Math.Round(1.0/(accumFPS/frameCount));
+            if (lastTime > 0.25)
+            {
+                frameRate = Math.Round(1.0 / (accumFPS / frameCount));
                 accumFPS = 0.0;
                 frameCount = 0;
                 lastTime = 0.0;
             }
-
-            cam.Update(this, dt);
-        }
+        }// Calculates the average framerate every quarter second. Relies on the OnUpdateFrame Method.
 
         protected override void OnRenderFrame(FrameEventArgs e) {
             base.OnRenderFrame(e);
@@ -97,6 +107,15 @@ namespace Lotus {
         protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
             grid.Dispose();
+        }
+
+        protected bool cursorCurtain() // Shows cursor if hidden. Hides cursor in showing. Self correcting after one call.
+        {
+            if (cursorShow == false) System.Windows.Forms.Cursor.Show();
+            else System.Windows.Forms.Cursor.Hide();
+            cursorShow = !cursorShow;
+            return cursorShow;
+
         }
     }
 }

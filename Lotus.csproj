@@ -50,6 +50,7 @@
     <Reference Include="SimplexNoise">
       <HintPath>SimplexNoise.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenTK.dll.config">
