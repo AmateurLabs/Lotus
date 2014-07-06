@@ -23,6 +23,11 @@ namespace Lotus {
         int frameCount = 0;
         double frameRate = 0.0;
 
+        public Window()
+            : base(1024, 768) {
+
+        }
+
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             VSync = VSyncMode.On;
@@ -99,6 +104,13 @@ namespace Lotus {
 
         private void DebugReadout()//basic dubug readout.
         {
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color3(1f, 0f, 1f);
+            GL.Vertex3(0f, 0f, 0f);
+            GL.Vertex3(-20f, 0f, 0f);
+            GL.Vertex3(-20f, 20f, 0f);
+            GL.Vertex3(0f, 20f, 0f);
+            GL.End();
             int n = 0;
             int spacing = 18;
             text.Draw("DEBUG READOUT", new Vector2(0, spacing * n++));
@@ -119,6 +131,7 @@ namespace Lotus {
             GL.Viewport(0, 0, Width, Height);
             cam.ResetProjectionMatrix(Width, Height);
             uiCam.ResetProjectionMatrix(Width, Height);
+            text.ResetView();
         }
 
         protected override void OnClosed(EventArgs e) {

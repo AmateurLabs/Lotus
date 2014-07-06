@@ -14,14 +14,16 @@ namespace Lotus {
 
         public Text() {
             font = new QFont(new Font(FontFamily.GenericMonospace, 16f, FontStyle.Bold));
-            QuickFont.QFontConfiguration config = new QFontConfiguration();
-            config.TransformToCurrentOrthogProjection = true;
         }
 
         public void Draw(string text, OpenTK.Vector2 position) {
             QFont.Begin();
             font.Print(text, position, QFontAlignment.Left);
             QFont.End();
+        }
+
+        public void ResetView() {
+            QFont.RefreshViewport();
         }
     }
 }
