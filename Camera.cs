@@ -106,8 +106,8 @@ namespace Lotus {
                     Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
                     Rotate(delta.Y, delta.X, 0f); //Flipped because moving the mouse horizontally actually rotates on the Y axis, etc.
                     Mouse.SetPosition(game.Bounds.Left + game.Bounds.Width / 2, game.Bounds.Top + game.Bounds.Height / 2);
-                    lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
                 }
+                lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             }
 		}
 
