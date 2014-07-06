@@ -117,6 +117,8 @@ namespace Lotus {
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
             GL.Viewport(0, 0, Width, Height);
+            cam.ResetProjectionMatrix(Width, Height);
+            uiCam.ResetProjectionMatrix(Width, Height);
         }
 
         protected override void OnClosed(EventArgs e) {
