@@ -121,9 +121,9 @@ namespace Lotus {
             
             text.Draw("DEBUG READOUT", new Vector2(border, spacing * n++ + border));
             text.Draw("Camera Location || Camera Rotation", new Vector2(border, spacing * n++ + border));
-            text.Draw(("X: " + cam.Position.X).PadRight(15) + " || X:" + (float)cam.Rotation.X % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
-            text.Draw(("Y: " + cam.Position.Y).PadRight(15) + " || Y:" + (float)cam.Rotation.Y % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
-            text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + (float)cam.Rotation.Z % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
+            text.Draw(("X: " + cam.Position.X).PadRight(15) + " || X:" + (float)(cam.Rotation.X % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
+            text.Draw(("Y: " + cam.Position.Y).PadRight(15) + " || Y:" + (float)(cam.Rotation.Y % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
+            text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + (float)(cam.Rotation.Z % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
             text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
             Vector3 hex;
             if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f))
