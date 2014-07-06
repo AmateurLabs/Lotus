@@ -32,6 +32,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="IDrawable.cs" />
+    <Compile Include="Input.cs" />
     <Compile Include="IUpdateable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="HexGrid.cs" />
