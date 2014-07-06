@@ -34,8 +34,10 @@ namespace Lotus {
 
             grid = new HexGrid(256, 256);
             cam = new Camera((float)Width, (float)Height, false);
+            cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
+            cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
             uiCam = new Camera((float)Width, (float)Height, true);
-            uiCam.Move(0f, 0f, -10f);
+            uiCam.Move(0f, 0f, -12f);
             cam.FreelookEnabled = true;
             text = new Text();
             CursorVisible = false;
@@ -104,12 +106,13 @@ namespace Lotus {
 
         private void DebugReadout()//basic dubug readout.
         {
+            float sc = 120;
             GL.Begin(PrimitiveType.Quads);
             GL.Color3(1f, 0f, 1f);
             GL.Vertex3(0f, 0f, 0f);
-            GL.Vertex3(-20f, 0f, 0f);
-            GL.Vertex3(-20f, 20f, 0f);
-            GL.Vertex3(0f, 20f, 0f);
+            GL.Vertex3(sc, 0f, 0f);
+            GL.Vertex3(sc, sc, 0f);
+            GL.Vertex3(0f, sc, 0f);
             GL.End();
             int n = 0;
             int spacing = 18;

@@ -27,8 +27,7 @@ namespace Lotus {
             IsOrthographic = ortho;
             if (Main == null) Main = this; //If this is the first created camera, designate it as the Main camera
             ResetProjectionMatrix(width, height);
-            Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
-            Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
+
 		}
 
         public void ResetProjectionMatrix(float width, float height) {
