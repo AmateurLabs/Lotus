@@ -79,15 +79,12 @@ namespace Lotus {
 
 		public void Move(float x, float y, float z) {
 			var rot = RotationMatrix;
-			Position -= Vector3.TransformPosition(Vector3.UnitX, rot) * x * MoveSpeed;
-			Position -= Vector3.TransformPosition(Vector3.UnitY, rot) * y * MoveSpeed;
-			Position -= Vector3.TransformPosition(Vector3.UnitZ, rot) * z * MoveSpeed;
+			Position -= Vector3.TransformPosition(Vector3.UnitX, rot) * x;
+			Position -= Vector3.TransformPosition(Vector3.UnitY, rot) * y;
+			Position -= Vector3.TransformPosition(Vector3.UnitZ, rot) * z;
 		}
 
 		public void Rotate(float x, float y, float z) {
-			x *= RotateSpeed;
-            y *= RotateSpeed;
-            z *= RotateSpeed;
             Rotation -= Quaternion.FromAxisAngle(Vector3.UnitX, x); //Yaw
             Rotation -= Quaternion.FromAxisAngle(Vector3.UnitY, y); //Pitch
             Rotation -= Quaternion.FromAxisAngle(Vector3.UnitZ, z); //Roll
@@ -97,17 +94,18 @@ namespace Lotus {
 
 		public void Update(Window game, float dt) {
             if (FreelookEnabled) {
-                if (Input.IsDown(Key.W)) Move(0f, 0f, dt);
-                if (Input.IsDown(Key.S)) Move(0f, 0f, -dt);
-                if (Input.IsDown(Key.A)) Move(-dt, 0, 0f);
-                if (Input.IsDown(Key.D)) Move(dt, 0, 0f);
-                if (Input.IsDown(Key.Q)) Move(0f, dt, 0f);
-                if (Input.IsDown(Key.E)) Move(0f, -dt, 0f);
+                float amt = dt * MoveSpeed;
+                if (Input.IsDown(Key.W)) Move(0f, 0f, amt);
+                if (Input.IsDown(Key.S)) Move(0f, 0f, -amt);
+                if (Input.IsDown(Key.A)) Move(-amt, 0, 0f);
+                if (Input.IsDown(Key.D)) Move(amt, 0, 0f);
+                if (Input.IsDown(Key.Q)) Move(0f, amt, 0f);
+                if (Input.IsDown(Key.E)) Move(0f, -amt, 0f);
 
                 if (!game.CursorVisible && game.Focused) {
                     //game.Title = "" + MathHelper.RadiansToDegrees(Rotation.X) + ", " + MathHelper.RadiansToDegrees(Rotation.Y) + ", " + MathHelper.RadiansToDegrees(Rotation.Z);
                     Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                    Rotate(delta.Y, delta.X, 0f); //Flipped because moving the mouse horizontally actually rotates on the Y axis, etc.
+                    Rotate(delta.Y*RotateSpeed, delta.X*RotateSpeed, 0f); //Flipped because moving the mouse horizontally actually rotates on the Y axis, etc.
                     Mouse.SetPosition(game.Bounds.Left + game.Bounds.Width / 2, game.Bounds.Top + game.Bounds.Height / 2);
                 }
                 lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
