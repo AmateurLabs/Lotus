@@ -23,6 +23,7 @@ namespace Lotus {
         double accumFPS = 0.0;
         int frameCount = 0;
         double frameRate = 0.0;
+        public bool DebugEnabled = false;
        
         public Window()
             : base(1024, 768) {
@@ -55,6 +56,9 @@ namespace Lotus {
             }
 
             if (Input.IsPressed(Key.F4) && Input.Alt) Exit();
+            
+            if (Input.IsPressed(Key.F1))
+                DebugEnabled = !DebugEnabled;
 
             time += e.Time;
             float dt = (float)e.Time;
@@ -102,7 +106,8 @@ namespace Lotus {
             GL.Vertex3(0f, 0f, 1f);
             GL.End();
             uiCam.Draw();
-            DebugReadout();
+            if(DebugEnabled)
+                DebugReadout();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
             GL.Disable(EnableCap.Blend);
@@ -149,5 +154,7 @@ namespace Lotus {
             base.OnClosed(e);
             grid.Dispose();
         }
+
+        
     }
 }
