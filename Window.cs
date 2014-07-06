@@ -23,7 +23,7 @@ namespace Lotus {
         double accumFPS = 0.0;
         int frameCount = 0;
         double frameRate = 0.0;
-
+       
         public Window()
             : base(1024, 768) {
 
@@ -111,10 +111,14 @@ namespace Lotus {
         private void DebugReadout()//basic dubug readout.
         {
             float border = 10f;
+            Debug.Depth = -0.9f;
+            Debug.DrawRect((float)((Width / 2) - 1), (float)((Height / 2) - 10), 2f, 20f, new Color4(1f, 1f, 1f, 1f));
+            Debug.DrawRect((float)((Width / 2) - 10), (float)((Height / 2) - 1), 20f, 2f, new Color4(1f, 1f, 1f, 1f));
             Debug.Depth = -1f;
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(435, 108), Color4.White, new Color4(1f, 0f, 1f, 0.5f), border / 2);
             Debug.Depth = -1.1f;
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(Width, Height), Color4.White, new Color4(0.1f, 0.1f, 0.5f, 0.3f), border / 2);
+            
 
             int n = 0;
             int spacing = 12;
