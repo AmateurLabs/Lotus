@@ -14,7 +14,7 @@ namespace Lotus {
         public static float Depth;
 
         public static void DrawRect(Vector2 p0, Vector2 p1, Color4 color) {
-            GL.Begin(BeginMode.Quads);
+            GL.Begin(PrimitiveType.Quads);
             GL.Color4(color);
             GL.Vertex3(p0.X, p0.Y, Depth);
             GL.Vertex3(p1.X, p0.Y, Depth);
