@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 
 namespace Lotus.ECS {
-    public class Module {
+    public class Module : IdSet<Module> {
 
-        public HashSet<int> Entities;
-        public HashSet<string> AspectMask;
+        public HashSet<int> Set = new HashSet<int>();
+
+        public abstract void Update();
     }
 }

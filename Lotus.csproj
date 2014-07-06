@@ -33,7 +33,7 @@
   <ItemGroup>
     <Compile Include="ECS\Aspect.cs" />
     <Compile Include="ECS\Engine.cs" />
-    <Compile Include="ECS\Subsystem.cs" />
+    <Compile Include="ECS\Module.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="HexGrid.cs" />
