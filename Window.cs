@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using System.Drawing;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
@@ -109,52 +110,20 @@ namespace Lotus {
 
         private void DebugReadout()//basic dubug readout.
         {
-            float sc = 120;
-            float h = 108;
-            float w = 435;
-            float off = -1f;
-            float border = 10;
-
-            Debug.Depth = off;
-            Debug.DrawRectFrame(Vector2.Zero, new Vector2(w, h), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f), new OpenTK.Graphics.Color4(1f, 0f, 1f, 0.5f), border / 2);
-            /*
-            Debug.DrawRect(new Vector2(0, 0), new Vector2(border/2, h), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f));
-            Debug.DrawRect(new Vector2(border/2, h-border/2), new Vector2(w-border/2, h), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f));
-            Debug.DrawRect(new Vector2(w-border/2, 0), new Vector2(w, h), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f));
-            Debug.DrawRect(new Vector2(border/2, 0), new Vector2(w-border/2, border/2), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f));
-            */
-            /*GL.Begin(PrimitiveType.Quads);
-            GL.Color4(1f, 0f, 1f, 0.5f);
-            GL.Vertex3(0f, 0f, off);
-            GL.Vertex3(w, 0f, off);
-            GL.Vertex3(w, h, off);
-            GL.Vertex3(0, h, off);
-            
-            off += 0.01f;
-            /GL.Color4(1f, 1f, 1f,1f);
-            GL.Vertex3(0f, 0f, off);
-            GL.Vertex3(border/2, 0f, off);
-            GL.Vertex3(border/2, h, off);
-            GL.Vertex3(0, h, off);
-            GL.Color4(1f, 1f, 1f, 1f);
-            GL.Vertex3(border/2, h-border/2, off);
-            GL.Vertex3(w-border/2, h-border/2, off);
-            GL.Vertex3(w-border/2, h, off);
-            GL.Vertex3(border/2, h, off);
-            GL.Vertex3(border / 2, h - border / 2, off);
-            GL.Vertex3(w - border / 2, h - border / 2, off);
-            GL.Vertex3(w - border / 2, h, off);
-            GL.Vertex3(border / 2, h, off);
-            GL.End();*/
+            float border = 10f;
+            Debug.Depth = -1f;
+            Debug.DrawRectFrame(Vector2.Zero, new Vector2(435, 108), Color4.White, new Color4(1f, 0f, 1f, 0.5f), border / 2);
+            Debug.Depth = -1.1f;
+            Debug.DrawRectFrame(Vector2.Zero, new Vector2(Width, Height), Color4.White, new Color4(0.1f, 0.1f, 0.5f, 0.3f), border / 2);
 
             int n = 0;
             int spacing = 12;
             
             text.Draw("DEBUG READOUT", new Vector2(border, spacing * n++ + border));
             text.Draw("Camera Location || Camera Rotation", new Vector2(border, spacing * n++ + border));
-            text.Draw(("X: " + cam.Position.X).PadRight(15) + " || X:" + cam.Rotation.X % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
-            text.Draw(("Y: " + cam.Position.Y).PadRight(15) + " || Y:" + cam.Rotation.Y % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
-            text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + cam.Rotation.Z % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
+            text.Draw(("X: " + cam.Position.X).PadRight(15) + " || X:" + (float)cam.Rotation.X % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
+            text.Draw(("Y: " + cam.Position.Y).PadRight(15) + " || Y:" + (float)cam.Rotation.Y % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
+            text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + (float)cam.Rotation.Z % (2 * Math.PI), new Vector2(border, spacing * n++ + border));
             text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
             Vector3 hex;
             if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f))
