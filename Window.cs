@@ -81,6 +81,8 @@ namespace Lotus {
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.ClearColor(Color.CornflowerBlue);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(EnableCap.Blend);
             GL.Enable(EnableCap.DepthTest);
             cam.Draw();
             grid.Draw();
@@ -102,6 +104,7 @@ namespace Lotus {
             DebugReadout();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Blend);
         }
 
         private void DebugReadout()//basic dubug readout.
@@ -110,7 +113,7 @@ namespace Lotus {
             float off = -1f;
 
             GL.Begin(PrimitiveType.Quads);
-            GL.Color3(1f, 0f, 1f);
+            GL.Color4(1f, 0f, 1f, 0.5f);
             GL.Vertex3(0f, 0f, off);
             GL.Vertex3(sc, 0f, off);
             GL.Vertex3(sc, sc, off);
