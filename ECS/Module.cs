@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Lotus.ECS {
-    public class Subsystem {
+    public class Module {
 
         public HashSet<int> Entities;
         public HashSet<string> AspectMask;
