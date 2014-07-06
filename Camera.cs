@@ -101,7 +101,7 @@ namespace Lotus {
                 if (game.Keyboard[Key.Q]) Move(0f, dt, 0f);
                 if (game.Keyboard[Key.E]) Move(0f, -dt, 0f);
 
-                if (!game.ShowCursor && game.Focused) {
+                if (!game.CursorVisible && game.Focused) {
                     //game.Title = "" + MathHelper.RadiansToDegrees(Rotation.X) + ", " + MathHelper.RadiansToDegrees(Rotation.Y) + ", " + MathHelper.RadiansToDegrees(Rotation.Z);
                     Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
                     Rotate(delta.Y, delta.X, 0f); //Flipped because moving the mouse horizontally actually rotates on the Y axis, etc.
