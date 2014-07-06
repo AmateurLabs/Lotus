@@ -9,7 +9,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Lotus {
     public static class Debug {
-        static Text text = new Text();
+        static Text debugText = new Text();
 
         public static float Depth;
 
@@ -41,6 +41,17 @@ namespace Lotus {
 
         public static void DrawRect(float x, float y, float width, float height, float r, float g, float b) {
             DrawRect(new Vector2(x, y), new Vector2(x + width, y + height), new Color4(r, g, b, 1f));
+        }
+
+        public static void DrawText(Vector2 p, string text) {
+            GL.PushMatrix();
+            GL.Translate(0f, 0f, Depth);
+            debugText.Draw(text, p);
+            GL.PopMatrix();
+        }
+
+        public static void DrawText(float x, float y, string text) {
+            DrawText(new Vector2(x, y), text);
         }
     }
 }
