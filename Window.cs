@@ -114,14 +114,24 @@ namespace Lotus {
             float w = 435;
             float off = -1f;
             float border = 10;
-            GL.Begin(PrimitiveType.Quads);
+
+            Debug.Depth = off;
+            Debug.DrawRectFrame(Vector2.Zero, new Vector2(w, h), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f), new OpenTK.Graphics.Color4(1f, 0f, 1f, 0.5f), border / 2);
+            /*
+            Debug.DrawRect(new Vector2(0, 0), new Vector2(border/2, h), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f));
+            Debug.DrawRect(new Vector2(border/2, h-border/2), new Vector2(w-border/2, h), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f));
+            Debug.DrawRect(new Vector2(w-border/2, 0), new Vector2(w, h), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f));
+            Debug.DrawRect(new Vector2(border/2, 0), new Vector2(w-border/2, border/2), new OpenTK.Graphics.Color4(1f, 1f, 1f, 1f));
+            */
+            /*GL.Begin(PrimitiveType.Quads);
             GL.Color4(1f, 0f, 1f, 0.5f);
             GL.Vertex3(0f, 0f, off);
             GL.Vertex3(w, 0f, off);
             GL.Vertex3(w, h, off);
             GL.Vertex3(0, h, off);
+            
             off += 0.01f;
-            GL.Color4(1f, 1f, 1f,1f);
+            /GL.Color4(1f, 1f, 1f,1f);
             GL.Vertex3(0f, 0f, off);
             GL.Vertex3(border/2, 0f, off);
             GL.Vertex3(border/2, h, off);
@@ -135,7 +145,8 @@ namespace Lotus {
             GL.Vertex3(w - border / 2, h - border / 2, off);
             GL.Vertex3(w - border / 2, h, off);
             GL.Vertex3(border / 2, h, off);
-            GL.End();
+            GL.End();*/
+
             int n = 0;
             int spacing = 12;
             

@@ -42,6 +42,20 @@ namespace Lotus {
         public static void DrawRect(float x, float y, float width, float height, float r, float g, float b) {
             DrawRect(new Vector2(x, y), new Vector2(x + width, y + height), new Color4(r, g, b, 1f));
         }
+        public static void DrawRectBorder(Vector2 p0, Vector2 p1, Color4 color, float thickness)
+        {
+            DrawRect(new Vector2(p0.X, p0.Y), new Vector2(thickness, p1.Y - p0.Y), color);
+            DrawRect(new Vector2(thickness, p1.Y - p0.Y - thickness), new Vector2(p1.X - p0.X - thickness, p1.Y - p0.Y), color);
+            DrawRect(new Vector2(p1.X-p0.X - thickness, p0.Y), new Vector2(p1.X-p0.X, p1.Y-p0.Y), color);
+            DrawRect(new Vector2(thickness, p0.Y), new Vector2(p1.X - p0.X - thickness, thickness), color);
+        }
+        public static void DrawRectFrame(Vector2 p0, Vector2 p1, Color4 color, Color4 fillColor, float thickness)
+        {
+            Vector2 borderstuff = new Vector2(thickness, thickness);
+            DrawRect(p0 + borderstuff, p1 - borderstuff, fillColor);
+            DrawRectBorder(p0, p1, color, thickness);
+            
+        }
 
         public static void DrawText(Vector2 p, string text) {
             GL.PushMatrix();
