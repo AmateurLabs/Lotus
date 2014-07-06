@@ -39,13 +39,14 @@ namespace Lotus {
 
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
+            Input.Update();
 
-            if (Keyboard[Key.Escape]) { //For now, setting escape as a switch for cursor visibility
+            if (Input.IsPressed(Key.Escape)) { //For now, setting escape as a switch for cursor visibility
                 CursorVisible = !CursorVisible;
                 //Exit();
             }
 
-            if (Keyboard[Key.F4] && Keyboard[Key.LAlt]) Exit();
+            if (Input.IsPressed(Key.F4) && Input.Alt) Exit();
 
             time += e.Time;
             float dt = (float)e.Time;

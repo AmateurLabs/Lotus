@@ -94,12 +94,12 @@ namespace Lotus {
 
 		public void Update(Window game, float dt) {
             if (FreelookEnabled) {
-                if (game.Keyboard[Key.W]) Move(0f, 0f, dt);
-                if (game.Keyboard[Key.S]) Move(0f, 0f, -dt);
-                if (game.Keyboard[Key.A]) Move(-dt, 0, 0f);
-                if (game.Keyboard[Key.D]) Move(dt, 0, 0f);
-                if (game.Keyboard[Key.Q]) Move(0f, dt, 0f);
-                if (game.Keyboard[Key.E]) Move(0f, -dt, 0f);
+                if (Input.IsDown(Key.W)) Move(0f, 0f, dt);
+                if (Input.IsDown(Key.S)) Move(0f, 0f, -dt);
+                if (Input.IsDown(Key.A)) Move(-dt, 0, 0f);
+                if (Input.IsDown(Key.D)) Move(dt, 0, 0f);
+                if (Input.IsDown(Key.Q)) Move(0f, dt, 0f);
+                if (Input.IsDown(Key.E)) Move(0f, -dt, 0f);
 
                 if (!game.CursorVisible && game.Focused) {
                     //game.Title = "" + MathHelper.RadiansToDegrees(Rotation.X) + ", " + MathHelper.RadiansToDegrees(Rotation.Y) + ", " + MathHelper.RadiansToDegrees(Rotation.Z);
