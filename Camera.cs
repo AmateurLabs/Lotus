@@ -34,6 +34,8 @@ namespace Lotus {
                 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), width / height, 0.1f, 256f);
                 projectionMatrix *= Matrix4.CreateScale(-1f, -1f, 1f); //Invert X and Y to match screen coordinates
             }
+            Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
+            Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
 		}
 
 		public Matrix4 ViewMatrix { //The final view matrix used to draw the world
@@ -90,7 +92,7 @@ namespace Lotus {
 
 		Vector2 lastMousePos = new Vector2();
 
-		public void Update(GameWindow game, float dt) {
+		public void Update(Window game, float dt) {
             if (FreelookEnabled) {
                 if (game.Keyboard[Key.W]) Move(0f, 0f, dt);
                 if (game.Keyboard[Key.S]) Move(0f, 0f, -dt);
@@ -99,7 +101,7 @@ namespace Lotus {
                 if (game.Keyboard[Key.Q]) Move(0f, dt, 0f);
                 if (game.Keyboard[Key.E]) Move(0f, -dt, 0f);
 
-                if (game.Focused) {
+                if (!game.ShowCursor && game.Focused) {
                     //game.Title = "" + MathHelper.RadiansToDegrees(Rotation.X) + ", " + MathHelper.RadiansToDegrees(Rotation.Y) + ", " + MathHelper.RadiansToDegrees(Rotation.Z);
                     Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
                     Rotate(delta.Y, delta.X, 0f); //Flipped because moving the mouse horizontally actually rotates on the Y axis, etc.

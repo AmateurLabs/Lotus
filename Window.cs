@@ -18,6 +18,11 @@ namespace Lotus {
         static Text text;
 
         bool cursorShow = true; // DO NOT MODIFY THIS OUTSIDE OF cursorCurtain()!
+        public bool ShowCursor {
+            get { return cursorShow; }
+            set { if (cursorShow != value) CursorCurtain(); }
+        }
+
         double time = 0.0;
         double lastTime = 0.0;
         double accumFPS = 0.0;
@@ -34,7 +39,7 @@ namespace Lotus {
             uiCam.Move(0f, 0f, -10f);
             cam.FreelookEnabled = true;
             text = new Text();
-            cursorCurtain();
+            CursorCurtain();
             
         }
 
@@ -42,8 +47,11 @@ namespace Lotus {
             base.OnUpdateFrame(e);
 
             if (Keyboard[Key.Escape]) {
-                Exit();
+                CursorCurtain();
+                //Exit();
             }
+
+            if (Keyboard[Key.F4] && Keyboard[Key.LAlt]) Exit();
 
             time += e.Time;
             float dt = (float)e.Time;
@@ -121,7 +129,7 @@ namespace Lotus {
             grid.Dispose();
         }
 
-        protected bool cursorCurtain() // Shows cursor if hidden. Hides cursor in showing. Self correcting after one call.
+        protected bool CursorCurtain() // Shows cursor if hidden. Hides cursor in showing. Self correcting after one call.
         {
             if (cursorShow == false) System.Windows.Forms.Cursor.Show();
             else System.Windows.Forms.Cursor.Hide();
