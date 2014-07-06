@@ -17,9 +17,9 @@ namespace Lotus {
         }
 
         public void Draw(string text, OpenTK.Vector2 position) {
-            QFont.Begin();
+            //QFont.Begin();
             font.Print(text, position, QFontAlignment.Left);
-            QFont.End();
+            //QFont.End();
         }
 
         public void ResetView() {
