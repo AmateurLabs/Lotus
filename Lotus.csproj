@@ -31,9 +31,10 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="IDrawable.cs" />
+    <Compile Include="ECS\Aspect.cs" />
+    <Compile Include="ECS\Engine.cs" />
+    <Compile Include="ECS\Subsystem.cs" />
     <Compile Include="Input.cs" />
-    <Compile Include="IUpdateable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="HexGrid.cs" />
     <Compile Include="Camera.cs" />
