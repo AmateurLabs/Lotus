@@ -105,6 +105,7 @@ namespace Lotus {
             GL.Color3(0f, 0f, 1f);
             GL.Vertex3(0f, 0f, 1f);
             GL.End();
+            new Cube(Vector3.Zero, 4f).Draw();
             uiCam.Draw();
             if(DebugEnabled)
                 DebugReadout();
@@ -123,6 +124,7 @@ namespace Lotus {
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(435, 108), Color4.White, new Color4(1f, 0f, 1f, 0.5f), border / 2);
             Debug.Depth = -1.1f;
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(Width, Height), Color4.White, new Color4(0.1f, 0.1f, 0.5f, 0.3f), border / 2);
+            
             
 
             int n = 0;

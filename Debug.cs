@@ -23,6 +23,17 @@ namespace Lotus {
             GL.End();
         }
 
+        public static void DrawTri(Vector3 p0, Vector3 p1, Vector3 p2, Color4 color)
+        {
+            GL.Begin(PrimitiveType.Triangles);
+            GL.Color4(color);
+            GL.Vertex3(p0);
+            GL.Vertex3(p1);
+            GL.Vertex3(p2);
+            GL.End();
+
+        }
+
         public static void DrawRect(float x, float y, float width, float height, Color4 color) {
             DrawRect(new Vector2(x, y), new Vector2(x + width, y + height), color);
         }
