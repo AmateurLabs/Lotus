@@ -32,8 +32,14 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="ECS\Aspect.cs" />
+    <Compile Include="ECS\Aspects\Renderer.cs" />
+    <Compile Include="ECS\Aspects\Transform.cs" />
     <Compile Include="ECS\Engine.cs" />
+    <Compile Include="ECS\Entity.cs" />
+    <Compile Include="ECS\IdMap.cs" />
+    <Compile Include="ECS\IdSet.cs" />
     <Compile Include="ECS\Module.cs" />
+    <Compile Include="ECS\Modules\RenderModule.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="HexGrid.cs" />

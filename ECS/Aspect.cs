@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Lotus.ECS {
-    public abstract class Aspect : IdMap<Aspect> {
+    public abstract class Aspect {
 
         public readonly int Id;
 

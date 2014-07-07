@@ -6,10 +6,14 @@ using System.Text;
 namespace Lotus.ECS {
     public class Engine {
 
-        public List<Module> Modules = new List<Module>();
+        public static List<Module> Modules = new List<Module>();
 
-        public void Update() {
+        public static void Update() {
             foreach (Module module in Modules) module.Update();
+        }
+
+        public static void Render() {
+            foreach (Module module in Modules) module.Render();
         }
     }
 }

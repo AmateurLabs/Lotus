@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 
 namespace Lotus.ECS {
-    public class Module : IdSet<Module> {
+    public abstract class Module {
 
-        public HashSet<int> Set = new HashSet<int>();
-
-        public abstract void Update();
+        public virtual void Update() { }
+        public virtual void Render() { }
     }
 }
