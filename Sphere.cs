@@ -13,11 +13,6 @@ namespace Lotus
     {
         private Vector3[,] circles;
         private Vector3 north, south;
-<<<<<<< HEAD
-=======
-        public Vector3 Position; //The position in 3D space that the camera occupies
-        public Quaternion Rotation; //The quaternion rotation of the camera, applied in YXZ order
->>>>>>> origin/jitter
 
         public Sphere(float radius, Vector3 position, Quaternion rotation) : base(position, rotation)
         { //Creates a new camera, using the width and height of the screen and whether it is orthographic
