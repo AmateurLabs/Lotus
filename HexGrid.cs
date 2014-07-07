@@ -104,7 +104,7 @@ namespace Lotus {
             for (int j = 0; j < 7; j++) {
                 AddVertex(x + HexVerts[j].X, z + HexVerts[j].Z);
             }
-			for(int j = 1; j < 7; j++) {
+			for(int j = 6; j > 0; j--) {
 				int k = (j + 1);
 				if(k > 6) k = 1;
 				IBOArr[t] = (uint)(v);
@@ -163,7 +163,7 @@ namespace Lotus {
 
 				Vector3 p = ToWorld((int)hex.X, (int)hex.Y);
 				p.Y = 0f;
-				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+				GL.PolygonMode(MaterialFace.Front, PolygonMode.Line);
 				GL.Begin(PrimitiveType.TriangleFan);
 				for(int k = 0; k < HexVerts.Length; k++) {
 					GL.Color3(1f, 0f, 1f);
@@ -172,7 +172,7 @@ namespace Lotus {
 				GL.Color3(1f, 0f, 1f);
                 GL.Vertex3(p + HexVerts[1] + Vector3.UnitY * GetHeight(p.X + HexVerts[1].X, p.Z + HexVerts[1].Z) * 8f);
 				GL.End();
-				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+				GL.PolygonMode(MaterialFace.Front, PolygonMode.Fill);
 			}
 
             //Stop using arrays so we don't contaminate future draws

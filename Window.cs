@@ -22,12 +22,16 @@ namespace Lotus {
         static Camera uiCam;
         static Text text;
 
-        double time = 0.0;
+        static double time = 0.0;
         double lastTime = 0.0;
         double accumFPS = 0.0;
         int frameCount = 0;
         double frameRate = 0.0;
         public bool DebugEnabled = false;
+
+        public static double Time {
+            get { return time; }
+        }
        
         public Window()
             : base(1024, 768) {
@@ -39,10 +43,10 @@ namespace Lotus {
             VSync = VSyncMode.On;
 
             grid = new HexGrid(256, 256);
-            cam = new Camera((float)Width, (float)Height, false);
+            cam = new Camera((float)Width, (float)Height, false, false, true);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
-            uiCam = new Camera((float)Width, (float)Height, true);
+            uiCam = new Camera((float)Width, (float)Height, true, true, false);
             uiCam.Position = new Vector3(0, 0, 10);
             cam.FreelookEnabled = true;
             text = new Text();
@@ -105,20 +109,20 @@ namespace Lotus {
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.ClearColor(Color.CornflowerBlue);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-            GL.Enable(EnableCap.Blend);
+            
             GL.Enable(EnableCap.DepthTest);
-            cam.Draw();
+            cam.Begin();
             grid.Draw();
             HexagonCursorThingie();
             //new Cube(Vector3.Zero, 4f).Draw();
             Engine.Render();
-            uiCam.Draw();
+            cam.End();
+            uiCam.Begin();
             if(DebugEnabled)
                 DebugReadout();
+            uiCam.End();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.Blend);
         }
 
         private void HexagonCursorThingie() {
@@ -149,8 +153,6 @@ namespace Lotus {
             Debug.Depth = -1.1f;
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(Width, Height), Color4.White, new Color4(0.1f, 0.1f, 0.5f, 0.3f), border / 2);
             
-            
-
             int n = 0;
             int spacing = 12;
             
@@ -160,6 +162,7 @@ namespace Lotus {
             text.Draw(("Y: " + cam.Position.Y).PadRight(15) + " || Y:" + (float)(cam.Rotation.Y % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
             text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + (float)(cam.Rotation.Z % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
             text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
+            text.Draw("Time: " + time, new Vector2(border, spacing * n++ + border));
             Vector3 hex;
             if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f))
             {

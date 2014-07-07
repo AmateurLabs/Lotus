@@ -30,6 +30,7 @@ namespace Lotus {
             GL.Vertex3(p0);
             GL.Vertex3(p1);
             GL.Vertex3(p2);
+            GL.Normal3(Vector3.Normalize(Vector3.Cross(p1 - p0, p2 - p0)));
             GL.End();
 
         }
