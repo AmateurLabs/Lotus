@@ -105,7 +105,8 @@ namespace Lotus {
             GL.Color3(0f, 0f, 1f);
             GL.Vertex3(0f, 0f, 1f);
             GL.End();
-            new Cube(Vector3.Zero, 4f).Draw();
+            //new Cube(Vector3.Zero, 4f).Draw();
+            new Sphere(1, Vector3.Zero, Quaternion.Identity).Draw();
             uiCam.Draw();
             if(DebugEnabled)
                 DebugReadout();
