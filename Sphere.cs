@@ -13,7 +13,6 @@ namespace Lotus
     {
         private Vector3[,] circles;
         private Vector3 north, south;
-        Matrix4 projectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
         public Vector3 Position; //The position in 3D space that the camera occupies
         public Quaternion Rotation; //The quaternion rotation of the camera, applied in YXZ order
 

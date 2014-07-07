@@ -43,7 +43,7 @@ namespace Lotus {
             VSync = VSyncMode.On;
 
             grid = new HexGrid(256, 256);
-            cam = new Camera((float)Width, (float)Height, false, false, true);
+            cam = new Camera((float)Width, (float)Height, false, false, false);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
             uiCam = new Camera((float)Width, (float)Height, true, true, false);
@@ -115,7 +115,7 @@ namespace Lotus {
             HexagonCursorThingie();
             //new Cube(Vector3.Zero, 4f).Draw();
             Engine.Render();
-            new Sphere(1, Vector3.Zero, Quaternion.Identity).Draw();
+            new Sphere(1, new Vector3((float)Math.Cos(time), (float)Math.Sin(time), 0f), Quaternion.FromAxisAngle(Vector3.UnitX, (float)time)).Draw();
             cam.End();
             uiCam.Begin();
             if(DebugEnabled)

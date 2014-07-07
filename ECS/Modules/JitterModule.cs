@@ -77,7 +77,7 @@ namespace Lotus.ECS.Modules {
         public override void Reveille(Aspect aspect) {
             if (aspect is JitterBody) {
                 JitterBody body = aspect as JitterBody;
-                body.Rigidbody = new RigidBody(new BoxShape(2f, 2f, 2f));
+                body.Rigidbody = new RigidBody(new SphereShape(1f));
                 body.Rigidbody.Position = Convert(Entity.Get<Transform>(aspect.Id).Position);
                 world.AddBody(body.Rigidbody);
             }
