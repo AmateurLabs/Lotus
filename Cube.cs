@@ -11,8 +11,6 @@ namespace Lotus
 {
     class Cube
     {
-        
-        
         Vector3[] points = new Vector3[8];
 
         public Cube(Vector3 loc, float scl){
@@ -45,9 +43,6 @@ namespace Lotus
             Debug.DrawTri(points[2], points[7], points[6], Color4.Black);
             Debug.DrawTri(points[4], points[7], points[6], Color4.Maroon);
             Debug.DrawTri(points[4], points[7], points[5], Color4.Violet);
-
         }
-            
-
     }
 }
