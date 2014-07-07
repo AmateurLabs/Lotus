@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lotus", "Lotus.csproj", "{12C9AA87-0CB6-4662-94AE-E3E31C7F90FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F4D789B4-0482-4553-9B24-960D33BFC2E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,9 @@ Global
 		{12C9AA87-0CB6-4662-94AE-E3E31C7F90FD}.Debug|x86.Build.0 = Debug|x86
 		{12C9AA87-0CB6-4662-94AE-E3E31C7F90FD}.Release|x86.ActiveCfg = Release|x86
 		{12C9AA87-0CB6-4662-94AE-E3E31C7F90FD}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Lotus.csproj

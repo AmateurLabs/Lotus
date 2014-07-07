@@ -31,6 +31,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="Cube.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="ECS\Aspect.cs" />
     <Compile Include="ECS\Aspects\Renderer.cs" />
