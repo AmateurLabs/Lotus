@@ -12,6 +12,7 @@ namespace Lotus {
         static Text debugText = new Text();
 
         public static float Depth;
+        public static Random rand = new Random();
 
         public static void DrawRect(Vector2 p0, Vector2 p1, Color4 color) {
             GL.Begin(PrimitiveType.Quads);
@@ -78,5 +79,13 @@ namespace Lotus {
         public static void DrawText(float x, float y, string text) {
             DrawText(new Vector2(x, y), text);
         }
+
+        public static Color4 RandColor(int i)
+        {
+            rand = new Random(i);
+            return new Color4((float)rand.Next(255) / 255, (float)rand.Next(255) / 255, (float)rand.Next(255) / 255, 1f);
+        }
+
+        
     }
 }
