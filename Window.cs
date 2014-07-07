@@ -58,12 +58,11 @@ namespace Lotus {
             Entity.Add<Transform>(0);
             Entity.Get<Transform>(0).Position = new Vector3(0f, -10f, 0f);
             Entity.Add<Renderer>(0);
-            Entity.Add<JitterBody>(0);
+            Entity.Add<JitterBody>(0);            
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
-            
             Input.Update();
 
             if (Input.IsPressed(Key.Escape)) { //For now, setting escape as a switch for cursor visibility
@@ -77,7 +76,7 @@ namespace Lotus {
                 Entity.Get<JitterBody>(0).Rigidbody.IsActive = true;
                 Entity.Get<JitterBody>(0).Rigidbody.AddTorque(Jitter.LinearMath.JVector.Forward * 100f);
             }
-            
+
             if (Input.IsPressed(Key.F1))
                 DebugEnabled = !DebugEnabled;
 
@@ -116,6 +115,7 @@ namespace Lotus {
             HexagonCursorThingie();
             //new Cube(Vector3.Zero, 4f).Draw();
             Engine.Render();
+            new Sphere(1, Vector3.Zero, Quaternion.Identity).Draw();
             cam.End();
             uiCam.Begin();
             if(DebugEnabled)
