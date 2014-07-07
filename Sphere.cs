@@ -130,23 +130,34 @@ namespace Lotus
             GL.End();
 
             GL.Begin(PrimitiveType.TriangleStrip);
-
+            GL.Vertex3(circles[0, 17]);
             for (int row = 0; row < 7; row++)
             {
                 int n = 0;
                 int m = 0;
+                int c = 0;
+                
                 for (int i = 0; i < 17; i++)
                 {
-
+                    
                     GL.Vertex3(circles[row, n]);
+                    GL.Color4(Debug.RandColor(c++));
                     GL.Vertex3(circles[row + 1, m++]);
+                    GL.Color4(Debug.RandColor(c++));
                     GL.Vertex3(circles[row + 1, m]);
+                    GL.Color4(Debug.RandColor(c++));
                     GL.Vertex3(circles[row, n++]);
+                    GL.Color4(Debug.RandColor(c++));
 
                 }
-                GL.Vertex3(circles[row+1, 0]);
-                GL.Vertex3(circles[row, 0]);
+                GL.Vertex3(circles[row, n]);
+                GL.Color4(Debug.RandColor(c++));
+                GL.Vertex3(circles[row + 1, m]);
+                GL.Color4(Debug.RandColor(c++));
+                //GL.Vertex3(circles[row, 0]);
+                //GL.Vertex3(circles[row + 1, 0]);
             }
+            GL.Vertex3(circles[7, 0]);
             GL.End();
 
         }
