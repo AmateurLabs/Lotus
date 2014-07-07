@@ -8,8 +8,8 @@ namespace Lotus.ECS {
 
         public static List<Module> Modules = new List<Module>();
 
-        public static void Update() {
-            foreach (Module module in Modules) module.Update();
+        public static void Update(float dt) {
+            foreach (Module module in Modules) module.Update(dt);
         }
 
         public static void Render() {
