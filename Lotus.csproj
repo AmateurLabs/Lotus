@@ -45,6 +45,7 @@
     <Compile Include="ECS\Modules\JitterModule.cs" />
     <Compile Include="ECS\Modules\RenderModule.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="Mesh.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="HexGrid.cs" />

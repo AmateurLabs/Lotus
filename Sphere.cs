@@ -9,17 +9,12 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Lotus
 {
-    class Sphere
+    class Sphere : Mesh
     {
         private Vector3[,] circles;
         private Vector3 north, south;
-        Matrix4 projectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
-        public Vector3 Position; //The position in 3D space that the camera occupies
-        public Quaternion Rotation; //The quaternion rotation of the camera, applied in YXZ order
 
-        //TODO: move camera controls to separate class
-
-        public Sphere(float radius, Vector3 position, Quaternion rotation)
+        public Sphere(float radius, Vector3 position, Quaternion rotation) : base(position, rotation)
         { //Creates a new camera, using the width and height of the screen and whether it is orthographic
             circles = new Vector3[8, 18];
             for (int i = 1; i < 9; i++)
@@ -36,78 +31,9 @@ namespace Lotus
             }
             north = new Vector3(0f, radius, 0f);
             south = new Vector3(0f, -radius, 0f);
-            Position = position;
-            Rotation = rotation;
         }
 
-        public Matrix4 ViewMatrix
-        { //The final view matrix used to draw the world
-            get
-            {
-                return RotationMatrix * TranslationMatrix;
-            }
-        }
-
-        public Matrix4 TranslationMatrix
-        { //A matrix of the current position
-            get
-            {
-                return Matrix4.CreateTranslation(Position);
-            }
-        }
-
-        public Matrix4 RotationMatrix
-        { //A matrix of the current rotation
-            get
-            {
-                return Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y);
-            }
-        }
-
-        /*public Vector3 Forward { //The direction the camera is facing in worldspace
-            get {
-                return Vector3.TransformPosition(-Vector3.UnitZ, RotationMatrix);
-            }
-        }
-
-        public Vector3 Right { //The direction to the right of the camera in worldspace
-            get {
-                return Vector3.TransformPosition(-Vector3.UnitX, RotationMatrix);
-            }
-        }
-
-        public Vector3 Up { //The direction to the top of the camera in worldspace
-            get {
-                return Vector3.TransformPosition(-Vector3.UnitY, RotationMatrix);
-            }
-        }
-
-        /*public void Move(float x, float y, float z) {
-            var rot = RotationMatrix;
-            Position -= Vector3.TransformPosition(Vector3.UnitX, rot) * x;
-            Position -= Vector3.TransformPosition(Vector3.UnitY, rot) * y;
-            Position -= Vector3.TransformPosition(Vector3.UnitZ, rot) * z;
-        }
-
-        public void Rotate(float x, float y, float z) {
-            Rotation -= Quaternion.FromAxisAngle(Vector3.UnitX, x); //Yaw
-            Rotation -= Quaternion.FromAxisAngle(Vector3.UnitY, y); //Pitch
-            Rotation -= Quaternion.FromAxisAngle(Vector3.UnitZ, z); //Roll
-        }*/
-
-        public void Draw()
-        {
-            GL.PushMatrix();
-            var viewMatrix = ViewMatrix;
-            //viewMatrix.Invert();
-            GL.MultMatrix(ref viewMatrix);
-            RenGen();
-
-            GL.PopMatrix();
-            //GL.Ortho(-game.Width / 32.0, game.Width / 32.0, -game.Height / 32.0, game.Height / 32.0, 0.0, 4.0);
-        }
-
-        public void RenGen()
+        public override void RenGen()
         {
             GL.Begin(PrimitiveType.TriangleFan);
             GL.Color4(Color4.Wheat);
