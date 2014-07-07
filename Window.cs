@@ -10,6 +10,10 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
+using Lotus.ECS;
+using Lotus.ECS.Aspects;
+using Lotus.ECS.Modules;
+
 namespace Lotus {
     public class Window : GameWindow {
 
@@ -43,11 +47,19 @@ namespace Lotus {
             cam.FreelookEnabled = true;
             text = new Text();
             CursorVisible = false;
-            
+
+            Engine.Modules.Add(new RenderModule());
+            Engine.Modules.Add(new JitterModule());
+
+            Entity.Add<Transform>(0);
+            Entity.Get<Transform>(0).Position = new Vector3(0f, -10f, 0f);
+            Entity.Add<Renderer>(0);
+            Entity.Add<JitterBody>(0);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
+            
             Input.Update();
 
             if (Input.IsPressed(Key.Escape)) { //For now, setting escape as a switch for cursor visibility
@@ -56,6 +68,11 @@ namespace Lotus {
             }
 
             if (Input.IsPressed(Key.F4) && Input.Alt) Exit();
+
+            if (Input.IsDown(Key.Space)) {
+                Entity.Get<JitterBody>(0).Rigidbody.IsActive = true;
+                Entity.Get<JitterBody>(0).Rigidbody.AddTorque(Jitter.LinearMath.JVector.Forward * 100f);
+            }
             
             if (Input.IsPressed(Key.F1))
                 DebugEnabled = !DebugEnabled;
@@ -66,6 +83,8 @@ namespace Lotus {
             CalcAvgFrameRate(e);
 
             cam.Update(this, dt);
+
+            Engine.Update(dt); //Insert engine rev here VROOOOOOM
         }
 
         private void CalcAvgFrameRate(FrameEventArgs e)
@@ -91,7 +110,19 @@ namespace Lotus {
             GL.Enable(EnableCap.DepthTest);
             cam.Draw();
             grid.Draw();
-            GL.Begin(PrimitiveType.Lines);
+            HexagonCursorThingie();
+            //new Cube(Vector3.Zero, 4f).Draw();
+            Engine.Render();
+            uiCam.Draw();
+            if(DebugEnabled)
+                DebugReadout();
+            SwapBuffers();
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Blend);
+        }
+
+        private void HexagonCursorThingie() {
+            GL.Begin(PrimitiveType.Lines); //Hexagon cursor thingie
             GL.Color3(1f, 0f, 0f);
             GL.Vertex3(0f, 0f, 0f);
             GL.Color3(1f, 0f, 0f);
@@ -105,13 +136,6 @@ namespace Lotus {
             GL.Color3(0f, 0f, 1f);
             GL.Vertex3(0f, 0f, 1f);
             GL.End();
-            new Cube(Vector3.Zero, 4f).Draw();
-            uiCam.Draw();
-            if(DebugEnabled)
-                DebugReadout();
-            SwapBuffers();
-            GL.Disable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.Blend);
         }
 
         private void DebugReadout()//basic dubug readout.

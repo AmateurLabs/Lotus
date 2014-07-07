@@ -6,5 +6,6 @@ using System.Text;
 namespace Lotus.ECS.Aspects {
     public class Renderer : Aspect {
 
+        public Renderer(int id) : base(id) { }
     }
 }
