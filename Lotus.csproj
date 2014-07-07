@@ -50,6 +50,9 @@
     <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Jitter">
+      <HintPath>.\Jitter.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK">
       <HintPath>OpenTK.dll</HintPath>
     </Reference>
