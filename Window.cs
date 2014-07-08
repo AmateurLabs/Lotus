@@ -21,6 +21,7 @@ namespace Lotus {
         static Camera cam;
         static Camera uiCam;
         static Text text;
+        static Shader shader;
 
         static double time = 0.0;
         double lastTime = 0.0;
@@ -51,6 +52,7 @@ namespace Lotus {
             cam.FreelookEnabled = true;
             text = new Text();
             CursorVisible = false;
+            shader = new Shader();
 
             Engine.Modules.Add(new RenderModule());
             Engine.Modules.Add(new JitterModule());
@@ -111,6 +113,7 @@ namespace Lotus {
             
             GL.Enable(EnableCap.DepthTest);
             cam.Begin();
+            shader.Draw();
             grid.Draw();
             HexagonCursorThingie();
             //new Cube(Vector3.Zero, 4f).Draw();

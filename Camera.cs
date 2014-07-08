@@ -44,6 +44,12 @@ namespace Lotus {
             }
         }
 
+        public Matrix4 ProjectionMatrix { //The projection matrix used to create ortho/perspective rendering
+            get {
+                return projectionMatrix;
+            }
+        }
+
 		public Matrix4 ViewMatrix { //The final view matrix used to draw the world
 			get {
 				return RotationMatrix * TranslationMatrix;
