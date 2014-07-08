@@ -12,6 +12,8 @@ namespace Lotus {
 		public Vector3 Position; //The position in 3D space that the camera occupies
         public Quaternion Rotation; //The quaternion rotation of the camera, applied in YXZ order
 
+        public Shader CurrentShader; //The shader the camera is currently rendering with
+
         //TODO: move camera controls to separate class
         public bool FreelookEnabled;
 		public float MoveSpeed = 10f; //How fast the freelook camera moves around
@@ -137,7 +139,6 @@ namespace Lotus {
                 GL.Enable(EnableCap.Blend);
             }
             if (UseLighting) {
-                GL.Enable(EnableCap.CullFace);
                 GL.Begin(PrimitiveType.Lines);
                 GL.Color3(1f, 1f, 0f);
                 GL.Vertex3(Vector3.Zero);
@@ -145,17 +146,17 @@ namespace Lotus {
                 //lightDir.Normalize();
                 GL.Vertex3(lightDir * 100f);
                 GL.End();
+                GL.Color3(1f, 1f, 1f);
                 GL.Enable(EnableCap.Lighting);
                 GL.Enable(EnableCap.Light0);
-                GL.CullFace(CullFaceMode.Front);
-                GL.FrontFace(FrontFaceDirection.Ccw);
 
-                GL.LightModel(LightModelParameter.LightModelTwoSide, 0);
-                GL.Enable(EnableCap.ColorMaterial);
+                GL.LightModel(LightModelParameter.LightModelLocalViewer, 1);
+                //GL.Enable(EnableCap.ColorMaterial);
                 GL.ColorMaterial(MaterialFace.FrontAndBack, ColorMaterialParameter.Diffuse);
-                GL.Light(LightName.Light0, LightParameter.Diffuse, new Vector4(1f, 1f, 0f, 1f));
-                GL.Light(LightName.Light0, LightParameter.Position, new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 0f));
+                GL.Light(LightName.Light0, LightParameter.Diffuse, new Vector4(1f, 1f, 1f, 1f));
                 GL.Light(LightName.Light0, LightParameter.Ambient, new Vector4(0.0f, 0.0f, 0.0f, 1f));
+                GL.Light(LightName.Light0, LightParameter.Position, new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 0f));
+                
             }
 			//GL.Ortho(-game.Width / 32.0, game.Width / 32.0, -game.Height / 32.0, game.Height / 32.0, 0.0, 4.0);
 		}
@@ -166,8 +167,7 @@ namespace Lotus {
             if (UseLighting) {
                 GL.Disable(EnableCap.Lighting);
                 GL.Disable(EnableCap.Light0);
-                GL.Disable(EnableCap.ColorMaterial);
-                GL.Disable(EnableCap.CullFace);
+                //GL.Disable(EnableCap.ColorMaterial);
             }
             //GL.Disable(EnableCap.Normalize);
         }

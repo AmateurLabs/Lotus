@@ -12,50 +12,63 @@ namespace Lotus {
 
         static string defaultVertexShader = 
 @"
-#version 140
+#version 120
 
-precision highp float;
-
-uniform mat4 projection_matrix;
-uniform mat4 modelview_matrix;
-
-in vec3 in_position;
-in vec3 in_normal;
-
-out vec3 normal;
-
-void main(void)
+varying vec4 diffuse,ambient;
+varying vec3 normal,halfVector;
+ 
+void main()
 {
-  //works only for orthogonal modelview
-  normal = (modelview_matrix * vec4(in_normal, 0)).xyz;
-  
-  gl_Position = projection_matrix * modelview_matrix * vec4(in_position, 1);
+    /* first transform the normal into eye space and
+    normalize the result */
+    normal = normalize(gl_NormalMatrix * gl_Normal);
+ 
+    /* pass the halfVector to the fragment shader */
+    halfVector = gl_LightSource[0].halfVector.xyz;
+ 
+    /* Compute the diffuse, ambient and globalAmbient terms */
+    diffuse = gl_Color * gl_LightSource[0].diffuse;
+    ambient = gl_Color * gl_LightSource[0].ambient;
+    gl_Position = ftransform();
+ 
 }";
 
-        static string defaultFragmentShader = 
-@"#version 140
+        static string defaultFragmentShader =
+@"#version 120
 
-precision highp float;
-
-const vec3 ambient = vec3(0.1, 0.1, 0.1);
-const vec3 lightVecNormalized = normalize(vec3(0.5, 0.5, 2.0));
-const vec3 lightColor = vec3(0.9, 0.9, 0.7);
-
-in vec3 normal;
-
-out vec4 out_frag_color;
-
-void main(void)
+varying vec4 diffuse,ambient;
+varying vec3 normal,halfVector;
+ 
+void main()
 {
-  float diffuse = clamp(dot(lightVecNormalized, normalize(normal)), 0.0, 1.0);
-  out_frag_color = vec4(ambient + diffuse * lightColor, 1.0);
+    vec3 n,halfV,lightDir;
+    float NdotL,NdotHV;
+ 
+    lightDir = vec3(gl_LightSource[0].position);
+ 
+    /* The ambient term will always be present */
+    vec4 color = ambient;
+    /* a fragment shader can't write a varying variable, hence we need
+    a new variable to store the normalized interpolated normal */
+    n = normalize(normal);
+    /* compute the dot product between normal and ldir */
+    
+    NdotL = max(dot(n,lightDir),0.0);
+    if (NdotL > 0.0) {
+        color += diffuse * NdotL;
+        halfV = normalize(halfVector);
+        NdotHV = max(dot(n,halfV),0.0);
+        color += gl_FrontMaterial.specular *
+                gl_LightSource[0].specular *
+                pow(NdotHV, gl_FrontMaterial.shininess);
+    }
+ 
+    gl_FragColor = color; 
 }";
 
         int vertexShaderHandle,
             fragmentShaderHandle,
-            shaderProgramHandle,
-            modelviewMatrixLocation,
-            projectionMatrixLocation;
+            shaderProgramHandle;
 
         public Shader() {
             CreateShaders(defaultVertexShader, defaultFragmentShader);
@@ -81,23 +94,16 @@ void main(void)
             GL.AttachShader(shaderProgramHandle, vertexShaderHandle);
             GL.AttachShader(shaderProgramHandle, fragmentShaderHandle);
 
-            GL.BindAttribLocation(shaderProgramHandle, 0, "in_position");
-            GL.BindAttribLocation(shaderProgramHandle, 1, "in_normal");
-
             GL.LinkProgram(shaderProgramHandle);
-
-
-            // Set uniforms
-            projectionMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "projection_matrix");
-            modelviewMatrixLocation = GL.GetUniformLocation(shaderProgramHandle, "modelview_matrix");
         }
 
         public void Draw() {
+            Camera.Current.CurrentShader = this;
             GL.UseProgram(shaderProgramHandle);
-            Matrix4 projMatrix = Camera.Current.ProjectionMatrix;
-            Matrix4 viewMatrix = Camera.Current.ViewMatrix.Inverted();
-            GL.UniformMatrix4(projectionMatrixLocation, false, ref projMatrix);
-            GL.UniformMatrix4(modelviewMatrixLocation, false, ref viewMatrix);
+        }
+
+        public static void Reset() {
+            GL.UseProgram(0);
         }
     }
 }
