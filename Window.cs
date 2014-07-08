@@ -35,7 +35,7 @@ namespace Lotus {
         }
        
         public Window()
-            : base(1024, 768) {
+            : base(1024, 768, GraphicsMode.Default, "Lotus", GameWindowFlags.Default, DisplayDevice.Default, 3, 0, GraphicsContextFlags.ForwardCompatible) {
 
         }
 
@@ -186,8 +186,7 @@ namespace Lotus {
         protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
             grid.Dispose();
+            shader.Dispose();
         }
-
-        
     }
 }

@@ -76,7 +76,7 @@ void main()
 
         bool disposed;
 
-        public ~Shader() {
+        ~Shader() {
             if (!disposed) Dispose();
         }
 
@@ -113,6 +113,7 @@ void main()
         }
         
         public void Dispose() {
+            if (disposed) return;
             disposed = true;
             GL.DeleteShader(vertexShaderHandle);
             GL.DeleteShader(fragmentShaderHandle);

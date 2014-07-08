@@ -104,7 +104,7 @@ namespace Lotus {
             for (int j = 0; j < 7; j++) {
                 AddVertex(x + HexVerts[j].X, z + HexVerts[j].Z);
             }
-			for(int j = 6; j > 0; j--) {
+			for(int j = 1; j < 7; j++) {
 				int k = (j + 1);
 				if(k > 6) k = 1;
 				IBOArr[t] = (uint)(v);
