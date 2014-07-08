@@ -133,7 +133,7 @@ namespace Lotus {
 			var viewMatrix = ViewMatrix;
 			viewMatrix.Invert();
 			GL.LoadMatrix(ref viewMatrix);
-            //GL.Enable(EnableCap.Normalize);
+            GL.Enable(EnableCap.Normalize);
             if (UseAlphaBlend) {
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 GL.Enable(EnableCap.Blend);

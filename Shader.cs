@@ -8,7 +8,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
 namespace Lotus {
-    public class Shader {
+    public class Shader : IDisposable {
 
         static string defaultVertexShader = 
 @"
@@ -74,6 +74,12 @@ void main()
             CreateShaders(defaultVertexShader, defaultFragmentShader);
         }
 
+        bool disposed;
+
+        public ~Shader() {
+            if (!disposed) Dispose();
+        }
+
         public Shader(string vertexShaderSource, string fragmentShaderSource) {
             CreateShaders(vertexShaderSource, fragmentShaderSource);
         }
@@ -104,6 +110,13 @@ void main()
 
         public static void Reset() {
             GL.UseProgram(0);
+        }
+        
+        public void Dispose() {
+            disposed = true;
+            GL.DeleteShader(vertexShaderHandle);
+            GL.DeleteShader(fragmentShaderHandle);
+            GL.DeleteProgram(shaderProgramHandle);
         }
     }
 }

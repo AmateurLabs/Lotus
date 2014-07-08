@@ -78,9 +78,9 @@ namespace Lotus {
 			Buffer.BlockCopy(BitConverter.GetBytes(x), 0, VBOArr, i + 0, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(height), 0, VBOArr, i + 4, 4);
 			Buffer.BlockCopy(BitConverter.GetBytes(z), 0, VBOArr, i + 8, 4);
-			VBOArr[i + 12] = gray;
-			VBOArr[i + 13] = gray;
-			VBOArr[i + 14] = gray;
+			VBOArr[i + 12] = 255;
+			VBOArr[i + 13] = 255;
+			VBOArr[i + 14] = 255;
 			VBOArr[i + 15] = 255;
             Buffer.BlockCopy(BitConverter.GetBytes(normal.X), 0, VBOArr, i + 16, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(normal.Y), 0, VBOArr, i + 20, 4);
