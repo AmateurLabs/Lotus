@@ -116,7 +116,7 @@ namespace Lotus {
             shader.Draw();
             grid.Draw();
             HexagonCursorThingie();
-            //new Cube(Vector3.Zero, 4f).Draw();
+            //new Cube(Vector3.Zero, Quaternion.Identity, 4f).Draw();
             Engine.Render();
             new Sphere(1, new Vector3((float)Math.Cos(time), (float)Math.Sin(time), 0f), Quaternion.FromAxisAngle(Vector3.UnitX, (float)time)).Draw();
             cam.End();

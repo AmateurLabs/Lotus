@@ -9,11 +9,11 @@ using OpenTK;
 
 namespace Lotus
 {
-    class Cube
+    class Cube: Mesh
     {
         Vector3[] points = new Vector3[8];
 
-        public Cube(Vector3 loc, float scl){
+        public Cube(Vector3 loc, Quaternion rot, float scl): base (loc, rot){
             points[0] = new Vector3(scl, scl, scl);
             points[1] = new Vector3(scl, scl, -scl);
             points[2] = new Vector3(scl, -scl, scl);
@@ -29,20 +29,30 @@ namespace Lotus
             } 
         }
 
-        public void Draw()
+        public override void RenGen()
         {
-            Debug.DrawTri(points[0], points[3], points[1], Color4.White);
-            Debug.DrawTri(points[0], points[3], points[2], Color4.Red);
-            Debug.DrawTri(points[0], points[5], points[1], Color4.Blue);
-            Debug.DrawTri(points[0], points[5], points[4], Color4.Green);
-            Debug.DrawTri(points[0], points[6], points[2], Color4.Yellow);
-            Debug.DrawTri(points[0], points[6], points[4], Color4.Purple);
-            Debug.DrawTri(points[1], points[7], points[3], Color4.Cyan);
-            Debug.DrawTri(points[1], points[7], points[5], Color4.Magenta);
-            Debug.DrawTri(points[2], points[7], points[3], Color4.Pink);
-            Debug.DrawTri(points[2], points[7], points[6], Color4.Black);
-            Debug.DrawTri(points[4], points[7], points[6], Color4.Maroon);
-            Debug.DrawTri(points[4], points[7], points[5], Color4.Violet);
+            GL.Begin(PrimitiveType.TriangleFan);
+            GL.Vertex3(points[0]);
+            GL.Vertex3(points[1]);
+            GL.Vertex3(points[5]);
+            GL.Vertex3(points[4]);
+            GL.Vertex3(points[6]);
+            GL.Vertex3(points[2]);
+            GL.Vertex3(points[3]);
+            GL.Vertex3(points[1]);
+            GL.End();
+
+            GL.Begin(PrimitiveType.TriangleFan);
+            GL.Vertex3(points[7]);
+            GL.Vertex3(points[6]);
+            GL.Vertex3(points[2]);
+            GL.Vertex3(points[3]);
+            GL.Vertex3(points[1]);
+            GL.Vertex3(points[5]);
+            GL.Vertex3(points[4]);
+            GL.Vertex3(points[6]);
+            GL.End();
+
         }
     }
 }
