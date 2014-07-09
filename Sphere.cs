@@ -13,18 +13,19 @@ namespace Lotus
     {
         private Vector3[,] circles;
         private Vector3 north, south;
+        private int sec=12;
 
         public Sphere(float radius, Vector3 position, Quaternion rotation) : base(position, rotation)
         { //Creates a new camera, using the width and height of the screen and whether it is orthographic
-            circles = new Vector3[8, 18];
-            for (int i = 1; i < 9; i++)
+            circles = new Vector3[sec-1, 2*sec];
+            for (int i = 1; i < sec; i++)
             {
-                float rad = (float)Math.Sin(i * Math.PI / 9) * radius;
-                float y = (float)Math.Cos(i * Math.PI / 9) * radius;
-                for (int j = 0; j < 18; j++)
+                float rad = (float)Math.Sin(i * Math.PI / sec) * radius;
+                float y = (float)Math.Cos(i * Math.PI / sec) * radius;
+                for (int j = 0; j < 2*sec; j++)
                 {
-                    float x = (float)(Math.Cos(j * Math.PI / 9) * rad);
-                    float z = (float)(Math.Sin(j * Math.PI / 9) * rad);
+                    float x = (float)(Math.Cos(j * Math.PI / sec) * rad);
+                    float z = (float)(Math.Sin(j * Math.PI / sec) * rad);
                     circles[i-1, j] = new Vector3(x, y, z);
                 }
 
@@ -38,7 +39,7 @@ namespace Lotus
             GL.Begin(PrimitiveType.TriangleFan);
             GL.Color4(Light.GetColor(ToWorldSpace(north), Color4.White));
             GL.Vertex3(north);// rendering the north pole of the sphere
-            for (int i = 0; i < 18; i++)
+            for (int i = 0; i < 2*sec; i++)
             {
                 GL.Color4(Light.GetColor(ToWorldSpace(circles[0, i]), Color4.White));
                 GL.Vertex3(circles[0, i]);
@@ -51,25 +52,25 @@ namespace Lotus
             GL.Begin(PrimitiveType.TriangleFan);
             GL.Color4(Light.GetColor(ToWorldSpace(south), Color4.White));
             GL.Vertex3(south);
-            for (int i = 0; i < 18; i++)
+            for (int i = 0; i < 2*sec; i++)
             {
-                GL.Color4(Light.GetColor(ToWorldSpace(circles[7, i]), Color4.White));
-                GL.Vertex3(circles[7, i]);
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[sec-2, i]), Color4.White));
+                GL.Vertex3(circles[sec-2, i]);
             }
-            GL.Color4(Light.GetColor(ToWorldSpace(circles[7, 0]), Color4.White));
-            GL.Vertex3(circles[7, 0]);
+            GL.Color4(Light.GetColor(ToWorldSpace(circles[sec-2, 0]), Color4.White));
+            GL.Vertex3(circles[sec-2, 0]);
             GL.End();
 
             GL.Begin(PrimitiveType.TriangleStrip);
-            GL.Color4(Light.GetColor(ToWorldSpace(circles[0, 17]), Color4.White));
-            GL.Vertex3(circles[0, 17]);
-            for (int row = 0; row < 7; row++)
+            GL.Color4(Light.GetColor(ToWorldSpace(circles[0, sec*2-2]), Color4.White));
+            GL.Vertex3(circles[0, sec*2-2]);
+            for (int row = 0; row < sec-2; row++)
             {
                 int n = 0;
                 int m = 0;
                 int c = 0;
                 
-                for (int i = 0; i < 17; i++)
+                for (int i = 0; i < sec*2-2; i++)
                 {
                     GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Color4.White));
                     GL.Vertex3(circles[row, n]);
@@ -88,7 +89,7 @@ namespace Lotus
                 //GL.Vertex3(circles[row, 0]);
                 //GL.Vertex3(circles[row + 1, 0]);
             }
-            GL.Vertex3(circles[7, 0]);
+            GL.Vertex3(circles[sec-2, 0]);
             GL.End();
 
         }

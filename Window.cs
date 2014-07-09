@@ -63,7 +63,7 @@ namespace Lotus {
             Entity.Add<Renderer>(0);
             Entity.Add<JitterBody>(0);
         }
-
+        float step = .01f;
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
             Input.Update();
@@ -82,6 +82,19 @@ namespace Lotus {
 
             if (Input.IsPressed(Key.F1))
                 DebugEnabled = !DebugEnabled;
+
+            if (Input.IsDown(Key.PageUp))
+            {
+                
+                Light.AmbientColor = new Color4(Light.AmbientColor.R + step, Light.AmbientColor.G + step, Light.AmbientColor.B + step, Light.AmbientColor.A + step);
+
+            }
+            if (Input.IsDown(Key.PageDown))
+            {
+                Light.AmbientColor = new Color4(Light.AmbientColor.R - step, Light.AmbientColor.G - step, Light.AmbientColor.B - step, Light.AmbientColor.A - step);
+
+            }
+
 
             time += e.Time;
             float dt = (float)e.Time;
