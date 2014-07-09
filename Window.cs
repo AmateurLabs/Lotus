@@ -129,9 +129,13 @@ namespace Lotus {
             cam.Begin();
             grid.Draw();
             HexagonCursorThingie();
-            //new Cube(Vector3.Zero, Quaternion.Identity, 4f).Draw();
+            
             Engine.Render();
-            new Sphere(1, new Vector3((float)Math.Cos(time), (float)Math.Sin(time), 0f), Quaternion.FromAxisAngle(Vector3.UnitX, (float)time)).Draw();
+            new Sphere(1f, new Vector3((float)Math.Cos(time)*2.5f, (float)Math.Sin(time*4), (float)Math.Sin(time)*2.5f), Quaternion.FromAxisAngle(Vector3.UnitZ, (float)time)).Draw();
+            Quaternion cubeRot = Quaternion.FromAxisAngle(Vector3.UnitX, (float)Math.Cos(Time));
+            cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitY, (float)Math.Sin(Time));
+            cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitZ, (float)Math.Cos(Time));
+            new Cube(Vector3.Zero, cubeRot, 1f).Draw();
             cam.End();
             uiCam.Begin();
             if(DebugEnabled)
