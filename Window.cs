@@ -21,7 +21,6 @@ namespace Lotus {
         static Camera cam;
         static Camera uiCam;
         static Text text;
-        static Shader shader;
 
         static double time = 0.0;
         double lastTime = 0.0;
@@ -44,15 +43,14 @@ namespace Lotus {
             VSync = VSyncMode.On;
 
             grid = new HexGrid(256, 256);
-            cam = new Camera((float)Width, (float)Height, false, false, true);
+            cam = new Camera((float)Width, (float)Height, false, false);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
-            uiCam = new Camera((float)Width, (float)Height, true, true, false);
+            uiCam = new Camera((float)Width, (float)Height, true, true);
             uiCam.Position = new Vector3(0, 0, 10);
             cam.FreelookEnabled = true;
             text = new Text();
             CursorVisible = false;
-            shader = new Shader();
 
             Engine.Modules.Add(new RenderModule());
             Engine.Modules.Add(new JitterModule());
@@ -113,13 +111,11 @@ namespace Lotus {
             
             GL.Enable(EnableCap.DepthTest);
             cam.Begin();
-            shader.Draw();
             grid.Draw();
             HexagonCursorThingie();
             //new Cube(Vector3.Zero, Quaternion.Identity, 4f).Draw();
             Engine.Render();
             new Sphere(1, new Vector3((float)Math.Cos(time), (float)Math.Sin(time), 0f), Quaternion.FromAxisAngle(Vector3.UnitX, (float)time)).Draw();
-            Shader.Reset();
             cam.End();
             uiCam.Begin();
             if(DebugEnabled)
@@ -186,7 +182,6 @@ namespace Lotus {
         protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
             grid.Dispose();
-            shader.Dispose();
         }
     }
 }

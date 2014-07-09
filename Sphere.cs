@@ -74,7 +74,6 @@ namespace Lotus
                     GL.Color4(Debug.RandColor(c++));
                     GL.Vertex3(circles[row, n++]);
                     GL.Color4(Debug.RandColor(c++));
-
                 }
                 GL.Vertex3(circles[row, n]);
                 GL.Color4(Debug.RandColor(c++));
