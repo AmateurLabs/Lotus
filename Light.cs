@@ -32,14 +32,13 @@ namespace Lotus {
                 }
                 else if (light is PointLight) 
                 {
-                    float dot = Vector3.Dot(normal, -((PointLight)light).Direction(pos));
+                    //float dot = Vector3.Dot(normal, -((PointLight)light).Direction(pos));
                     Vector3 difference;
                     Vector3.Subtract(ref pos, ref ((PointLight)light).Position, out difference);
-                    light.Intensity = (float)Math.Sqrt(MathHelper.Clamp(((PointLight)light).Size * ((PointLight)light).Size - difference.Length*difference.Length, 0, Double.MaxValue));
-                    dot *= light.Intensity;
-                    result.R += light.Color.R * dot * baseColor.R;
-                    result.G += light.Color.G * dot * baseColor.G;
-                    result.B += light.Color.B * dot * baseColor.B;
+                    light.Intensity = (float)MathHelper.Clamp(1-(difference.Length/((PointLight)light).Size), 0, 1);
+                    result.R += light.Color.R * light.Intensity * baseColor.R;
+                    result.G += light.Color.G * light.Intensity * baseColor.G;
+                    result.B += light.Color.B * light.Intensity * baseColor.B;
 
                 
                 }
