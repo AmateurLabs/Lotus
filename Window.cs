@@ -28,6 +28,7 @@ namespace Lotus {
         int frameCount = 0;
         double frameRate = 0.0;
         public bool DebugEnabled = false;
+        Sphere sphere = new Sphere(1, new Vector3((float)Math.Cos(time), (float)Math.Sin(time), 0f), Quaternion.FromAxisAngle(Vector3.UnitX, (float)time));
 
         public static double Time {
             get { return time; }
@@ -131,7 +132,7 @@ namespace Lotus {
             HexagonCursorThingie();
             //new Cube(Vector3.Zero, Quaternion.Identity, 4f).Draw();
             Engine.Render();
-            new Sphere(1, new Vector3((float)Math.Cos(time), (float)Math.Sin(time), 0f), Quaternion.FromAxisAngle(Vector3.UnitX, (float)time)).Draw();
+            sphere.Draw();
             cam.End();
             uiCam.Begin();
             if(DebugEnabled)

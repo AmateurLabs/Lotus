@@ -13,7 +13,7 @@ namespace Lotus
     {
         private Vector3[,] circles;
         private Vector3 north, south;
-        private int sec=12;
+        private int sec=18;
 
         public Sphere(float radius, Vector3 position, Quaternion rotation) : base(position, rotation)
         { //Creates a new camera, using the width and height of the screen and whether it is orthographic
@@ -60,17 +60,19 @@ namespace Lotus
             GL.Color4(Light.GetColor(ToWorldSpace(circles[sec-2, 0]), Color4.White));
             GL.Vertex3(circles[sec-2, 0]);
             GL.End();
+            //rendering the middle part
 
             GL.Begin(PrimitiveType.TriangleStrip);
-            GL.Color4(Light.GetColor(ToWorldSpace(circles[0, sec*2-2]), Color4.White));
-            GL.Vertex3(circles[0, sec*2-2]);
             for (int row = 0; row < sec-2; row++)
             {
                 int n = 0;
                 int m = 0;
                 int c = 0;
-                
-                for (int i = 0; i < sec*2-2; i++)
+
+
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[row, sec*2-1]), Color4.White));
+                GL.Vertex3(circles[row, sec*2-1]);
+                for (int i = 0; i < sec*2-1; i++)
                 {
                     GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Color4.White));
                     GL.Vertex3(circles[row, n]);
@@ -85,11 +87,14 @@ namespace Lotus
                 GL.Vertex3(circles[row, n]);
                 GL.Color4(Light.GetColor(ToWorldSpace(circles[row + 1, m]), Color4.White));
                 GL.Vertex3(circles[row + 1, m]);
-                
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[row + 1, 0]), Color4.White));
+                GL.Vertex3(circles[row + 1, 0]);
+                //GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Color4.White));
                 //GL.Vertex3(circles[row, 0]);
-                //GL.Vertex3(circles[row + 1, 0]);
+                
+                //GL.End();
             }
-            GL.Vertex3(circles[sec-2, 0]);
+            //GL.Vertex3(circles[sec-2, 0]);
             GL.End();
 
         }
