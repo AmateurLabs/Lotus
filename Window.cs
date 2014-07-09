@@ -23,7 +23,7 @@ namespace Lotus {
         static Text text;
 
         static double time = 0.0;
-        double lastTime = 0.0;
+        double timeLeft = 0.0;
         double accumFPS = 0.0;
         int frameCount = 0;
         double frameRate = 0.0;
@@ -33,7 +33,7 @@ namespace Lotus {
         public static double Time {
             get { return time; }
         }
-       
+
         public Window()
             : base(1024, 768, GraphicsMode.Default, "Lotus", GameWindowFlags.Default, DisplayDevice.Default, 3, 0, GraphicsContextFlags.ForwardCompatible) {
 
@@ -46,10 +46,10 @@ namespace Lotus {
             Light.List.Add(new Light(Vector3.UnitX, Color4.Red, 1f));
             Light.List.Add(new Light(Vector3.UnitY, Color4.Green, 1f));
             Light.List.Add(new Light(Vector3.UnitZ, Color4.Blue, 1f));
-            cam = new Camera((float)Width, (float)Height, false, false);
+            cam = new Camera((float)Width, (float)Height, false, false, true);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
-            uiCam = new Camera((float)Width, (float)Height, true, true);
+            uiCam = new Camera((float)Width, (float)Height, true, true, false);
             uiCam.Position = new Vector3(0, 0, 10);
             cam.FreelookEnabled = true;
             text = new Text();
@@ -84,40 +84,32 @@ namespace Lotus {
             if (Input.IsPressed(Key.F1))
                 DebugEnabled = !DebugEnabled;
 
-            if (Input.IsDown(Key.PageUp))
-            {
-                
+            if (Input.IsDown(Key.PageUp)) {
                 Light.AmbientColor = new Color4(Light.AmbientColor.R + step, Light.AmbientColor.G + step, Light.AmbientColor.B + step, Light.AmbientColor.A + step);
-
             }
-            if (Input.IsDown(Key.PageDown))
-            {
+            if (Input.IsDown(Key.PageDown)) {
                 Light.AmbientColor = new Color4(Light.AmbientColor.R - step, Light.AmbientColor.G - step, Light.AmbientColor.B - step, Light.AmbientColor.A - step);
-
             }
-
 
             time += e.Time;
             float dt = (float)e.Time;
 
-            CalcAvgFrameRate(e);
+            CalcAvgFrameRate(e.Time);
 
             cam.Update(this, dt);
 
             Engine.Update(dt); //Insert engine rev here VROOOOOOM
         }
 
-        private void CalcAvgFrameRate(FrameEventArgs e)
-        {
-            lastTime += e.Time;
-            accumFPS += e.Time;
+        private void CalcAvgFrameRate(double dt) {
+            timeLeft -= dt;
+            accumFPS += dt;
             frameCount++;
-            if (lastTime > 0.25)
-            {
-                frameRate = Math.Round(1.0 / (accumFPS / frameCount));
+            if (timeLeft <= 0) {
+                frameRate = Math.Round(1f / (accumFPS / frameCount));
                 accumFPS = 0.0;
                 frameCount = 0;
-                lastTime = 0.0;
+                timeLeft = 0.5;
             }
         }// Calculates the average framerate every quarter second. Relies on the OnUpdateFrame Method.
 
@@ -125,18 +117,23 @@ namespace Lotus {
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.ClearColor(Color.CornflowerBlue);
-            
+
             GL.Enable(EnableCap.DepthTest);
             cam.Begin();
             grid.Draw();
             HexagonCursorThingie();
-            //new Cube(Vector3.Zero, Quaternion.Identity, 4f).Draw();
+            Quaternion cubeRot = Quaternion.FromAxisAngle(Vector3.UnitX, (float)Math.Cos(Time));
+            cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitY, (float)Math.Sin(Time));
+            cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitZ, (float)Math.Cos(Time));
+            new Cube(Vector3.Zero, cubeRot, 1f).Draw();
+            //new Sphere(1f, new Vector3((float)Math.Cos(time) * 2.5f, (float)Math.Sin(time * 4), (float)Math.Sin(time) * 2.5f), Quaternion.FromAxisAngle(Vector3.UnitZ, (float)time)).Draw();
             Engine.Render();
             sphere.Draw();
             cam.End();
             uiCam.Begin();
-            if(DebugEnabled)
+            if (DebugEnabled)
                 DebugReadout();
+            new Square(new Vector3(20f, 20f, 1f), Quaternion.Identity, 20f).Draw();
             uiCam.End();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
@@ -169,10 +166,10 @@ namespace Lotus {
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(435, 108), Color4.White, new Color4(1f, 0f, 1f, 0.5f), border / 2);
             Debug.Depth = -1.1f;
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(Width, Height), Color4.White, new Color4(0.1f, 0.1f, 0.5f, 0.3f), border / 2);
-            
+
             int n = 0;
             int spacing = 12;
-            
+
             text.Draw("DEBUG READOUT", new Vector2(border, spacing * n++ + border));
             text.Draw("Camera Location || Camera Rotation", new Vector2(border, spacing * n++ + border));
             text.Draw(("X: " + cam.Position.X).PadRight(15) + " || X:" + (float)(cam.Rotation.X % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
@@ -181,11 +178,10 @@ namespace Lotus {
             text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
             text.Draw("Time: " + time, new Vector2(border, spacing * n++ + border));
             Vector3 hex;
-            if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f))
-            {
+            if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
                 text.Draw("(" + hex.X + ", " + hex.Y + ")", new Vector2(border, spacing * n++ + border));
             }
-            
+
         }
 
         protected override void OnResize(EventArgs e) {
