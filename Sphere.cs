@@ -36,27 +36,32 @@ namespace Lotus
         public override void RenGen()
         {
             GL.Begin(PrimitiveType.TriangleFan);
-            GL.Color4(Color4.Wheat);
+            GL.Color4(Light.GetColor(ToWorldSpace(north), Color4.White));
             GL.Vertex3(north);// rendering the north pole of the sphere
             for (int i = 0; i < 18; i++)
             {
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[0, i]), Color4.White));
                 GL.Vertex3(circles[0, i]);
             }
+            GL.Color4(Light.GetColor(ToWorldSpace(circles[0,0]), Color4.White));
             GL.Vertex3(circles[0, 0]);
             GL.End();
 
             //rendering the south pole of the sphere
             GL.Begin(PrimitiveType.TriangleFan);
+            GL.Color4(Light.GetColor(ToWorldSpace(south), Color4.White));
             GL.Vertex3(south);
             for (int i = 0; i < 18; i++)
             {
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[7, i]), Color4.White));
                 GL.Vertex3(circles[7, i]);
             }
+            GL.Color4(Light.GetColor(ToWorldSpace(circles[7, 0]), Color4.White));
             GL.Vertex3(circles[7, 0]);
             GL.End();
 
             GL.Begin(PrimitiveType.TriangleStrip);
-            GL.Color4(Light.GetColor(ToWorldSpace(circles[0, 17]), Debug.RandColor(0)));
+            GL.Color4(Light.GetColor(ToWorldSpace(circles[0, 17]), Color4.White));
             GL.Vertex3(circles[0, 17]);
             for (int row = 0; row < 7; row++)
             {
@@ -66,18 +71,18 @@ namespace Lotus
                 
                 for (int i = 0; i < 17; i++)
                 {
-                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Debug.RandColor(c++)));
+                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Color4.White));
                     GL.Vertex3(circles[row, n]);
-                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row+1, m]), Debug.RandColor(c++)));
+                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row+1, m]), Color4.White));
                     GL.Vertex3(circles[row + 1, m++]);
-                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row+1, m]), Debug.RandColor(c++)));
+                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row+1, m]), Color4.White));
                     GL.Vertex3(circles[row + 1, m]);
-                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Debug.RandColor(c++)));
+                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Color4.White));
                     GL.Vertex3(circles[row, n++]);
                 }
-                GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Debug.RandColor(c++)));
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Color4.White));
                 GL.Vertex3(circles[row, n]);
-                GL.Color4(Light.GetColor(ToWorldSpace(circles[row+1, m]), Debug.RandColor(c++)));
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[row + 1, m]), Color4.White));
                 GL.Vertex3(circles[row + 1, m]);
                 
                 //GL.Vertex3(circles[row, 0]);
