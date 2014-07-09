@@ -19,17 +19,18 @@ namespace Lotus {
 
         public readonly bool IsOrthographic; //Whether this camera is orthographic; cannot be changed after initialization
         public readonly bool UseAlphaBlend; //Whether to use simple alpha blending for transparency
+        public readonly bool UseLighting; //Whether to use lighting; currently the custom lighting
 
         public bool IsPerspective { //Whether this camera uses perspective projection
             get { return !IsOrthographic;  }
         }
 
-		public Camera(float width, float height, bool ortho, bool blend) { //Creates a new camera, using the size of the screen and other options
+		public Camera(float width, float height, bool ortho, bool blend, bool light) { //Creates a new camera, using the size of the screen and other options
             IsOrthographic = ortho;
             UseAlphaBlend = blend;
+            UseLighting = light;
             if (Main == null) Main = this; //If this is the first created camera, designate it as the Main camera
             ResetProjectionMatrix(width, height);
-
 		}
 
         public void ResetProjectionMatrix(float width, float height) {

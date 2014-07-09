@@ -42,7 +42,7 @@ namespace Lotus.ECS.Modules {
 
         public override void Render() {
             foreach (JitterBody body in IdMap<JitterBody>.Map.Values) {
-                //body.Rigidbody.EnableDebugDraw = true;
+                body.Rigidbody.EnableDebugDraw = true;
                 body.Rigidbody.DebugDraw(new DebugDraw());
             }
         }

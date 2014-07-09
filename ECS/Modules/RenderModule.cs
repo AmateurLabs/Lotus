@@ -20,7 +20,7 @@ namespace Lotus.ECS.Modules {
                 //float angle;
                 //t.Rotation.ToAxisAngle(out axis, out angle);
                 //GL.Rotate(MathHelper.DegreesToRadians(angle), axis);
-                new Sphere(1f, t.Position, t.Rotation).Draw();
+                //new Sphere(1f, t.Position, t.Rotation).Draw();
                 GL.PopMatrix();
             }
         }

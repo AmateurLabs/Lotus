@@ -26,7 +26,7 @@ namespace Lotus
             for (int i = 0; i < points.Length; i++)
             {
                 points[i] += loc;
-            } 
+            }
         }
 
         public override void RenGen()
@@ -63,27 +63,6 @@ namespace Lotus
             GL.Vertex3(points[7]);
             GL.Vertex3(points[5]);
             GL.End();
-            /*GL.Begin(PrimitiveType.TriangleFan);
-            GL.Vertex3(points[0]);
-            GL.Vertex3(points[1]);
-            GL.Vertex3(points[5]);
-            GL.Vertex3(points[4]);
-            GL.Vertex3(points[6]);
-            GL.Vertex3(points[2]);
-            GL.Vertex3(points[3]);
-            GL.Vertex3(points[1]);
-            GL.End();
-
-            GL.Begin(PrimitiveType.TriangleFan);
-            GL.Vertex3(points[7]);
-            GL.Vertex3(points[6]);
-            GL.Vertex3(points[2]);
-            GL.Vertex3(points[3]);
-            GL.Vertex3(points[1]);
-            GL.Vertex3(points[5]);
-            GL.Vertex3(points[4]);
-            GL.Vertex3(points[6]);
-            GL.End();*/
         }
     }
 }
