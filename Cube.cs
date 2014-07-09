@@ -32,32 +32,32 @@ namespace Lotus
         public override void RenGen()
         {
             GL.Begin(PrimitiveType.Quads);
-            GL.Color4(Light.GetColor(ToWorldSpace(Vector3.UnitX), Color4.White));
+            GL.Color4(Light.GetColor(ToWorldSpace(Vector3.UnitX), ToWorldSpace(Vector3.UnitX), Color4.White));
             GL.Vertex3(points[0]);
             GL.Vertex3(points[1]);
             GL.Vertex3(points[3]);
             GL.Vertex3(points[2]);
-            GL.Color4(Light.GetColor(ToWorldSpace(Vector3.UnitY), Color4.White));
+            GL.Color4(Light.GetColor(ToWorldSpace(Vector3.UnitY), ToWorldSpace(Vector3.UnitY), Color4.White));
             GL.Vertex3(points[0]);
             GL.Vertex3(points[1]);
             GL.Vertex3(points[5]);
             GL.Vertex3(points[4]);
-            GL.Color4(Light.GetColor(ToWorldSpace(Vector3.UnitZ), Color4.White));
+            GL.Color4(Light.GetColor(ToWorldSpace(Vector3.UnitZ), ToWorldSpace(Vector3.UnitZ), Color4.White));
             GL.Vertex3(points[0]);
             GL.Vertex3(points[2]);
             GL.Vertex3(points[6]);
             GL.Vertex3(points[4]);
-            GL.Color4(Light.GetColor(ToWorldSpace(-Vector3.UnitX), Color4.White));
+            GL.Color4(Light.GetColor(ToWorldSpace(-Vector3.UnitX), ToWorldSpace(-Vector3.UnitX), Color4.White));
             GL.Vertex3(points[4]);
             GL.Vertex3(points[5]);
             GL.Vertex3(points[7]);
             GL.Vertex3(points[6]);
-            GL.Color4(Light.GetColor(ToWorldSpace(-Vector3.UnitY), Color4.White));
+            GL.Color4(Light.GetColor(ToWorldSpace(-Vector3.UnitY), ToWorldSpace(-Vector3.UnitY), Color4.White));
             GL.Vertex3(points[2]);
             GL.Vertex3(points[3]);
             GL.Vertex3(points[7]);
             GL.Vertex3(points[6]);
-            GL.Color4(Light.GetColor(ToWorldSpace(-Vector3.UnitZ), Color4.White));
+            GL.Color4(Light.GetColor(ToWorldSpace(-Vector3.UnitZ), ToWorldSpace(-Vector3.UnitZ), Color4.White));
             GL.Vertex3(points[1]);
             GL.Vertex3(points[3]);
             GL.Vertex3(points[7]);

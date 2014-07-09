@@ -74,7 +74,7 @@ namespace Lotus {
             Vector3 normal = new Vector3(dx, -1f, dz).Normalized();
             float dot = Vector3.Dot(normal, Vector3.UnitY);
 			byte gray = (byte)(Math.Min(Math.Max(255f * dot, 0f), 255f));
-            Color4 color = Light.GetColor(normal, Color4.White);
+            Color4 color = Light.GetColor(normal, normal,Color4.White);
 			//float height = (float)Math.Floor(z * 8f);
 			float height = y * 8f;
 			Buffer.BlockCopy(BitConverter.GetBytes(x), 0, VBOArr, i + 0, 4);
