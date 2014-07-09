@@ -13,14 +13,10 @@ namespace Lotus {
         public static List<Light> List = new List<Light>();
 
         public static Color4 GetColor(Vector3 normal, Color4 baseColor) {
-            Matrix4 viewMatrix;
-            GL.GetFloat(GetPName.ModelviewMatrix, out viewMatrix);
-            normal.Normalize();
-            normal = Vector3.TransformNormal(normal, viewMatrix);
             normal.Normalize();
             Color4 result = Color4.Black;
             foreach (Light light in List) {
-                float dot = Vector3.Dot(normal, light.Direction);
+                float dot = Vector3.Dot(normal, -light.Direction);
                 dot *= light.Intensity;
                 result.R += light.Color.R * dot * baseColor.R;
                 result.G += light.Color.G * dot * baseColor.G;

@@ -45,12 +45,12 @@
     <Compile Include="ECS\Modules\JitterModule.cs" />
     <Compile Include="ECS\Modules\RenderModule.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="Light.cs" />
     <Compile Include="Mesh.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="HexGrid.cs" />
     <Compile Include="Camera.cs" />
-    <Compile Include="Shader.cs" />
     <Compile Include="Sphere.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="Window.cs" />

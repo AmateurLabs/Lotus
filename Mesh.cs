@@ -46,6 +46,10 @@ namespace Lotus
             }
         }
 
+        public Vector3 ToWorldSpace(Vector3 p) {
+            return Vector3.TransformNormal(p, ViewMatrix);
+        }
+
         public void Draw()
         {
             GL.PushMatrix();

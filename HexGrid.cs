@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using SimplexNoise;
 
@@ -73,14 +74,15 @@ namespace Lotus {
             Vector3 normal = new Vector3(dx, 1f, dz).Normalized();
             float dot = Vector3.Dot(normal, Vector3.UnitY);
 			byte gray = (byte)(Math.Min(Math.Max(255f * dot, 0f), 255f));
+            Color4 color = Light.GetColor(normal, Color4.White);
 			//float height = (float)Math.Floor(z * 8f);
 			float height = y * 8f;
 			Buffer.BlockCopy(BitConverter.GetBytes(x), 0, VBOArr, i + 0, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(height), 0, VBOArr, i + 4, 4);
 			Buffer.BlockCopy(BitConverter.GetBytes(z), 0, VBOArr, i + 8, 4);
-			VBOArr[i + 12] = gray;
-			VBOArr[i + 13] = gray;
-			VBOArr[i + 14] = gray;
+            VBOArr[i + 12] = (byte)(Math.Min(Math.Max(255f * color.R, 0f), 255f));
+            VBOArr[i + 13] = (byte)(Math.Min(Math.Max(255f * color.G, 0f), 255f));
+            VBOArr[i + 14] = (byte)(Math.Min(Math.Max(255f * color.B, 0f), 255f));
 			VBOArr[i + 15] = 255;
             Buffer.BlockCopy(BitConverter.GetBytes(normal.X), 0, VBOArr, i + 16, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(normal.Y), 0, VBOArr, i + 20, 4);

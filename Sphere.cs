@@ -56,6 +56,7 @@ namespace Lotus
             GL.End();
 
             GL.Begin(PrimitiveType.TriangleStrip);
+            GL.Color4(Light.GetColor(ToWorldSpace(circles[0, 17]), Debug.RandColor(0)));
             GL.Vertex3(circles[0, 17]);
             for (int row = 0; row < 7; row++)
             {
@@ -65,20 +66,20 @@ namespace Lotus
                 
                 for (int i = 0; i < 17; i++)
                 {
-                    
+                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Debug.RandColor(c++)));
                     GL.Vertex3(circles[row, n]);
-                    GL.Color4(Debug.RandColor(c++));
+                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row+1, m]), Debug.RandColor(c++)));
                     GL.Vertex3(circles[row + 1, m++]);
-                    GL.Color4(Debug.RandColor(c++));
+                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row+1, m]), Debug.RandColor(c++)));
                     GL.Vertex3(circles[row + 1, m]);
-                    GL.Color4(Debug.RandColor(c++));
+                    GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Debug.RandColor(c++)));
                     GL.Vertex3(circles[row, n++]);
-                    GL.Color4(Debug.RandColor(c++));
                 }
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Debug.RandColor(c++)));
                 GL.Vertex3(circles[row, n]);
-                GL.Color4(Debug.RandColor(c++));
+                GL.Color4(Light.GetColor(ToWorldSpace(circles[row+1, m]), Debug.RandColor(c++)));
                 GL.Vertex3(circles[row + 1, m]);
-                GL.Color4(Debug.RandColor(c++));
+                
                 //GL.Vertex3(circles[row, 0]);
                 //GL.Vertex3(circles[row + 1, 0]);
             }

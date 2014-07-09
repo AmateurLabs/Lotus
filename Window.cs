@@ -42,7 +42,9 @@ namespace Lotus {
             base.OnLoad(e);
             VSync = VSyncMode.On;
 
-            grid = new HexGrid(256, 256);
+            Light.List.Add(new Light(Vector3.UnitX, Color4.Red, 1f));
+            Light.List.Add(new Light(-Vector3.UnitY, Color4.Green, 1f));
+            Light.List.Add(new Light(Vector3.UnitZ, Color4.Blue, 1f));
             cam = new Camera((float)Width, (float)Height, false, false);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
@@ -50,6 +52,7 @@ namespace Lotus {
             uiCam.Position = new Vector3(0, 0, 10);
             cam.FreelookEnabled = true;
             text = new Text();
+            grid = new HexGrid(256, 256);
             CursorVisible = false;
 
             Engine.Modules.Add(new RenderModule());
@@ -58,7 +61,7 @@ namespace Lotus {
             Entity.Add<Transform>(0);
             Entity.Get<Transform>(0).Position = new Vector3(0f, -10f, 0f);
             Entity.Add<Renderer>(0);
-            Entity.Add<JitterBody>(0);            
+            Entity.Add<JitterBody>(0);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e) {
