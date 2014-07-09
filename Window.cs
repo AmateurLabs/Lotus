@@ -43,9 +43,10 @@ namespace Lotus {
             base.OnLoad(e);
             VSync = VSyncMode.On;
 
-            Light.List.Add(new Light(Vector3.UnitX, Color4.Red, 1f));
-            Light.List.Add(new Light(Vector3.UnitY, Color4.Green, 1f));
-            Light.List.Add(new Light(Vector3.UnitZ, Color4.Blue, 1f));
+            Light.List.Add(new DirectionalLight(Vector3.UnitX, Color4.Red, 1f));
+            Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.Green, 1f));
+            Light.List.Add(new DirectionalLight(Vector3.UnitZ, Color4.Blue, 1f));
+            Light.List.Add(new PointLight(Vector3.UnitZ, Color4.Cyan, 3.5f));
             cam = new Camera((float)Width, (float)Height, false, false);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
