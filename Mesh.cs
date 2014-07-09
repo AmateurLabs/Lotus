@@ -58,7 +58,7 @@ namespace Lotus
 
         public Color4 GetColor(Vector3 vertex, Vector3 normal) {
             if (Camera.Current.UseLighting) {
-                return Light.GetColor(ToWorldSpace(normal), BaseColor);
+                return Light.GetColor(ToWorldSpace(normal), ToWorldSpace(vertex), BaseColor);
             }
             else {
                 return BaseColor;
