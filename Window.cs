@@ -42,9 +42,9 @@ namespace Lotus {
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             VSync = VSyncMode.On;
-            Light.List.Add(new DirectionalLight(Vector3.UnitX, Color4.Red, 1f));
-            Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.Green, 1f));
-            Light.List.Add(new DirectionalLight(Vector3.UnitZ, Color4.Blue, 1f));
+            //Light.List.Add(new DirectionalLight(Vector3.UnitX, Color4.Red, 1f));
+            //Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.Green, 1f));
+            //Light.List.Add(new DirectionalLight(Vector3.UnitZ, Color4.Blue, 1f));
             Light.List.Add(new PointLight(Vector3.UnitZ, Color4.Cyan, 3.5f));
             cam = new Camera((float)Width, (float)Height, false, false, true);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
