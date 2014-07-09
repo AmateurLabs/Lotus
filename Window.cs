@@ -43,7 +43,7 @@ namespace Lotus {
             VSync = VSyncMode.On;
 
             Light.List.Add(new Light(Vector3.UnitX, Color4.Red, 1f));
-            Light.List.Add(new Light(-Vector3.UnitY, Color4.Green, 1f));
+            Light.List.Add(new Light(Vector3.UnitY, Color4.Green, 1f));
             Light.List.Add(new Light(Vector3.UnitZ, Color4.Blue, 1f));
             cam = new Camera((float)Width, (float)Height, false, false);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);

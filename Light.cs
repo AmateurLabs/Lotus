@@ -10,11 +10,12 @@ using OpenTK.Graphics.OpenGL;
 namespace Lotus {
     public class Light {
 
+        public static Color4 AmbientColor = new Color4(0.125f, 0.125f, 0.125f, 1f);
         public static List<Light> List = new List<Light>();
 
         public static Color4 GetColor(Vector3 normal, Color4 baseColor) {
             normal.Normalize();
-            Color4 result = Color4.Black;
+            Color4 result = AmbientColor;
             foreach (Light light in List) {
                 float dot = Vector3.Dot(normal, -light.Direction);
                 dot *= light.Intensity;
