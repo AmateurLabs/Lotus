@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 
 namespace Lotus.ECS.Aspects {
-    public class Renderer : Aspect {
+    public class AMesh : Aspect {
 
-        public Renderer(int id) : base(id) { }
+        public Mesh Mesh;
+
+        public AMesh(int id) : base(id) { }
     }
 }

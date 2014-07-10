@@ -1,0 +1,11 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Lotus.ECS.Aspects {
+    public class ARenderer : Aspect {
+
+        public ARenderer(int id) : base(id) { }
+    }
+}

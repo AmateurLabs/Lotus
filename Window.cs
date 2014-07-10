@@ -45,7 +45,7 @@ namespace Lotus {
             //Light.List.Add(new DirectionalLight(Vector3.UnitX, Color4.Red, 1f));
             //Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.Green, 1f));
             //Light.List.Add(new DirectionalLight(Vector3.UnitZ, Color4.Blue, 1f));
-            Light.List.Add(new PointLight(Vector3.UnitZ, Color4.Cyan, 3.5f));
+            Light.List.Add(new PointLight(Vector3.Zero, Color4.Cyan, 2f));
             cam = new Camera((float)Width, (float)Height, false, false, true);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
@@ -59,10 +59,11 @@ namespace Lotus {
             Engine.Modules.Add(new RenderModule());
             Engine.Modules.Add(new JitterModule());
 
-            Entity.Add<Transform>(0);
-            Entity.Get<Transform>(0).Position = new Vector3(0f, -10f, 0f);
-            Entity.Add<Renderer>(0);
-            Entity.Add<JitterBody>(0);
+            Entity.Add<ATransform>(0);
+            Entity.Get<ATransform>(0).Position = new Vector3(0f, -10f, 0f);
+            Entity.Add<ARenderer>(0);
+            Entity.Add<AMesh>(0);
+            Entity.Get<AMesh>(0).Mesh = new Cube(Vector3.Zero, Quaternion.Identity, 1f);
         }
         float step = .01f;
         protected override void OnUpdateFrame(FrameEventArgs e) {
@@ -76,20 +77,18 @@ namespace Lotus {
 
             if (Input.IsPressed(Key.F4) && Input.Alt) Exit();
 
-            if (Input.IsDown(Key.Space)) {
-                Entity.Get<JitterBody>(0).Rigidbody.IsActive = true;
-                Entity.Get<JitterBody>(0).Rigidbody.AddTorque(Jitter.LinearMath.JVector.Forward * 100f);
-            }
+            /*if (Input.IsDown(Key.Space)) {
+                Entity.Get<AJitterBody>(0).Rigidbody.IsActive = true;
+                Entity.Get<AJitterBody>(0).Rigidbody.AddTorque(Jitter.LinearMath.JVector.Forward * 100f);
+            }*/
 
-            if (Input.IsPressed(Key.F1))
-                DebugEnabled = !DebugEnabled;
+            if (Input.IsDown(Key.F)) Entity.Get<ATransform>(0).Scale += Vector3.One * (float)e.Time;
+            if (Input.IsDown(Key.R)) Entity.Get<ATransform>(0).Scale -= Vector3.One * (float)e.Time;
 
-            if (Input.IsDown(Key.PageUp)) {
-                Light.AmbientColor = new Color4(Light.AmbientColor.R + step, Light.AmbientColor.G + step, Light.AmbientColor.B + step, Light.AmbientColor.A + step);
-            }
-            if (Input.IsDown(Key.PageDown)) {
-                Light.AmbientColor = new Color4(Light.AmbientColor.R - step, Light.AmbientColor.G - step, Light.AmbientColor.B - step, Light.AmbientColor.A - step);
-            }
+            if (Input.IsPressed(Key.F1)) DebugEnabled = !DebugEnabled;
+
+            if (Input.IsDown(Key.PageUp)) Light.AmbientColor = new Color4(Light.AmbientColor.R + step, Light.AmbientColor.G + step, Light.AmbientColor.B + step, Light.AmbientColor.A + step);
+            if (Input.IsDown(Key.PageDown)) Light.AmbientColor = new Color4(Light.AmbientColor.R - step, Light.AmbientColor.G - step, Light.AmbientColor.B - step, Light.AmbientColor.A - step);
 
             time += e.Time;
             float dt = (float)e.Time;
@@ -110,6 +109,7 @@ namespace Lotus {
                 accumFPS = 0.0;
                 frameCount = 0;
                 timeLeft = 0.5;
+                Title = "Lotus - " + Math.Round(RenderFrequency) + " FPS";
             }
         }// Calculates the average framerate every quarter second. Relies on the OnUpdateFrame Method.
 
@@ -121,11 +121,13 @@ namespace Lotus {
             GL.Enable(EnableCap.DepthTest);
             cam.Begin();
             grid.Draw();
-            HexagonCursorThingie();
+            TransformGizmo();
             Quaternion cubeRot = Quaternion.FromAxisAngle(Vector3.UnitX, (float)Math.Cos(Time));
             cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitY, (float)Math.Sin(Time));
             cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitZ, (float)Math.Cos(Time));
-            new Cube(Vector3.Zero, cubeRot, 1f).Draw();
+            new Cube(Vector3.UnitY, cubeRot, 1f).Draw();
+            new Cube(Vector3.UnitX, Quaternion.Identity, 1f).Draw();
+            new Cube(Vector3.UnitZ, Quaternion.Identity, 1f).Draw();
             //new Sphere(1f, new Vector3((float)Math.Cos(time) * 2.5f, (float)Math.Sin(time * 4), (float)Math.Sin(time) * 2.5f), Quaternion.FromAxisAngle(Vector3.UnitZ, (float)time)).Draw();
             Engine.Render();
             sphere.Draw();
@@ -139,8 +141,8 @@ namespace Lotus {
             GL.Disable(EnableCap.DepthTest);
         }
 
-        private void HexagonCursorThingie() {
-            GL.Begin(PrimitiveType.Lines); //Hexagon cursor thingie
+        public static void TransformGizmo() {
+            GL.Begin(PrimitiveType.Lines);
             GL.Color3(1f, 0f, 0f);
             GL.Vertex3(0f, 0f, 0f);
             GL.Color3(1f, 0f, 0f);
