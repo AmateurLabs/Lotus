@@ -26,12 +26,7 @@ namespace Lotus {
                 }
                 else if (light is PointLight) {
                     PointLight pLight = light as PointLight;
-                    /*float dot = Vector3.Dot(normal, -((PointLight)light).Direction(pos));
-                    Vector3 difference;
-                    Vector3.Subtract(ref pos, ref ((PointLight)light).Position, out difference);
-                    light.Intensity = (float)Math.Sqrt(MathHelper.Clamp(((PointLight)light).Size * ((PointLight)light).Size - difference.Length*difference.Length, 0, Double.MaxValue));*/
                     float dist = (pos - pLight.Position).Length;
-                    //if (dist > pLight.Radius) continue;
                     float attenuation = light.Intensity / (1f + (2f / pLight.Radius) * dist + (1f / (pLight.Radius * pLight.Radius)) * dist * dist);
                     result.R += light.Color.R * attenuation * baseColor.R;
                     result.G += light.Color.G * attenuation * baseColor.G;
