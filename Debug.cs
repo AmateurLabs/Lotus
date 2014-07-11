@@ -12,7 +12,8 @@ namespace Lotus {
         static Text debugText = new Text();
 
         public static float Depth;
-        public static Random rand = new Random();
+        static Random rand = new Random();
+        static Stack<Action> drawStack = new Stack<Action>();
 
         public static void DrawRect(Vector2 p0, Vector2 p1, Color4 color) {
             GL.Begin(PrimitiveType.Quads);
@@ -33,7 +34,6 @@ namespace Lotus {
             GL.Vertex3(p2);
             GL.Normal3(Vector3.Normalize(Vector3.Cross(p1 - p0, p2 - p0)));
             GL.End();
-
         }
 
         public static void DrawRect(float x, float y, float width, float height, Color4 color) {
@@ -87,6 +87,14 @@ namespace Lotus {
             return new Color4((float)rand.Next(255) / 255, (float)rand.Next(255) / 255, (float)rand.Next(255) / 255, 1f);
         }
 
-        
+        public static void DrawLater(Action action) {
+            drawStack.Push(action);
+        }
+
+        public static void DrawStack() {
+            while (drawStack.Count > 0) {
+                drawStack.Pop().Invoke();
+            }
+        }
     }
 }

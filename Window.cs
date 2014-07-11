@@ -45,6 +45,7 @@ namespace Lotus {
             //Light.List.Add(new DirectionalLight(Vector3.UnitX, Color4.Red, 1f));
             //Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.Green, 1f));
             //Light.List.Add(new DirectionalLight(Vector3.UnitZ, Color4.Blue, 1f));
+            Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.White, 0.125f));
             Light.List.Add(new PointLight(Vector3.Zero, Color4.Cyan, 2f));
             cam = new Camera((float)Width, (float)Height, false, false, true);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
@@ -63,7 +64,7 @@ namespace Lotus {
             Entity.Get<ATransform>(0).Position = new Vector3(0f, -10f, 0f);
             Entity.Add<ARenderer>(0);
             Entity.Add<AMesh>(0);
-            Entity.Get<AMesh>(0).Mesh = new Cube(Vector3.Zero, Quaternion.Identity, 1f);
+            Entity.Get<AMesh>(0).Mesh = new Cube(new Vector3(0f, -10f, 0f), Quaternion.Identity, 1f);
         }
         float step = .01f;
         protected override void OnUpdateFrame(FrameEventArgs e) {
@@ -131,6 +132,7 @@ namespace Lotus {
             //new Sphere(1f, new Vector3((float)Math.Cos(time) * 2.5f, (float)Math.Sin(time * 4), (float)Math.Sin(time) * 2.5f), Quaternion.FromAxisAngle(Vector3.UnitZ, (float)time)).Draw();
             Engine.Render();
             sphere.Draw();
+            Debug.DrawStack();
             cam.End();
             uiCam.Begin();
             if (DebugEnabled)

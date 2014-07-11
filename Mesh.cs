@@ -52,13 +52,17 @@ namespace Lotus
             }
         }
 
-        public Vector3 ToWorldSpace(Vector3 p) {
+        public Vector3 ToWorldPoint(Vector3 p) {
             return Vector3.Transform(p, ViewMatrix);
+        }
+
+        public Vector3 ToWorldNormal(Vector3 n) {
+            return Vector3.TransformNormal(n, RotationMatrix);
         }
 
         public Color4 GetColor(Vector3 vertex, Vector3 normal) {
             if (Camera.Current.UseLighting) {
-                return Light.GetColor(ToWorldSpace(normal), ToWorldSpace(vertex), BaseColor);
+                return Light.GetColor(ToWorldNormal(normal), ToWorldPoint(vertex), BaseColor);
             }
             else {
                 return BaseColor;

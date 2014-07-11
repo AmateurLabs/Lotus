@@ -14,11 +14,11 @@ namespace Lotus {
         public static List<Light> List = new List<Light>();
 
         public static Color4 GetColor(Vector3 normal, Vector3 pos, Color4 baseColor) {
-            normal.Normalize();
             Color4 result = AmbientColor;
             foreach (Light light in List) {
                 if (light is DirectionalLight) {
                     float dot = Vector3.Dot(normal, -((DirectionalLight)light).Direction);
+                    if (dot < 0f) continue;
                     dot *= light.Intensity;
                     result.R += light.Color.R * dot * baseColor.R;
                     result.G += light.Color.G * dot * baseColor.G;
@@ -31,9 +31,17 @@ namespace Lotus {
                     result.R += light.Color.R * attenuation * baseColor.R;
                     result.G += light.Color.G * attenuation * baseColor.G;
                     result.B += light.Color.B * attenuation * baseColor.B;
+
+                    Debug.DrawLater(() => {
+                        GL.Begin(PrimitiveType.Lines);
+                        GL.Color4(Color4.Magenta);
+                        GL.Vertex3(pos);
+                        GL.Vertex3(pLight.Position);
+                        GL.Color4(Color4.White);
+                        GL.End();
+                    });
                 }
             }
-
             //Pythagorean theorem for addition?
             return result;
         }
@@ -45,27 +53,25 @@ namespace Lotus {
             set { Color.A = value; }
         }
 
+        public Light() {
+            Color = Color4.White;
+        }
+
         public Light(Color4 color) {
             Color = color;
         }
 
         public Light(Color4 color, float intensity) {
             Color = color;
-            color.A = intensity;
+            Color.A = intensity;
         }
-
     }
 
     public class PointLight : Light {
+
         public Vector3 Position;
         public float Radius;
-        public Vector3 Direction(Vector3 pt) {
-            Vector3 dir = new Vector3(pt.X - Position.X, pt.Y - Position.Y, pt.Z - Position.Z);
-            dir.Normalize();
-            return dir;
 
-            //return Vector3.Zero;
-        }
         public PointLight(Vector3 pos, Color4 color, float radius)
             : base(color) {
             Position = pos;
@@ -74,17 +80,16 @@ namespace Lotus {
     }
 
     public class DirectionalLight : Light {
+
         public Vector3 Direction;
         public DirectionalLight(Vector3 direction, Color4 color)
             : base(color) {
-            Direction = direction;
-
+            Direction = direction.Normalized();
         }
-        public DirectionalLight(Vector3 direction, Color4 color, float intensity)
-            : base(color) {
-            Direction = direction;
-            color.A = intensity;
 
+        public DirectionalLight(Vector3 direction, Color4 color, float intensity)
+            : base(color, intensity) {
+            Direction = direction.Normalized();
         }
     }
 }
