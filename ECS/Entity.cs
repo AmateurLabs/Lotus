@@ -20,25 +20,25 @@ namespace Lotus.ECS {
             return ent;
         }
 
-        public static T Get<T>(int id) where T : Aspect {
+        public static T Get<T>(int id) where T : Component {
             T t;
             IdMap<T>.Map.TryGetValue(id, out t);
             return t;
         }
 
-        public static bool Has<T>(int id) where T : Aspect {
+        public static bool Has<T>(int id) where T : Component {
             return IdMap<T>.Map.ContainsKey(id);
         }
 
-        public static T Add<T>(int id) where T : Aspect {
+        public static T Add<T>(int id) where T : Component {
             T t = (T)Activator.CreateInstance(typeof(T), id);
             IdMap<T>.Map.Add(id, t);
-            foreach (Module module in Engine.Modules) module.Reveille(t);
+            foreach (Processor module in Engine.Processors) module.Reveille(t);
             return t;
         }
 
-        public static bool Remove<T>(int id) where T : Aspect {
-            foreach (Module module in Engine.Modules) module.Taps(IdMap<T>.Map[id]);
+        public static bool Remove<T>(int id) where T : Component {
+            foreach (Processor module in Engine.Processors) module.Taps(IdMap<T>.Map[id]);
             return IdMap<T>.Map.Remove(id);
         }
 
@@ -46,24 +46,25 @@ namespace Lotus.ECS {
 
         private Entity(int id) {
             Id = id;
+            IdMap<Entity>.Map.Add(id, this);
         }
 
-        public Entity() {
-            Id = Allocate();
+        public Entity() : this(Allocate()) {
+            
         }
 
-        public T Get<T>() where T : Aspect {
+        public T Get<T>() where T : Component {
             return Get<T>(Id);
         }
 
-        public bool Has<T>() where T : Aspect {
+        public bool Has<T>() where T : Component {
             return Has<T>(Id);
         }
 
-        public T Add<T>() where T : Aspect {
+        public T Add<T>() where T : Component {
             return Add<T>(Id);
         }
-        public bool Remove<T>() where T : Aspect {
+        public bool Remove<T>() where T : Component {
             return Remove<T>(Id);
         }
     }

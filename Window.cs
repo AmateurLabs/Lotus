@@ -11,8 +11,6 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
 using Lotus.ECS;
-using Lotus.ECS.Aspects;
-using Lotus.ECS.Modules;
 
 namespace Lotus {
     public class Window : GameWindow {
@@ -57,15 +55,15 @@ namespace Lotus {
             grid = new HexGrid(256, 256);
             CursorVisible = false;
 
-            Engine.Modules.Add(new RenderModule());
-            Engine.Modules.Add(new JitterModule());
+            Engine.Processors.Add(new RenderSubsystem());
+            Engine.Processors.Add(new JitterSubsystem());
 
             Entity ent = new Entity();
-            ent.Add<ATransform>();
-            ent.Get<ATransform>().Position = new Vector3(0f, -1f, 0f);
-            ent.Add<ARenderer>();
-            ent.Add<AMesh>();
-            ent.Get<AMesh>().Mesh = new Cube(1f);
+            ent.Add<Transform>();
+            ent.Get<Transform>().Position = new Vector3(0f, -1f, 0f);
+            ent.Add<Renderer>();
+            ent.Add<MeshFilter>();
+            ent.Get<MeshFilter>().Mesh = new Cube(1f);
         }
 
         float step = .01f;
@@ -85,8 +83,8 @@ namespace Lotus {
                 Entity.Get<AJitterBody>(0).Rigidbody.AddTorque(Jitter.LinearMath.JVector.Forward * 100f);
             }*/
 
-            if (Input.IsDown(Key.F)) Entity.Get<ATransform>(0).Scale += Vector3.One * (float)e.Time;
-            if (Input.IsDown(Key.R)) Entity.Get<ATransform>(0).Scale -= Vector3.One * (float)e.Time;
+            if (Input.IsDown(Key.F)) Entity.Get<Transform>(0).Scale += Vector3.One * (float)e.Time;
+            if (Input.IsDown(Key.R)) Entity.Get<Transform>(0).Scale -= Vector3.One * (float)e.Time;
 
             if (Input.IsPressed(Key.F1)) DebugEnabled = !DebugEnabled;
 

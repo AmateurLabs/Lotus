@@ -6,10 +6,10 @@ using System.Text;
 using Jitter;
 using Jitter.Dynamics;
 
-namespace Lotus.ECS.Aspects {
-    public class AJitterBody : Aspect {
+namespace Lotus.ECS {
+    public class JitterBody : Component {
 
-        public AJitterBody(int id) : base(id) { }
+        public JitterBody(int id) : base(id) { }
 
         public RigidBody Rigidbody;
     }

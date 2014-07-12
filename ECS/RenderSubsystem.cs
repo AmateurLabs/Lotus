@@ -6,16 +6,14 @@ using System.Text;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-using Lotus.ECS.Aspects;
-
-namespace Lotus.ECS.Modules {
-    public class RenderModule : Module {
+namespace Lotus.ECS {
+    public class RenderSubsystem : Processor {
 
         public override void Render() {
-            foreach (ARenderer r in IdMap<ARenderer>.Map.Values) {
-                ATransform t = Entity.Get<ATransform>(r.Id);
-                if (Entity.Has<AMesh>(r.Id)) { //If there is a Mesh aspect, draw that
-                    Entity.Get<AMesh>(r.Id).Mesh.Draw(t.ViewMatrix, t.ScalingMatrix*t.RotationMatrix);
+            foreach (Renderer r in IdMap<Renderer>.Map.Values) {
+                Transform t = Entity.Get<Transform>(r.Id);
+                if (Entity.Has<MeshFilter>(r.Id)) { //If there is a Mesh aspect, draw that
+                    Entity.Get<MeshFilter>(r.Id).Mesh.Draw(t.ViewMatrix, t.ScalingMatrix*t.RotationMatrix);
                 }
                 else { //Otherwise, draw an XYZ axis gizmo so we can see where it is
                     GL.Begin(PrimitiveType.Lines);

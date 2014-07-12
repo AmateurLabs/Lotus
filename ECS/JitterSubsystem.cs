@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Lotus.ECS.Aspects;
-
 using Jitter;
 using Jitter.Dynamics;
 using Jitter.Collision;
@@ -13,14 +11,14 @@ using Jitter.LinearMath;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Lotus.ECS.Modules {
-    public class JitterModule : Module {
+namespace Lotus.ECS {
+    public class JitterSubsystem : Processor {
 
         World world;
         CollisionSystem collisionSystem;
         RigidBody floor;
 
-        public JitterModule() {
+        public JitterSubsystem() {
             collisionSystem = new CollisionSystemSAP();
             world = new World(collisionSystem);
             world.Gravity = new JVector(world.Gravity.X, -world.Gravity.Y, world.Gravity.Z);
@@ -32,8 +30,8 @@ namespace Lotus.ECS.Modules {
 
         public override void Update(float dt) {
             world.Step(dt, false);
-            foreach (AJitterBody body in IdMap<AJitterBody>.Map.Values) {
-                ATransform t = Entity.Get<ATransform>(body.Id);
+            foreach (JitterBody body in IdMap<JitterBody>.Map.Values) {
+                Transform t = Entity.Get<Transform>(body.Id);
                 t.Position = Convert(body.Rigidbody.Position);
                 JQuaternion rot = JQuaternion.CreateFromMatrix(body.Rigidbody.Orientation);
                 t.Rotation = Convert(rot);
@@ -41,7 +39,7 @@ namespace Lotus.ECS.Modules {
         }
 
         public override void Render() {
-            foreach (AJitterBody body in IdMap<AJitterBody>.Map.Values) {
+            foreach (JitterBody body in IdMap<JitterBody>.Map.Values) {
                 body.Rigidbody.EnableDebugDraw = true;
                 body.Rigidbody.DebugDraw(new DebugDraw());
             }
@@ -74,18 +72,18 @@ namespace Lotus.ECS.Modules {
             }
         }
 
-        public override void Reveille(Aspect aspect) {
-            if (aspect is AJitterBody) {
-                AJitterBody body = aspect as AJitterBody;
+        public override void Reveille(Component aspect) {
+            if (aspect is JitterBody) {
+                JitterBody body = aspect as JitterBody;
                 body.Rigidbody = new RigidBody(new SphereShape(1f));
-                body.Rigidbody.Position = Convert(Entity.Get<ATransform>(aspect.Id).Position);
+                body.Rigidbody.Position = Convert(Entity.Get<Transform>(aspect.Id).Position);
                 world.AddBody(body.Rigidbody);
             }
         }
 
-        public override void Taps(Aspect aspect) {
-            if (aspect is AJitterBody) {
-                AJitterBody body = aspect as AJitterBody;
+        public override void Taps(Component aspect) {
+            if (aspect is JitterBody) {
+                JitterBody body = aspect as JitterBody;
                 world.RemoveBody(body.Rigidbody);
             }
         }

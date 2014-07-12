@@ -5,14 +5,14 @@ using System.Text;
 
 using OpenTK;
 
-namespace Lotus.ECS.Aspects {
-    public class ATransform : Aspect {
+namespace Lotus.ECS {
+    public class Transform : Component {
 
         public Vector3 Position = Vector3.Zero;
         public Quaternion Rotation = Quaternion.Identity;
         public Vector3 Scale = Vector3.One;
 
-        public ATransform(int id) : base(id) { }
+        public Transform(int id) : base(id) { }
 
         public Matrix4 ViewMatrix {
             get {
