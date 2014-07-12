@@ -1,3 +1,0 @@
-﻿Implement scripting, or just expose the engine to C#?
-If Lua, "eat our own dogfood": code all possible functionality in Lua first
-Do we need to dynamically add new aspect definitions? If so, a bitmask won't work
