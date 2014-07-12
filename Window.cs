@@ -60,11 +60,12 @@ namespace Lotus {
             Engine.Modules.Add(new RenderModule());
             Engine.Modules.Add(new JitterModule());
 
-            Entity.Add<ATransform>(0);
-            Entity.Get<ATransform>(0).Position = new Vector3(0f, -1f, 0f);
-            Entity.Add<ARenderer>(0);
-            Entity.Add<AMesh>(0);
-            Entity.Get<AMesh>(0).Mesh = new Cube(1f);
+            Entity ent = new Entity();
+            ent.Add<ATransform>();
+            ent.Get<ATransform>().Position = new Vector3(0f, -1f, 0f);
+            ent.Add<ARenderer>();
+            ent.Add<AMesh>();
+            ent.Get<AMesh>().Mesh = new Cube(1f);
         }
 
         float step = .01f;
