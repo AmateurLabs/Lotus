@@ -17,7 +17,6 @@ namespace Lotus {
 
         public static Window Main;
 
-        static HexGrid grid;
         static Camera cam;
         static Camera uiCam;
         static Text text;
@@ -53,7 +52,6 @@ namespace Lotus {
             uiCam.Position = new Vector3(0, 0, 10);
             cam.FreelookEnabled = true;
             text = new Text();
-            grid = new HexGrid(256, 256);
             CursorVisible = false;
 
             Engine.Processors.Add(new RenderProcessor());
@@ -64,26 +62,18 @@ namespace Lotus {
             worldEntity.Add<Attractor>().Type = Attractor.AttractionType.World;
             worldEntity.Get<Attractor>().Acceleration = 9.81f;
             Entity ent = new Entity();
-            ent.Add<Transform>();
-            ent.Get<Transform>().Position = new Vector3(0f, -10f, 0f);
+            ent.Add<Transform>().Position = new Vector3(0f, -10f, 0f);
             ent.Add<Renderer>();
             ent.Add<MeshFilter>();
-            ent.Get<MeshFilter>().Mesh = new Cube(1f, 3);
+            ent.Get<MeshFilter>().Mesh = new Sphere(1f);
+            //ent.Get<MeshFilter>().Mesh = new Cube(1f, 3);
             ent.Add<Rigidbody>();
             ent.Add<Constraint>().MaxPosition = new Vector3(float.PositiveInfinity, 0f, float.PositiveInfinity);
             ent.Get<Constraint>().MinPosition = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
             Entity terrain = new Entity();
             terrain.Add<Transform>();
             terrain.Add<Renderer>();
-            terrain.Add<MeshFilter>();
-            terrain.Get<MeshFilter>().Mesh = new HexGrid(256, 256);
-            //terrain.Get<Rigidbody>().Velocity = -Vector3.UnitY * 10f;
-
-            Entity.Add<Transform>(0);
-            Entity.Get<Transform>(0).Position = new Vector3(0f, -10f, 0f);
-            Entity.Add<Renderer>(0);
-            Entity.Add<MeshFilter>(0);
-            Entity.Get<MeshFilter>(0).Mesh = new Cube(1f, 3);
+            terrain.Add<MeshFilter>().Mesh = new HexGrid(256, 256);
         }
 
         float step = .01f;
@@ -102,9 +92,6 @@ namespace Lotus {
                 Entity.Get<AJitterBody>(0).Rigidbody.IsActive = true;
                 Entity.Get<AJitterBody>(0).Rigidbody.AddTorque(Jitter.LinearMath.JVector.Forward * 100f);
             }*/
-
-            if (Input.IsDown(Key.F)) Entity.Get<Transform>(0).Scale += Vector3.One * (float)e.Time;
-            if (Input.IsDown(Key.R)) Entity.Get<Transform>(0).Scale -= Vector3.One * (float)e.Time;
 
             if (Input.IsPressed(Key.F1)) DebugEnabled = !DebugEnabled;
 
@@ -192,11 +179,6 @@ namespace Lotus {
             text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + (float)(cam.Rotation.Z % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
             text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
             text.Draw("Time: " + time, new Vector2(border, spacing * n++ + border));
-            Vector3 hex;
-            if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
-                text.Draw("(" + hex.X + ", " + hex.Y + ")", new Vector2(border, spacing * n++ + border));
-            }
-
         }
 
         protected override void OnResize(EventArgs e) {
@@ -209,7 +191,6 @@ namespace Lotus {
 
         protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
-            grid.Dispose();
         }
     }
 }

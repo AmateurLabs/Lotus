@@ -21,12 +21,13 @@ namespace Lotus
             if (res < 0) res = -res;
             if (res < 3) res = 3;
             if (scl < 0) scl = -scl;
+            Res = res;
+            Scale = scl;
             PGen();
         }
 
         public override void RenGen()
         {
-            Console.WriteLine("1");
             for (int i = 0; i < 6; i++)
             {
                 Vector3 normal;
