@@ -4,6 +4,8 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using SimplexNoise;
 
+using Lotus.ECS;
+
 namespace Lotus {
 	public class HexGrid : Mesh {
 
@@ -135,10 +137,12 @@ namespace Lotus {
             //Primitive way of updating VBO data without resending everything; probably impractical
             //GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             //GL.BufferSubData(BufferTarget.ArrayBuffer, new IntPtr(32), new IntPtr(4), new float[] { (float)Math.Sin(time) });
-            Vector3 hex;
+            
+            //Raycasting!
+            /*Vector3 hex;
             if (Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
                 Debug.DrawText(new Vector2(10f, 200f), "(" + hex.X + ", " + hex.Y + ")");
-            }
+            }*/
         }
 
 		public override void RenGen() {
@@ -163,21 +167,21 @@ namespace Lotus {
 
             //Raycast from the center of the camera and display cursor
 			Vector3 hex;
-			if(Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
+			if(Raycast(Entity.Get<Transform>(Camera.Main.Id).Position, Entity.Get<Transform>(Camera.Main.Id).Forward, out hex, 256f)) {
 				//int j = (int)(hex.Y * Width + hex.X);
 
 				Vector3 p = ToWorld((int)hex.X, (int)hex.Y);
 				p.Y = 0f;
-				GL.PolygonMode(MaterialFace.Front, PolygonMode.Line);
+				GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 				GL.Begin(PrimitiveType.TriangleFan);
 				for(int k = 0; k < HexVerts.Length; k++) {
 					GL.Color3(1f, 0f, 1f);
-					GL.Vertex3(p + HexVerts[k] + Vector3.UnitY * GetHeight(p.X + HexVerts[k].X, p.Z + HexVerts[k].Z) * 8f);
+					GL.Vertex3(p + HexVerts[k] + Vector3.UnitY * GetHeight(p.X + HexVerts[k].X, p.Z + HexVerts[k].Z) * 8f - Vector3.UnitY * 0.01f);
 				}
 				GL.Color3(1f, 0f, 1f);
-                GL.Vertex3(p + HexVerts[1] + Vector3.UnitY * GetHeight(p.X + HexVerts[1].X, p.Z + HexVerts[1].Z) * 8f);
+                GL.Vertex3(p + HexVerts[1] + Vector3.UnitY * GetHeight(p.X + HexVerts[1].X, p.Z + HexVerts[1].Z) * 8f - Vector3.UnitY * 0.01f);
 				GL.End();
-				GL.PolygonMode(MaterialFace.Front, PolygonMode.Fill);
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 			}
 
             //Stop using arrays so we don't contaminate future draws

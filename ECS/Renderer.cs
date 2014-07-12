@@ -6,6 +6,9 @@ using System.Text;
 namespace Lotus.ECS {
     public class Renderer : Component {
 
+        public RenderLayers Layers = RenderLayers.Default;
+
         public Renderer(int id) : base(id) { }
+
     }
 }

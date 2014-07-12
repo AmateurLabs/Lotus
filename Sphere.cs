@@ -7,6 +7,8 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
+using Lotus.ECS;
+
 namespace Lotus
 {
     class Sphere : Mesh

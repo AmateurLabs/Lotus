@@ -7,9 +7,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
-using Lotus.ECS;
-
-namespace Lotus {
+namespace Lotus.ECS {
     public abstract class Light : Component {
 
         public Light(int id) : base(id) { }

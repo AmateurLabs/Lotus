@@ -16,9 +16,8 @@ namespace Lotus {
     public class Window : GameWindow {
 
         public static Window Main;
-
-        static Camera cam;
-        static Camera uiCam;
+        static Entity cam;
+        static Entity uiCam;
         static Text text;
 
         static double time = 0.0;
@@ -40,23 +39,13 @@ namespace Lotus {
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             VSync = VSyncMode.On;
-            //Light.List.Add(new DirectionalLight(Vector3.UnitX, Color4.Red, 1f));
-            //Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.Green, 1f));
-            //Light.List.Add(new DirectionalLight(Vector3.UnitZ, Color4.Blue, 1f));
-            //Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.White, 0.125f));
-            //Light.List.Add(new PointLight(Vector3.Zero, Color4.Cyan, 2f));
-            cam = new Camera((float)Width, (float)Height, false, false, true);
-            cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
-            cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
-            uiCam = new Camera((float)Width, (float)Height, true, true, false);
-            uiCam.Position = new Vector3(0, 0, 10);
-            cam.FreelookEnabled = true;
             text = new Text();
             CursorVisible = false;
 
             Engine.Processors.Add(new RenderProcessor());
             Engine.Processors.Add(new JitterProcessor());
             Engine.Processors.Add(new PhysicsProcessor());
+            Engine.Processors.Add(new FreelookProcessor());
 
             Entity worldEntity = new Entity();
             worldEntity.Add<Attractor>().Type = Attractor.AttractionType.World;
@@ -80,6 +69,18 @@ namespace Lotus {
             terrain.Add<Transform>();
             terrain.Add<Renderer>();
             terrain.Add<MeshFilter>().Mesh = new HexGrid(256, 256);
+
+            cam = new Entity();
+            cam.Add<Transform>().Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
+            cam.Get<Transform>().Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
+            cam.Add<Camera>().UseLighting = true;
+            cam.Add<Freelook>();
+
+            uiCam = new Entity();
+            uiCam.Add<Transform>().Position = new Vector3(0f, 0f, 10f);
+            uiCam.Add<Camera>().IsOrthographic = true;
+            uiCam.Get<Camera>().UseAlphaBlend = true;
+            uiCam.Get<Camera>().Layers = RenderLayers.GUI;
         }
 
         float step = .01f;
@@ -109,8 +110,6 @@ namespace Lotus {
 
             CalcAvgFrameRate(e.Time);
 
-            cam.Update(this, dt);
-
             Engine.Update(dt); //Insert engine rev here VROOOOOOM
         }
 
@@ -133,16 +132,15 @@ namespace Lotus {
             GL.ClearColor(Color.CornflowerBlue);
 
             GL.Enable(EnableCap.DepthTest);
-            cam.Begin();
-            TransformGizmo();
-            //new Sphere(1f, new Vector3((float)Math.Cos(time) * 2.5f, (float)Math.Sin(time * 4), (float)Math.Sin(time) * 2.5f), Quaternion.FromAxisAngle(Vector3.UnitZ, (float)time)).Draw();
             Engine.Render();
+            cam.Get<Camera>().Begin(cam.Get<Transform>().ViewMatrix);
+            TransformGizmo();
             Debug.DrawStack();
-            cam.End();
-            uiCam.Begin();
+            cam.Get<Camera>().End();
+            uiCam.Get<Camera>().Begin(uiCam.Get<Transform>().ViewMatrix);
             if (DebugEnabled)
                 DebugReadout();
-            uiCam.End();
+            uiCam.Get<Camera>().End();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);
         }
@@ -178,11 +176,14 @@ namespace Lotus {
             int n = 0;
             int spacing = 12;
 
+            Vector3 camPos = cam.Get<Transform>().Position;
+            Quaternion camRot = cam.Get<Transform>().Rotation;
+
             text.Draw("DEBUG READOUT", new Vector2(border, spacing * n++ + border));
             text.Draw("Camera Location || Camera Rotation", new Vector2(border, spacing * n++ + border));
-            text.Draw(("X: " + cam.Position.X).PadRight(15) + " || X:" + (float)(cam.Rotation.X % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
-            text.Draw(("Y: " + cam.Position.Y).PadRight(15) + " || Y:" + (float)(cam.Rotation.Y % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
-            text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + (float)(cam.Rotation.Z % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
+            text.Draw(("X: " + camPos.X).PadRight(15) + " || X:" + (float)(camRot.X % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
+            text.Draw(("Y: " + camPos.Y).PadRight(15) + " || Y:" + (float)(camRot.Y % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
+            text.Draw(("Z: " + camPos.Z).PadRight(15) + " || Z:" + (float)(camRot.Z % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
             text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
             text.Draw("Time: " + time, new Vector2(border, spacing * n++ + border));
         }
@@ -190,8 +191,7 @@ namespace Lotus {
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
             GL.Viewport(0, 0, Width, Height);
-            cam.ResetProjectionMatrix(Width, Height);
-            uiCam.ResetProjectionMatrix(Width, Height);
+            foreach (Camera cam in IdMap<Camera>.Map.Values) cam.ResetProjectionMatrix();
             text.ResetView();
         }
 
