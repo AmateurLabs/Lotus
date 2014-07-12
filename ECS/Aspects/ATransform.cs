@@ -37,5 +37,13 @@ namespace Lotus.ECS.Aspects {
                 return Matrix4.CreateScale(Scale);
             }
         }
+
+        public Vector3 ToWorldPoint(Vector3 p) {
+            return Vector3.Transform(p, ViewMatrix);
+        }
+
+        public Vector3 ToWorldNormal(Vector3 n) {
+            return Vector3.TransformNormal(n, ScalingMatrix * RotationMatrix).Normalized();
+        }
     }
 }

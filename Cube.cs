@@ -13,7 +13,7 @@ namespace Lotus
     {
         Vector3[] points = new Vector3[8];
 
-        public Cube(Vector3 loc, Quaternion rot, float scl) : base(loc, rot)
+        public Cube(float scl)
         {
             points[0] = new Vector3(scl, scl, scl);
             points[1] = new Vector3(scl, scl, -scl);
@@ -23,10 +23,6 @@ namespace Lotus
             points[5] = new Vector3(-scl, scl, -scl);
             points[6] = new Vector3(-scl, -scl, scl);
             points[7] = new Vector3(-scl, -scl, -scl);
-            for (int i = 0; i < points.Length; i++)
-            {
-                points[i] += loc;
-            }
         }
 
         public override void RenGen()

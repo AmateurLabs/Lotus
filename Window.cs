@@ -28,7 +28,7 @@ namespace Lotus {
         int frameCount = 0;
         double frameRate = 0.0;
         public bool DebugEnabled = false;
-        Sphere sphere = new Sphere(1, new Vector3((float)Math.Cos(time), (float)Math.Sin(time), 0f), Quaternion.FromAxisAngle(Vector3.UnitX, (float)time));
+        Sphere sphere = new Sphere(1);
 
         public static double Time {
             get { return time; }
@@ -61,11 +61,12 @@ namespace Lotus {
             Engine.Modules.Add(new JitterModule());
 
             Entity.Add<ATransform>(0);
-            Entity.Get<ATransform>(0).Position = new Vector3(0f, -10f, 0f);
+            Entity.Get<ATransform>(0).Position = new Vector3(0f, -1f, 0f);
             Entity.Add<ARenderer>(0);
             Entity.Add<AMesh>(0);
-            Entity.Get<AMesh>(0).Mesh = new Cube(new Vector3(0f, -10f, 0f), Quaternion.Identity, 1f);
+            Entity.Get<AMesh>(0).Mesh = new Cube(1f);
         }
+
         float step = .01f;
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
@@ -123,21 +124,12 @@ namespace Lotus {
             cam.Begin();
             grid.Draw();
             TransformGizmo();
-            Quaternion cubeRot = Quaternion.FromAxisAngle(Vector3.UnitX, (float)Math.Cos(Time));
-            cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitY, (float)Math.Sin(Time));
-            cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitZ, (float)Math.Cos(Time));
-            new Cube(Vector3.UnitY, cubeRot, 1f).Draw();
-            new Cube(Vector3.UnitX, Quaternion.Identity, 1f).Draw();
-            new Cube(Vector3.UnitZ, Quaternion.Identity, 1f).Draw();
-            //new Sphere(1f, new Vector3((float)Math.Cos(time) * 2.5f, (float)Math.Sin(time * 4), (float)Math.Sin(time) * 2.5f), Quaternion.FromAxisAngle(Vector3.UnitZ, (float)time)).Draw();
             Engine.Render();
-            sphere.Draw();
             Debug.DrawStack();
             cam.End();
             uiCam.Begin();
             if (DebugEnabled)
                 DebugReadout();
-            new Square(new Vector3(20f, 20f, 1f), Quaternion.Identity, 20f).Draw();
             uiCam.End();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);

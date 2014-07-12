@@ -11,53 +11,24 @@ namespace Lotus
 {
     public abstract class Mesh
     {
-        Vector3 Position;
-        Quaternion Rotation;
         Color4 BaseColor;
 
-        public Mesh(Vector3 position, Quaternion rotation)
+        public Mesh()
         {
-            Position = position;
-            Rotation = rotation;
             BaseColor = Color4.White;
         }
 
-        public Mesh(Vector3 position, Quaternion rotation, Color4 baseColor) : this(position, rotation) {
-            BaseColor = baseColor;
-        }
+        public abstract void RenGen(); // here you would program the GL to render the object at Vector3.Zero and as Quaternion.Identity for the rotation.
 
-        public abstract void RenGen();// here you would program the GL to render the object at Vector3.Zero and as Quaternion.Identity for the rotation.
-
-        public Matrix4 ViewMatrix
-        { //The final view matrix used to draw the object
-            get
-            {
-                return RotationMatrix * TranslationMatrix;
-            }
-        }
-
-        public Matrix4 TranslationMatrix
-        { //A matrix of the current position
-            get
-            {
-                return Matrix4.CreateTranslation(Position);
-            }
-        }
-
-        public Matrix4 RotationMatrix
-        { //A matrix of the current rotation
-            get
-            {
-                return Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y);
-            }
-        }
+        private Matrix4 viewMatrix;
+        private Matrix4 normalMatrix;
 
         public Vector3 ToWorldPoint(Vector3 p) {
-            return Vector3.Transform(p, ViewMatrix);
+            return Vector3.Transform(p, viewMatrix);
         }
 
         public Vector3 ToWorldNormal(Vector3 n) {
-            return Vector3.TransformNormal(n, RotationMatrix);
+            return Vector3.TransformNormal(n, normalMatrix);
         }
 
         public Color4 GetColor(Vector3 vertex, Vector3 normal) {
@@ -74,14 +45,14 @@ namespace Lotus
             GL.Vertex3(vertex);
         }
 
-        public void Draw()
+        public void Draw(Matrix4 viewMatrix, Matrix4 normalMatrix)
         {
             GL.PushMatrix();
-            var viewMatrix = ViewMatrix;
+            this.viewMatrix = viewMatrix;
+            this.normalMatrix = normalMatrix;
             GL.MultMatrix(ref viewMatrix);
             RenGen();
             GL.PopMatrix();
         }
-        
     }
 }
