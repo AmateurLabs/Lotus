@@ -32,6 +32,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="ECS\MeshFilter.cs" />
+    <Compile Include="ECS\Movement.cs" />
     <Compile Include="Square.cs" />
     <Compile Include="Cube.cs" />
     <Compile Include="Debug.cs" />

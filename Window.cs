@@ -15,7 +15,7 @@ using Lotus.ECS;
 namespace Lotus {
     public class Window : GameWindow {
 
-        static HexGrid grid;
+        public static Window Main;
         static Camera cam;
         static Camera uiCam;
         static Text text;
@@ -34,7 +34,7 @@ namespace Lotus {
 
         public Window()
             : base(1024, 768, GraphicsMode.Default, "Lotus", GameWindowFlags.Default, DisplayDevice.Default, 3, 0, GraphicsContextFlags.ForwardCompatible) {
-
+                Main = this;
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -52,7 +52,6 @@ namespace Lotus {
             uiCam.Position = new Vector3(0, 0, 10);
             cam.FreelookEnabled = true;
             text = new Text();
-            grid = new HexGrid(256, 256);
             CursorVisible = false;
 
             Engine.Processors.Add(new RenderSubsystem());
@@ -64,6 +63,11 @@ namespace Lotus {
             ent.Add<Renderer>();
             ent.Add<MeshFilter>();
             ent.Get<MeshFilter>().Mesh = new Cube(1f);
+            Entity terrain = new Entity();
+            terrain.Add<Transform>();
+            terrain.Add<Renderer>();
+            terrain.Add<MeshFilter>();
+            terrain.Get<MeshFilter>().Mesh = new HexGrid(256, 256);
         }
 
         float step = .01f;
@@ -121,7 +125,6 @@ namespace Lotus {
 
             GL.Enable(EnableCap.DepthTest);
             cam.Begin();
-            grid.Draw();
             TransformGizmo();
             Engine.Render();
             Debug.DrawStack();
@@ -172,11 +175,6 @@ namespace Lotus {
             text.Draw(("Z: " + cam.Position.Z).PadRight(15) + " || Z:" + (float)(cam.Rotation.Z % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
             text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
             text.Draw("Time: " + time, new Vector2(border, spacing * n++ + border));
-            Vector3 hex;
-            if (grid.Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
-                text.Draw("(" + hex.X + ", " + hex.Y + ")", new Vector2(border, spacing * n++ + border));
-            }
-
         }
 
         protected override void OnResize(EventArgs e) {
@@ -189,7 +187,6 @@ namespace Lotus {
 
         protected override void OnClosed(EventArgs e) {
             base.OnClosed(e);
-            grid.Dispose();
         }
     }
 }
