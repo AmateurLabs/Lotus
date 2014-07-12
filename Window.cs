@@ -191,7 +191,7 @@ namespace Lotus {
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
             GL.Viewport(0, 0, Width, Height);
-            foreach (Camera cam in IdMap<Camera>.Map.Values) cam.ResetProjectionMatrix();
+            foreach (Camera cam in Entity.GetAll<Camera>()) cam.ResetProjectionMatrix();
             text.ResetView();
         }
 

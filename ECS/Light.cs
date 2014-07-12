@@ -16,7 +16,7 @@ namespace Lotus.ECS {
 
         public static Color4 GetColor(Vector3 normal, Vector3 pos, Color4 baseColor) {
             Color4 result = AmbientColor;
-            foreach (DirectionalLight light in IdMap<DirectionalLight>.Map.Values) {
+            foreach (DirectionalLight light in Entity.GetAll<DirectionalLight>()) {
                 float dot = Vector3.Dot(normal, -light.Direction);
                 if (dot < 0f) continue;
                 dot *= light.Intensity;
@@ -24,8 +24,7 @@ namespace Lotus.ECS {
                 result.G += light.Color.G * dot * baseColor.G;
                 result.B += light.Color.B * dot * baseColor.B;
             }
-            foreach (PointLight light in IdMap<PointLight>.Map.Values) {
-
+            foreach (PointLight light in Entity.GetAll<PointLight>()) {
                 Vector3 lightPos = Vector3.Zero;
                 if (Entity.Has<Transform>(light.Id)) lightPos = Entity.Get<Transform>(light.Id).Position;
                 float dist = (pos - lightPos).Length;

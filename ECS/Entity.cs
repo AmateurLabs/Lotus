@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Lotus.ECS.Internal;
+
 namespace Lotus.ECS {
     public sealed class Entity {
 
@@ -24,6 +26,10 @@ namespace Lotus.ECS {
             T t;
             IdMap<T>.Map.TryGetValue(id, out t);
             return t;
+        }
+
+        public static IEnumerable<T> GetAll<T>() where T : Component {
+            return IdMap<T>.Map.Values;
         }
 
         public static bool Has<T>(int id) where T : Component {

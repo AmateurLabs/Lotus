@@ -10,11 +10,11 @@ namespace Lotus.ECS {
     public class RenderProcessor : Processor {
 
         public override void Render() {
-            foreach (Camera cam in IdMap<Camera>.Map.Values) {
+            foreach (Camera cam in Entity.GetAll<Camera>()) {
                 if (!Entity.Has<Transform>(cam.Id)) continue;
                 cam.Begin(Entity.Get<Transform>(cam.Id).ViewMatrix);
 
-                foreach (Renderer r in IdMap<Renderer>.Map.Values) {
+                foreach (Renderer r in Entity.GetAll<Renderer>()) {
                     if (!Entity.Has<Transform>(r.Id)) continue;
                     if ((r.Layers & cam.Layers) == 0) continue; //If the camera and renderer use different layers, don't draw
                     Transform t = Entity.Get<Transform>(r.Id);

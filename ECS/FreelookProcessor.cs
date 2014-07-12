@@ -14,7 +14,7 @@ namespace Lotus.ECS {
         public override void Update(float dt) {
             if (!Window.Main.CursorVisible && Window.Main.Focused) {
                 Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-                foreach (Freelook look in IdMap<Freelook>.Map.Values) {
+                foreach (Freelook look in Entity.GetAll<Freelook>()) {
                     if (!Entity.Has<Transform>(look.Id)) continue;
                     Transform t = Entity.Get<Transform>(look.Id);
                     float amt = dt * look.MoveSpeed;

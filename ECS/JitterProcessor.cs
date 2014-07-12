@@ -30,7 +30,7 @@ namespace Lotus.ECS {
 
         public override void Update(float dt) {
             world.Step(dt, false);
-            foreach (JitterBody body in IdMap<JitterBody>.Map.Values) {
+            foreach (JitterBody body in Entity.GetAll<JitterBody>()) {
                 Transform t = Entity.Get<Transform>(body.Id);
                 t.Position = Convert(body.Rigidbody.Position);
                 JQuaternion rot = JQuaternion.CreateFromMatrix(body.Rigidbody.Orientation);
@@ -39,7 +39,7 @@ namespace Lotus.ECS {
         }
 
         public override void Render() {
-            foreach (JitterBody body in IdMap<JitterBody>.Map.Values) {
+            foreach (JitterBody body in Entity.GetAll<JitterBody>()) {
                 body.Rigidbody.EnableDebugDraw = true;
                 body.Rigidbody.DebugDraw(new DebugDraw());
             }

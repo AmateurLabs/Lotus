@@ -20,11 +20,11 @@ namespace Lotus.ECS {
         }
 
         public void DoStuff(float timeStep) {
-            foreach (Rigidbody rb in IdMap<Rigidbody>.Map.Values) {
+            foreach (Rigidbody rb in Entity.GetAll<Rigidbody>()) {
                 if (!Entity.Has<Transform>(rb.Id)) continue;
                 Transform t = Entity.Get<Transform>(rb.Id);
 
-                foreach (Attractor atr in IdMap<Attractor>.Map.Values) {
+                foreach (Attractor atr in Entity.GetAll<Attractor>()) {
                     Vector3 pos = Vector3.Zero;
                     Vector3 normal = atr.Normal;
                     if (Entity.Has<Transform>(atr.Id)) {

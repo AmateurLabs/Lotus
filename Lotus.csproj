@@ -48,8 +48,8 @@
     <Compile Include="ECS\Transform.cs" />
     <Compile Include="ECS\Engine.cs" />
     <Compile Include="ECS\Entity.cs" />
-    <Compile Include="ECS\IdMap.cs" />
-    <Compile Include="ECS\IdSet.cs" />
+    <Compile Include="ECS\Internal\IdMap.cs" />
+    <Compile Include="ECS\Internal\IdSet.cs" />
     <Compile Include="ECS\Processor.cs" />
     <Compile Include="ECS\JitterProcessor.cs" />
     <Compile Include="ECS\RenderProcessor.cs" />
