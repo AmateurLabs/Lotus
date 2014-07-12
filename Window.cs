@@ -11,11 +11,11 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
 using Lotus.ECS;
-using Lotus.ECS.Aspects;
-using Lotus.ECS.Modules;
 
 namespace Lotus {
     public class Window : GameWindow {
+
+        public static Window Main;
 
         static HexGrid grid;
         static Camera cam;
@@ -28,7 +28,6 @@ namespace Lotus {
         int frameCount = 0;
         double frameRate = 0.0;
         public bool DebugEnabled = false;
-        Sphere sphere = new Sphere(1, new Vector3((float)Math.Cos(time), (float)Math.Sin(time), 0f), Quaternion.FromAxisAngle(Vector3.UnitX, (float)time));
 
         public static double Time {
             get { return time; }
@@ -36,7 +35,7 @@ namespace Lotus {
 
         public Window()
             : base(1024, 768, GraphicsMode.Default, "Lotus", GameWindowFlags.Default, DisplayDevice.Default, 3, 0, GraphicsContextFlags.ForwardCompatible) {
-
+                Main = this;
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -57,10 +56,6 @@ namespace Lotus {
             grid = new HexGrid(256, 256);
             CursorVisible = false;
 
-<<<<<<< HEAD
-            Engine.Modules.Add(new RenderModule());
-            Engine.Modules.Add(new JitterModule());
-=======
             Engine.Processors.Add(new RenderProcessor());
             Engine.Processors.Add(new JitterProcessor());
             Engine.Processors.Add(new PhysicsProcessor());
@@ -73,7 +68,7 @@ namespace Lotus {
             ent.Get<Transform>().Position = new Vector3(0f, -10f, 0f);
             ent.Add<Renderer>();
             ent.Add<MeshFilter>();
-            ent.Get<MeshFilter>().Mesh = new Cube(1f);
+            ent.Get<MeshFilter>().Mesh = new Cube(1f, 3);
             ent.Add<Rigidbody>();
             ent.Add<Constraint>().MaxPosition = new Vector3(float.PositiveInfinity, 0f, float.PositiveInfinity);
             ent.Get<Constraint>().MinPosition = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
@@ -83,15 +78,14 @@ namespace Lotus {
             terrain.Add<MeshFilter>();
             terrain.Get<MeshFilter>().Mesh = new HexGrid(256, 256);
             //terrain.Get<Rigidbody>().Velocity = -Vector3.UnitY * 10f;
-        }
->>>>>>> defec372c2420486fcb316828256175e831be637
 
-            Entity.Add<ATransform>(0);
-            Entity.Get<ATransform>(0).Position = new Vector3(0f, -10f, 0f);
-            Entity.Add<ARenderer>(0);
-            Entity.Add<AMesh>(0);
-            Entity.Get<AMesh>(0).Mesh = new Cube(new Vector3(0f, -10f, 0f), Quaternion.Identity, 1f, 3);
+            Entity.Add<Transform>(0);
+            Entity.Get<Transform>(0).Position = new Vector3(0f, -10f, 0f);
+            Entity.Add<Renderer>(0);
+            Entity.Add<MeshFilter>(0);
+            Entity.Get<MeshFilter>(0).Mesh = new Cube(1f, 3);
         }
+
         float step = .01f;
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
@@ -109,8 +103,8 @@ namespace Lotus {
                 Entity.Get<AJitterBody>(0).Rigidbody.AddTorque(Jitter.LinearMath.JVector.Forward * 100f);
             }*/
 
-            if (Input.IsDown(Key.F)) Entity.Get<ATransform>(0).Scale += Vector3.One * (float)e.Time;
-            if (Input.IsDown(Key.R)) Entity.Get<ATransform>(0).Scale -= Vector3.One * (float)e.Time;
+            if (Input.IsDown(Key.F)) Entity.Get<Transform>(0).Scale += Vector3.One * (float)e.Time;
+            if (Input.IsDown(Key.R)) Entity.Get<Transform>(0).Scale -= Vector3.One * (float)e.Time;
 
             if (Input.IsPressed(Key.F1)) DebugEnabled = !DebugEnabled;
 
@@ -147,23 +141,14 @@ namespace Lotus {
 
             GL.Enable(EnableCap.DepthTest);
             cam.Begin();
-            grid.Draw();
             TransformGizmo();
-            Quaternion cubeRot = Quaternion.FromAxisAngle(Vector3.UnitX, (float)Math.Cos(Time));
-            cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitY, (float)Math.Sin(Time));
-            cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitZ, (float)Math.Cos(Time));
-            new Cube(Vector3.UnitY, cubeRot, 1f, 3).Draw();
-            new Cube(Vector3.UnitX, Quaternion.Identity, 1f, 3).Draw();
-            new Cube(Vector3.UnitZ, Quaternion.Identity, 1f, 3).Draw();
             //new Sphere(1f, new Vector3((float)Math.Cos(time) * 2.5f, (float)Math.Sin(time * 4), (float)Math.Sin(time) * 2.5f), Quaternion.FromAxisAngle(Vector3.UnitZ, (float)time)).Draw();
             Engine.Render();
-            sphere.Draw();
             Debug.DrawStack();
             cam.End();
             uiCam.Begin();
             if (DebugEnabled)
                 DebugReadout();
-            new Square(new Vector3(20f, 20f, 1f), Quaternion.Identity, 20f).Draw();
             uiCam.End();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);

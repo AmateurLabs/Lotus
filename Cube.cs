@@ -15,14 +15,13 @@ namespace Lotus
         int Res;
         float Scale;
 
-        public Cube(Vector3 loc, Quaternion rot, float scl, int res) : base()
+        public Cube(float scl, int res)
         {
            //min res is 3
             if (res < 0) res = -res;
             if (res < 3) res = 3;
             if (scl < 0) scl = -scl;
             PGen();
-            
         }
 
         public override void RenGen()
