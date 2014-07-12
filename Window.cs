@@ -54,20 +54,28 @@ namespace Lotus {
             text = new Text();
             CursorVisible = false;
 
-            Engine.Processors.Add(new RenderSubsystem());
-            Engine.Processors.Add(new JitterSubsystem());
+            Engine.Processors.Add(new RenderProcessor());
+            Engine.Processors.Add(new JitterProcessor());
+            Engine.Processors.Add(new PhysicsProcessor());
 
+            Entity worldEntity = new Entity();
+            worldEntity.Add<Attractor>().Type = Attractor.AttractionType.World;
+            worldEntity.Get<Attractor>().Acceleration = 9.81f;
             Entity ent = new Entity();
             ent.Add<Transform>();
-            ent.Get<Transform>().Position = new Vector3(0f, -1f, 0f);
+            ent.Get<Transform>().Position = new Vector3(0f, -10f, 0f);
             ent.Add<Renderer>();
             ent.Add<MeshFilter>();
             ent.Get<MeshFilter>().Mesh = new Cube(1f);
+            ent.Add<Rigidbody>();
+            ent.Add<Constraint>().MaxPosition = new Vector3(float.PositiveInfinity, 0f, float.PositiveInfinity);
+            ent.Get<Constraint>().MinPosition = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
             Entity terrain = new Entity();
             terrain.Add<Transform>();
             terrain.Add<Renderer>();
             terrain.Add<MeshFilter>();
             terrain.Get<MeshFilter>().Mesh = new HexGrid(256, 256);
+            //terrain.Get<Rigidbody>().Velocity = -Vector3.UnitY * 10f;
         }
 
         float step = .01f;

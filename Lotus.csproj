@@ -31,8 +31,11 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="ECS\Attractor.cs" />
+    <Compile Include="ECS\Constraint.cs" />
     <Compile Include="ECS\MeshFilter.cs" />
-    <Compile Include="ECS\Movement.cs" />
+    <Compile Include="ECS\Rigidbody.cs" />
+    <Compile Include="ECS\PhysicsProcessor.cs" />
     <Compile Include="Square.cs" />
     <Compile Include="Cube.cs" />
     <Compile Include="Debug.cs" />
@@ -45,8 +48,8 @@
     <Compile Include="ECS\IdMap.cs" />
     <Compile Include="ECS\IdSet.cs" />
     <Compile Include="ECS\Processor.cs" />
-    <Compile Include="ECS\JitterSubsystem.cs" />
-    <Compile Include="ECS\RenderSubsystem.cs" />
+    <Compile Include="ECS\JitterProcessor.cs" />
+    <Compile Include="ECS\RenderProcessor.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="Mesh.cs" />

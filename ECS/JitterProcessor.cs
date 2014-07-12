@@ -12,13 +12,13 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace Lotus.ECS {
-    public class JitterSubsystem : Processor {
+    public class JitterProcessor : Processor {
 
         World world;
         CollisionSystem collisionSystem;
         RigidBody floor;
 
-        public JitterSubsystem() {
+        public JitterProcessor() {
             collisionSystem = new CollisionSystemSAP();
             world = new World(collisionSystem);
             world.Gravity = new JVector(world.Gravity.X, -world.Gravity.Y, world.Gravity.Z);

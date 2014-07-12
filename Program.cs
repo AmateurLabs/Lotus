@@ -7,7 +7,7 @@ namespace Lotus {
 		public static void Main(string[] args) {
 
 			using(var game = new Window()) {
-				game.Run(60.0);
+				game.Run();
 			}
 		}
 	}
