@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL;
 using SimplexNoise;
 
 namespace Lotus {
-	public class HexGrid : IDisposable {
+	public class HexGrid : Mesh {
 
 		public readonly int Width;
 		public readonly int Height;
@@ -52,11 +52,10 @@ namespace Lotus {
 			GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(VBOArr.Length), VBOArr, BufferUsageHint.DynamicDraw);
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBOID);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(IBOArr.Length * 4), IBOArr, BufferUsageHint.DynamicDraw);
-		}
 
-        //If the hexgrid gets removed from memory without cleaning up after itself, prevent memory leaks
-		~HexGrid() {
-			if(!disposed) Dispose();
+            Window.Main.Closed += (sender, e) => {
+                Dispose();
+            };
 		}
 
         public float GetHeight(float x, float z) {
@@ -136,9 +135,13 @@ namespace Lotus {
             //Primitive way of updating VBO data without resending everything; probably impractical
             //GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             //GL.BufferSubData(BufferTarget.ArrayBuffer, new IntPtr(32), new IntPtr(4), new float[] { (float)Math.Sin(time) });
+            Vector3 hex;
+            if (Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
+                Debug.DrawText(new Vector2(10f, 200f), "(" + hex.X + ", " + hex.Y + ")");
+            }
         }
 
-		public void Draw() {
+		public override void RenGen() {
 
             //We are drawing using vertex position data, color data, normal data, and triangle index data
 			GL.EnableClientState(ArrayCap.VertexArray);
@@ -219,6 +222,6 @@ namespace Lotus {
 			GL.DeleteBuffer(VBOID);
 			GL.DeleteBuffer(IBOID);
 		}
-	}
+    }
 }
 

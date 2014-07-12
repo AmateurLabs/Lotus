@@ -6,21 +6,16 @@ using System.Text;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-using Lotus.ECS.Aspects;
-
-namespace Lotus.ECS.Modules {
-    public class RenderModule : Module {
+namespace Lotus.ECS {
+    public class RenderSubsystem : Processor {
 
         public override void Render() {
-            foreach (ARenderer r in IdMap<ARenderer>.Map.Values) {
-                GL.PushMatrix();
-                ATransform t = Entity.Get<ATransform>(r.Id);
-                Matrix4 viewMatrix = t.ViewMatrix;
-                GL.MultMatrix(ref viewMatrix);
-                if (Entity.Has<AMesh>(r.Id)) {
-                    Entity.Get<AMesh>(r.Id).Mesh.Draw();
+            foreach (Renderer r in IdMap<Renderer>.Map.Values) {
+                Transform t = Entity.Get<Transform>(r.Id);
+                if (Entity.Has<MeshFilter>(r.Id)) { //If there is a Mesh aspect, draw that
+                    Entity.Get<MeshFilter>(r.Id).Mesh.Draw(t.ViewMatrix, t.ScalingMatrix*t.RotationMatrix);
                 }
-                else {
+                else { //Otherwise, draw an XYZ axis gizmo so we can see where it is
                     GL.Begin(PrimitiveType.Lines);
                     GL.Color3(1f, 0f, 0f);
                     GL.Vertex3(0f, 0f, 0f);
@@ -36,13 +31,6 @@ namespace Lotus.ECS.Modules {
                     GL.Vertex3(0f, 0f, 1f);
                     GL.End();
                 }
-                //GL.Translate(t.Position);
-                //Vector3 axis;
-                //float angle;
-                //t.Rotation.ToAxisAngle(out axis, out angle);
-                //GL.Rotate(MathHelper.DegreesToRadians(angle), axis);
-                //new Sphere(1f, t.Position, t.Rotation).Draw();
-                GL.PopMatrix();
             }
         }
     }

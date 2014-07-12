@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Lotus.ECS.Aspects {
-    public class AMesh : Aspect {
+namespace Lotus.ECS {
+    public class MeshFilter : Component {
 
         public Mesh Mesh;
 
-        public AMesh(int id) : base(id) { }
+        public MeshFilter(int id) : base(id) { }
     }
 }

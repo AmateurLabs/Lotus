@@ -5,14 +5,14 @@ using System.Text;
 
 using OpenTK;
 
-namespace Lotus.ECS.Aspects {
-    public class ATransform : Aspect {
+namespace Lotus.ECS {
+    public class Transform : Component {
 
         public Vector3 Position = Vector3.Zero;
         public Quaternion Rotation = Quaternion.Identity;
         public Vector3 Scale = Vector3.One;
 
-        public ATransform(int id) : base(id) { }
+        public Transform(int id) : base(id) { }
 
         public Matrix4 ViewMatrix {
             get {
@@ -36,6 +36,14 @@ namespace Lotus.ECS.Aspects {
             get {
                 return Matrix4.CreateScale(Scale);
             }
+        }
+
+        public Vector3 ToWorldPoint(Vector3 p) {
+            return Vector3.Transform(p, ViewMatrix);
+        }
+
+        public Vector3 ToWorldNormal(Vector3 n) {
+            return Vector3.TransformNormal(n, ScalingMatrix * RotationMatrix).Normalized();
         }
     }
 }

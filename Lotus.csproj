@@ -31,21 +31,22 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="ECS\Aspects\AMesh.cs" />
+    <Compile Include="ECS\MeshFilter.cs" />
+    <Compile Include="ECS\Movement.cs" />
     <Compile Include="Square.cs" />
     <Compile Include="Cube.cs" />
     <Compile Include="Debug.cs" />
-    <Compile Include="ECS\Aspect.cs" />
-    <Compile Include="ECS\Aspects\AJitterBody.cs" />
-    <Compile Include="ECS\Aspects\ARenderer.cs" />
-    <Compile Include="ECS\Aspects\ATransform.cs" />
+    <Compile Include="ECS\Component.cs" />
+    <Compile Include="ECS\JitterBody.cs" />
+    <Compile Include="ECS\Renderer.cs" />
+    <Compile Include="ECS\Transform.cs" />
     <Compile Include="ECS\Engine.cs" />
     <Compile Include="ECS\Entity.cs" />
     <Compile Include="ECS\IdMap.cs" />
     <Compile Include="ECS\IdSet.cs" />
-    <Compile Include="ECS\Module.cs" />
-    <Compile Include="ECS\Modules\JitterModule.cs" />
-    <Compile Include="ECS\Modules\RenderModule.cs" />
+    <Compile Include="ECS\Processor.cs" />
+    <Compile Include="ECS\JitterSubsystem.cs" />
+    <Compile Include="ECS\RenderSubsystem.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="Mesh.cs" />

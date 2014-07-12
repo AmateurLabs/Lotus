@@ -15,6 +15,7 @@ namespace Lotus
         int Res;
         float Scale;
 
+<<<<<<< HEAD
         public Cube(Vector3 loc, Quaternion rot, float scl, int res) : base(loc, rot)
         {
            //min res is 3
@@ -55,6 +56,18 @@ namespace Lotus
 
             }
             
+=======
+        public Cube(float scl)
+        {
+            points[0] = new Vector3(scl, scl, scl);
+            points[1] = new Vector3(scl, scl, -scl);
+            points[2] = new Vector3(scl, -scl, scl);
+            points[3] = new Vector3(scl, -scl, -scl);
+            points[4] = new Vector3(-scl, scl, scl);
+            points[5] = new Vector3(-scl, scl, -scl);
+            points[6] = new Vector3(-scl, -scl, scl);
+            points[7] = new Vector3(-scl, -scl, -scl);
+>>>>>>> origin/master
         }
 
         public void PGen()
