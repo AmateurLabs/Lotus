@@ -11,52 +11,70 @@ namespace Lotus
 {
     class Cube: Mesh
     {
-        Vector3[] points = new Vector3[8];
+        Vector3[,,] Points;
+        int Res;
+        float Scale;
 
-        public Cube(Vector3 loc, Quaternion rot, float scl) : base(loc, rot)
+        public Cube(Vector3 loc, Quaternion rot, float scl, int res) : base(loc, rot)
         {
-            points[0] = new Vector3(scl, scl, scl);
-            points[1] = new Vector3(scl, scl, -scl);
-            points[2] = new Vector3(scl, -scl, scl);
-            points[3] = new Vector3(scl, -scl, -scl);
-            points[4] = new Vector3(-scl, scl, scl);
-            points[5] = new Vector3(-scl, scl, -scl);
-            points[6] = new Vector3(-scl, -scl, scl);
-            points[7] = new Vector3(-scl, -scl, -scl);
-            for (int i = 0; i < points.Length; i++)
-            {
-                points[i] += loc;
-            }
+           //min res is 3
+            if (res < 0) res = -res;
+            if (res < 3) res = 3;
+            if (scl < 0) scl = -scl;
+            PGen();
+            
         }
 
         public override void RenGen()
         {
-            GL.Begin(PrimitiveType.Quads);
-            DrawVertex(points[0], Vector3.UnitX);
-            DrawVertex(points[1], Vector3.UnitX);
-            DrawVertex(points[3], Vector3.UnitX);
-            DrawVertex(points[2], Vector3.UnitX);
-            DrawVertex(points[0], Vector3.UnitY);
-            DrawVertex(points[1], Vector3.UnitY);
-            DrawVertex(points[5], Vector3.UnitY);
-            DrawVertex(points[4], Vector3.UnitY);
-            DrawVertex(points[0], Vector3.UnitZ);
-            DrawVertex(points[2], Vector3.UnitZ);
-            DrawVertex(points[6], Vector3.UnitZ);
-            DrawVertex(points[4], Vector3.UnitZ);
-            DrawVertex(points[4], -Vector3.UnitX);
-            DrawVertex(points[5], -Vector3.UnitX);
-            DrawVertex(points[7], -Vector3.UnitX);
-            DrawVertex(points[6], -Vector3.UnitX);
-            DrawVertex(points[2], -Vector3.UnitY);
-            DrawVertex(points[3], -Vector3.UnitY);
-            DrawVertex(points[7], -Vector3.UnitY);
-            DrawVertex(points[6], -Vector3.UnitY);
-            DrawVertex(points[1], -Vector3.UnitZ);
-            DrawVertex(points[3], -Vector3.UnitZ);
-            DrawVertex(points[7], -Vector3.UnitZ);
-            DrawVertex(points[5], -Vector3.UnitZ);
-            GL.End();
+            Console.WriteLine("1");
+            for (int i = 0; i < 6; i++)
+            {
+                Vector3 normal;
+                if (i < 2) normal = Vector3.UnitX;
+                else if (i < 4) normal = Vector3.UnitY;
+                else normal = Vector3.UnitZ;
+                if (i % 2 != 0) normal = -normal;
+
+                for(int j=0; j<Res; j++){
+                    int k;
+                    k = 0;
+                    while (k < Res)
+                    {
+                        GL.Begin(PrimitiveType.QuadStrip);
+                        DrawVertex(Points[i, j, k], normal);
+                        DrawVertex(Points[i, j + 1, k++], normal);
+                        if (!(k<Res)) break;
+                        DrawVertex(Points[i, j + 1, k], normal);
+                        DrawVertex(Points[i, j, k++], normal);
+                        GL.End();
+                    }
+
+                }
+
+
+            }
+            
+        }
+
+        public void PGen()
+        {
+            Points = new Vector3[6,Res,Res];
+
+            float max_val = Scale / 2;
+            float step = Scale / Res;
+            //X, -X, Y, -Y, Z, -Z
+            for (int i = 0; i < Res; i++)
+            {
+                for (int j = 0; j < Res; j++){
+                    Points[0, i, j] = new Vector3(max_val, -max_val + step * i, -max_val + step * j);
+                    Points[1, i, j] = new Vector3(-max_val, -max_val + step * i, -max_val + step * j);
+                    Points[2, i, j] = new Vector3(-max_val + step * i, max_val, -max_val + step * j);
+                    Points[3, i, j] = new Vector3(-max_val + step * i, -max_val, -max_val + step * j);
+                    Points[2, i, j] = new Vector3(-max_val + step * i, -max_val + step * j, max_val);
+                    Points[3, i, j] = new Vector3(-max_val + step * i, -max_val + step * j, -max_val);
+                }
+            }
         }
     }
 }

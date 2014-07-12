@@ -64,7 +64,7 @@ namespace Lotus {
             Entity.Get<ATransform>(0).Position = new Vector3(0f, -10f, 0f);
             Entity.Add<ARenderer>(0);
             Entity.Add<AMesh>(0);
-            Entity.Get<AMesh>(0).Mesh = new Cube(new Vector3(0f, -10f, 0f), Quaternion.Identity, 1f);
+            Entity.Get<AMesh>(0).Mesh = new Cube(new Vector3(0f, -10f, 0f), Quaternion.Identity, 1f, 3);
         }
         float step = .01f;
         protected override void OnUpdateFrame(FrameEventArgs e) {
@@ -126,9 +126,9 @@ namespace Lotus {
             Quaternion cubeRot = Quaternion.FromAxisAngle(Vector3.UnitX, (float)Math.Cos(Time));
             cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitY, (float)Math.Sin(Time));
             cubeRot *= Quaternion.FromAxisAngle(Vector3.UnitZ, (float)Math.Cos(Time));
-            new Cube(Vector3.UnitY, cubeRot, 1f).Draw();
-            new Cube(Vector3.UnitX, Quaternion.Identity, 1f).Draw();
-            new Cube(Vector3.UnitZ, Quaternion.Identity, 1f).Draw();
+            new Cube(Vector3.UnitY, cubeRot, 1f, 3).Draw();
+            new Cube(Vector3.UnitX, Quaternion.Identity, 1f, 3).Draw();
+            new Cube(Vector3.UnitZ, Quaternion.Identity, 1f, 3).Draw();
             //new Sphere(1f, new Vector3((float)Math.Cos(time) * 2.5f, (float)Math.Sin(time * 4), (float)Math.Sin(time) * 2.5f), Quaternion.FromAxisAngle(Vector3.UnitZ, (float)time)).Draw();
             Engine.Render();
             sphere.Draw();
