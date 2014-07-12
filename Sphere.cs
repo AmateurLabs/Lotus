@@ -69,7 +69,7 @@ namespace Lotus
                 int m = 0;
 
 
-                GL.Color4(Light.GetColor(ToWorldNormal(circles[row, sec * 2 - 1]), ToWorldPoint(circles[sec - 2, 0]), Color4.White));
+                GL.Color4(Light.GetColor(ToWorldNormal(circles[row, sec * 2 - 1]), ToWorldPoint(circles[row, sec*2-1]), Color4.White));
                 GL.Vertex3(circles[row, sec*2-1]);
                 for (int i = 0; i < sec*2-1; i++)
                 {

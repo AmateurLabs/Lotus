@@ -15,8 +15,7 @@ namespace Lotus
         int Res;
         float Scale;
 
-<<<<<<< HEAD
-        public Cube(Vector3 loc, Quaternion rot, float scl, int res) : base(loc, rot)
+        public Cube(Vector3 loc, Quaternion rot, float scl, int res) : base()
         {
            //min res is 3
             if (res < 0) res = -res;
@@ -37,7 +36,8 @@ namespace Lotus
                 else normal = Vector3.UnitZ;
                 if (i % 2 != 0) normal = -normal;
 
-                for(int j=0; j<Res; j++){
+                for (int j = 0; j < Res; j++)
+                {
                     int k;
                     k = 0;
                     while (k < Res)
@@ -45,7 +45,7 @@ namespace Lotus
                         GL.Begin(PrimitiveType.QuadStrip);
                         DrawVertex(Points[i, j, k], normal);
                         DrawVertex(Points[i, j + 1, k++], normal);
-                        if (!(k<Res)) break;
+                        if (!(k < Res)) break;
                         DrawVertex(Points[i, j + 1, k], normal);
                         DrawVertex(Points[i, j, k++], normal);
                         GL.End();
@@ -55,19 +55,6 @@ namespace Lotus
 
 
             }
-            
-=======
-        public Cube(float scl)
-        {
-            points[0] = new Vector3(scl, scl, scl);
-            points[1] = new Vector3(scl, scl, -scl);
-            points[2] = new Vector3(scl, -scl, scl);
-            points[3] = new Vector3(scl, -scl, -scl);
-            points[4] = new Vector3(-scl, scl, scl);
-            points[5] = new Vector3(-scl, scl, -scl);
-            points[6] = new Vector3(-scl, -scl, scl);
-            points[7] = new Vector3(-scl, -scl, -scl);
->>>>>>> origin/master
         }
 
         public void PGen()
