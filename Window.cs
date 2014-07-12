@@ -43,8 +43,8 @@ namespace Lotus {
             //Light.List.Add(new DirectionalLight(Vector3.UnitX, Color4.Red, 1f));
             //Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.Green, 1f));
             //Light.List.Add(new DirectionalLight(Vector3.UnitZ, Color4.Blue, 1f));
-            Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.White, 0.125f));
-            Light.List.Add(new PointLight(Vector3.Zero, Color4.Cyan, 2f));
+            //Light.List.Add(new DirectionalLight(Vector3.UnitY, Color4.White, 0.125f));
+            //Light.List.Add(new PointLight(Vector3.Zero, Color4.Cyan, 2f));
             cam = new Camera((float)Width, (float)Height, false, false, true);
             cam.Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
@@ -61,6 +61,12 @@ namespace Lotus {
             Entity worldEntity = new Entity();
             worldEntity.Add<Attractor>().Type = Attractor.AttractionType.World;
             worldEntity.Get<Attractor>().Acceleration = 9.81f;
+            worldEntity.Add<DirectionalLight>().Direction = Vector3.UnitY;
+            worldEntity.Get<DirectionalLight>().Intensity = 0.125f;
+            Entity light = new Entity();
+            light.Add<Transform>();
+            light.Add<PointLight>().Radius = 2f;
+            light.Get<PointLight>().Color = Color4.Cyan;
             Entity ent = new Entity();
             ent.Add<Transform>().Position = new Vector3(0f, -10f, 0f);
             ent.Add<Renderer>();
