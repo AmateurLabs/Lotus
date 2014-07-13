@@ -11,19 +11,26 @@ namespace Lotus.ECS {
 
         public override void Render() {
             foreach (Camera cam in Entity.GetAll<Camera>()) {
-                if (!Entity.Has<Transform>(cam.Id)) continue;
-                cam.Begin(Entity.Get<Transform>(cam.Id).ViewMatrix);
+                if (Entity.Has<Transform>(cam.Id))
+                    cam.Begin(Entity.Get<Transform>(cam.Id).ViewMatrix);
+                else
+                    cam.Begin(Matrix4.Identity);
 
                 foreach (Renderer r in Entity.GetAll<Renderer>()) {
-                    if (!Entity.Has<Transform>(r.Id)) continue;
                     if ((r.Layers & cam.Layers) == 0) continue; //If the camera and renderer use different layers, don't draw
-                    Transform t = Entity.Get<Transform>(r.Id);
+                    Matrix4 viewMatrix = Matrix4.Identity;
+                    Matrix4 normalMatrix = Matrix4.Identity;
+                    if (Entity.Has<Transform>(r.Id)) {
+                        Transform t = Entity.Get<Transform>(r.Id);
+                        viewMatrix = t.ViewMatrix;
+                        normalMatrix = t.ScalingMatrix * t.RotationMatrix;
+                    }
                     if (Entity.Has<MeshFilter>(r.Id)) { //If there is a Mesh aspect, draw that
-                        Entity.Get<MeshFilter>(r.Id).Mesh.Draw(t.ViewMatrix, t.ScalingMatrix * t.RotationMatrix);
+                        Entity.Get<MeshFilter>(r.Id).Mesh.Draw(viewMatrix, normalMatrix);
                     }
                     else { //Otherwise, draw an XYZ axis gizmo so we can see where it is
                         GL.PushMatrix();
-                        Matrix4 viewMatrix = t.ViewMatrix;
+                        
                         GL.MultMatrix(ref viewMatrix);
                         GL.Begin(PrimitiveType.Lines);
                         GL.Color3(1f, 0f, 0f);
