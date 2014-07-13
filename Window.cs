@@ -19,6 +19,7 @@ namespace Lotus {
         static Entity cam;
         static Entity uiCam;
         static Text text;
+        static Entity shape;
 
         static double time = 0.0;
         double timeLeft = 0.0;
@@ -81,7 +82,18 @@ namespace Lotus {
             uiCam.Add<Camera>().IsOrthographic = true;
             uiCam.Get<Camera>().UseAlphaBlend = true;
             uiCam.Get<Camera>().Layers = RenderLayers.GUI;
+
+            shape = new Entity();
+            shape.Add<Renderer>().Layers = RenderLayers.GUI;
+            shape.Add<MeshFilter>().Mesh = new Spline(
+                new Spline.Point(new Vector3(100f, 100f, 0f)),
+                new Spline.Point(new Vector3(200f, 200f, 0f)),
+                new Spline.Point(new Vector3(300f, 100f, 0f))
+            );
         }
+
+        int pointId;
+        int pointType;
 
         float step = .01f;
         protected override void OnUpdateFrame(FrameEventArgs e) {
@@ -104,6 +116,43 @@ namespace Lotus {
 
             if (Input.IsDown(Key.PageUp)) Light.AmbientColor = new Color4(Light.AmbientColor.R + step, Light.AmbientColor.G + step, Light.AmbientColor.B + step, Light.AmbientColor.A + step);
             if (Input.IsDown(Key.PageDown)) Light.AmbientColor = new Color4(Light.AmbientColor.R - step, Light.AmbientColor.G - step, Light.AmbientColor.B - step, Light.AmbientColor.A - step);
+
+            Spline spline = shape.Get<MeshFilter>().Mesh as Spline;
+            Vector3 mPos = new Vector3(Input.MousePosition.X, Input.MousePosition.Y, 0f);
+            if (Input.IsPressed(MouseButton.Left)) {
+                float minDist = 25f;
+                pointType = -1;
+                for (int i = 0; i < spline.Points.Count; i++) {
+                    float dist = float.PositiveInfinity;
+                    if (Input.Shift) {
+                        dist = (spline.Points[i].Position + spline.Points[i].LeftControl - mPos).Length;
+                        if (dist < minDist) {
+                            minDist = dist;
+                            pointId = i;
+                            pointType = 1;
+                        }
+                        dist = (spline.Points[i].Position + spline.Points[i].RightControl - mPos).Length;
+                        if (dist < minDist) {
+                            minDist = dist;
+                            pointId = i;
+                            pointType = 2;
+                        }
+                    }
+                    else {
+                        dist = (spline.Points[i].Position - mPos).Length;
+                        if (dist < minDist) {
+                            minDist = dist;
+                            pointId = i;
+                            pointType = 0;
+                        }
+                    }
+                }
+            }
+            if (Input.IsDown(MouseButton.Left)) {
+                if (pointType == 0) spline.Points[pointId].Position = mPos;
+                else if (pointType == 1) spline.Points[pointId].LeftControl = mPos - spline.Points[pointId].Position;
+                else if (pointType == 2) spline.Points[pointId].RightControl = mPos - spline.Points[pointId].Position;
+            }
 
             time += e.Time;
             float dt = (float)e.Time;

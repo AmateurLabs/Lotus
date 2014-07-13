@@ -39,6 +39,7 @@
     <Compile Include="ECS\RenderLayers.cs" />
     <Compile Include="ECS\Rigidbody.cs" />
     <Compile Include="ECS\PhysicsProcessor.cs" />
+    <Compile Include="Spline.cs" />
     <Compile Include="Square.cs" />
     <Compile Include="Cube.cs" />
     <Compile Include="Debug.cs" />
