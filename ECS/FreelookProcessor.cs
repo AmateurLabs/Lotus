@@ -9,11 +9,9 @@ using OpenTK.Input;
 namespace Lotus.ECS {
     public class FreelookProcessor : Processor {
 
-        public Vector2 lastMousePos = new Vector2();
-
         public override void Update(float dt) {
             if (!Window.Main.CursorVisible && Window.Main.Focused) {
-                Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                Vector2 delta = Input.MouseDelta;
                 foreach (Freelook look in Entity.GetAll<Freelook>()) {
                     if (!Entity.Has<Transform>(look.Id)) continue;
                     Transform t = Entity.Get<Transform>(look.Id);
@@ -24,11 +22,9 @@ namespace Lotus.ECS {
                     if (Input.IsDown(Key.D)) Move(t, amt, 0, 0f);
                     if (Input.IsDown(Key.Q)) Move(t, 0f, amt, 0f);
                     if (Input.IsDown(Key.E)) Move(t, 0f, -amt, 0f);
-                    Rotate(t, delta.Y * look.RotateSpeed, delta.X * look.RotateSpeed, 0f); //Flipped because moving the mouse horizontally actually rotates on the Y axis, etc.
+                    Rotate(t, -delta.Y * look.RotateSpeed, -delta.X * look.RotateSpeed, 0f); //Flipped because moving the mouse horizontally actually rotates on the Y axis, etc.
                 }
-                Mouse.SetPosition(Window.Main.Bounds.Left + Window.Main.Bounds.Width / 2, Window.Main.Bounds.Top + Window.Main.Bounds.Height / 2);
             }
-            lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
         }
 
         public void Move(Transform t, float x, float y, float z) {
