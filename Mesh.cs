@@ -30,7 +30,7 @@ namespace Lotus
         }
 
         public Vector3 ToWorldNormal(Vector3 n) {
-            return Vector3.TransformNormal(n, normalMatrix);
+            return Vector3.Transform(n, normalMatrix);
         }
 
         public Color4 GetColor(Vector3 vertex, Vector3 normal) {
@@ -46,6 +46,8 @@ namespace Lotus
             GL.Color4(GetColor(vertex, normal));
             GL.Vertex3(vertex);
         }
+
+        public virtual void Update() { }
 
         public void Draw(Matrix4 viewMatrix, Matrix4 normalMatrix)
         {

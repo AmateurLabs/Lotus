@@ -10,13 +10,16 @@ using OpenTK.Graphics.OpenGL;
 namespace Lotus.ECS {
     public abstract class Light : Component {
 
+        protected static List<DirectionalLight> dirLights = new List<DirectionalLight>();
+        protected static List<PointLight> pointLights = new List<PointLight>();
+
         public Light(int id) : base(id) { }
 
         public static Color4 AmbientColor = new Color4(0.25f, 0.25f, 0.25f, 1f);
 
         public static Color4 GetColor(Vector3 normal, Vector3 pos, Color4 baseColor) {
             Color4 result = AmbientColor;
-            foreach (DirectionalLight light in Entity.GetAll<DirectionalLight>()) {
+            foreach (DirectionalLight light in dirLights) {
                 float dot = Vector3.Dot(normal, -light.Direction);
                 if (dot < 0f) continue;
                 dot *= light.Intensity;
@@ -24,10 +27,10 @@ namespace Lotus.ECS {
                 result.G += light.Color.G * dot * baseColor.G;
                 result.B += light.Color.B * dot * baseColor.B;
             }
-            foreach (PointLight light in Entity.GetAll<PointLight>()) {
+            foreach (PointLight light in pointLights) {
                 Vector3 lightPos = Vector3.Zero;
-                if (Entity.Has<Transform>(light.Id)) lightPos = Entity.Get<Transform>(light.Id).Position;
-                float dist = (pos - lightPos).Length;
+                /*if (Entity.Has<Transform>(light.Id)) */lightPos = Entity.Get<Transform>(light.Id).Position;
+                float dist = (pos - lightPos).LengthFast;
                 float attenuation = light.Intensity / (1f + (2f / light.Radius) * dist + (1f / (light.Radius * light.Radius)) * dist * dist);
                 result.R += light.Color.R * attenuation * baseColor.R;
                 result.G += light.Color.G * attenuation * baseColor.G;
@@ -54,13 +57,13 @@ namespace Lotus.ECS {
 
         public float Radius = 1f;
 
-        public PointLight(int id) : base(id) { }
+        public PointLight(int id) : base(id) { pointLights.Add(this); }
     }
 
     public class DirectionalLight : Light {
 
         public Vector3 Direction = Vector3.UnitY;
 
-        public DirectionalLight(int id) : base(id) { }
+        public DirectionalLight(int id) : base(id) { dirLights.Add(this); }
     }
 }

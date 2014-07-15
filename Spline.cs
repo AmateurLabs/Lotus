@@ -38,22 +38,15 @@ namespace Lotus {
             return A.Position * a * a * a + (A.Position + A.RightControl) * 3 * a * a * b + (B.Position + B.LeftControl) * 3 * a * b * b + B.Position * b * b * b;
         }
 
+        const int SEGMENTS = 24;
+
         public override void RenGen() {
             GL.Begin(PrimitiveType.Polygon);
             GL.Color4(Color4.White);
             for (int i = 0; i < Points.Count; i++) {
-                float step = 0.1f;
+                float step = 1f/SEGMENTS;
                 for (float t = 0f; t <= 1.0001f; t += step) {
                     GL.Vertex3(Evaluate(Points[i], Points[(i + 1) % Points.Count], t) - Vector3.UnitZ * 2f);
-                }
-            }
-            GL.End();
-            GL.Begin(PrimitiveType.LineLoop);
-            GL.Color4(Color4.Black);
-            for (int i = 0; i < Points.Count; i++) {
-                float step = 0.1f;
-                for (float t = 0f; t <= 1.0001f; t += step) {
-                    GL.Vertex3(Evaluate(Points[i], Points[(i + 1) % Points.Count], t) - Vector3.UnitZ);
                 }
             }
             GL.End();

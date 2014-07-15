@@ -7,6 +7,8 @@ using SimplexNoise;
 using Lotus.ECS;
 
 namespace Lotus {
+
+    //[Obsolete("HexGrid leaks graphics memory and isn't updated when lights change. Use HexTerrain instead.", true)]
 	public class HexGrid : Mesh {
 
 		public readonly int Width;
@@ -17,6 +19,8 @@ namespace Lotus {
 		public readonly uint[] IBOArr;
 		public readonly int VBOID;
 		public readonly int IBOID;
+        public Vector3[] Vertices;
+        public Vector3[] Normals;
 
         public const int VERT_STRIDE = 32;
 
@@ -44,6 +48,9 @@ namespace Lotus {
 			IBOArr = new uint[Width * Height * 6 * 3];
 			IBOID = GL.GenBuffer();
 
+            Vertices = new Vector3[Width * Height * 7];
+            Normals = new Vector3[Width * Height * 7];
+
 			for(int x = 0; x < Width; x++) {
 				for(int y = 0; y < Height; y++) {
 					AddHex(x, y);
@@ -51,7 +58,7 @@ namespace Lotus {
 			}
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, VBOID);
-			GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(VBOArr.Length), VBOArr, BufferUsageHint.DynamicDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(VBOArr.Length), VBOArr, BufferUsageHint.StreamDraw);
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBOID);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, new IntPtr(IBOArr.Length * 4), IBOArr, BufferUsageHint.DynamicDraw);
 
@@ -69,17 +76,16 @@ namespace Lotus {
 		private int t = 0;
 
 		public void AddVertex(float x, float z) {
-			float y = GetHeight(x, z);
+			float y = GetHeight(x, z) * 8f;
             float dx = GetHeight(x - 0.5f, z)*8f - GetHeight(x + 0.5f, z)*8f;
             float dz = GetHeight(x, z - 0.5f)*8f - GetHeight(x, z + 0.5f)*8f;
+
+            Vector3 vertex = new Vector3(x, y, z);
             Vector3 normal = new Vector3(-dx, -1f, -dz).Normalized();
-            float dot = Vector3.Dot(normal, Vector3.UnitY);
-			byte gray = (byte)(Math.Min(Math.Max(255f * dot, 0f), 255f));
-            Color4 color = Light.GetColor(normal, new Vector3(x, y, z), Color4.White);
-			//float height = (float)Math.Floor(z * 8f);
-			float height = y * 8f;
+            Color4 color = Light.GetColor(normal, vertex, Color4.White);
+
 			Buffer.BlockCopy(BitConverter.GetBytes(x), 0, VBOArr, i + 0, 4);
-            Buffer.BlockCopy(BitConverter.GetBytes(height), 0, VBOArr, i + 4, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(y), 0, VBOArr, i + 4, 4);
 			Buffer.BlockCopy(BitConverter.GetBytes(z), 0, VBOArr, i + 8, 4);
             VBOArr[i + 12] = (byte)(Math.Min(Math.Max(255f * color.R, 0f), 255f));
             VBOArr[i + 13] = (byte)(Math.Min(Math.Max(255f * color.G, 0f), 255f));
@@ -89,6 +95,10 @@ namespace Lotus {
             Buffer.BlockCopy(BitConverter.GetBytes(normal.Y), 0, VBOArr, i + 20, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(normal.Z), 0, VBOArr, i + 24, 4);
             i += VERT_STRIDE;
+
+            Normals[v] = normal;
+            Vertices[v] = vertex;
+            v++;
 		}
 
 		static Vector3[] HexVerts = {
@@ -110,12 +120,11 @@ namespace Lotus {
 			for(int j = 1; j < 7; j++) {
 				int k = (j + 1);
 				if(k > 6) k = 1;
-				IBOArr[t] = (uint)(v);
-				IBOArr[t + 1] = (uint)(v + j);
-				IBOArr[t + 2] = (uint)(v + k);
+				IBOArr[t] = (uint)(v-7);
+				IBOArr[t + 1] = (uint)(v-7 + j);
+				IBOArr[t + 2] = (uint)(v-7 + k);
 				t += 3;
 			}
-			v += 7;
 		}
 
         //Gets the array indices of the hex column that the given worldspace point is in
@@ -133,11 +142,23 @@ namespace Lotus {
 			return worldPos;
 		}
 
-        public void Update() {
+        readonly Color4 white = Color4.White;
+
+        public override void Update() {
             //Primitive way of updating VBO data without resending everything; probably impractical
             //GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             //GL.BufferSubData(BufferTarget.ArrayBuffer, new IntPtr(32), new IntPtr(4), new float[] { (float)Math.Sin(time) });
-            
+            int l = 0;
+            for (int j = 0; j < Vertices.Length; j++) {
+                Color4 color = Light.GetColor(Normals[j], Vertices[j], white);
+                VBOArr[l + 12] = (byte)(color.R * 255f);
+                VBOArr[l + 13] = (byte)(color.G * 255f);
+                VBOArr[l + 14] = (byte)(color.B * 255f);
+                l += VERT_STRIDE;
+            }
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBOID);
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(VBOArr.Length), VBOArr, BufferUsageHint.StreamDraw);
+
             //Raycasting!
             /*Vector3 hex;
             if (Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
@@ -146,7 +167,6 @@ namespace Lotus {
         }
 
 		public override void RenGen() {
-
             //We are drawing using vertex position data, color data, normal data, and triangle index data
 			GL.EnableClientState(ArrayCap.VertexArray);
 			GL.EnableClientState(ArrayCap.ColorArray);

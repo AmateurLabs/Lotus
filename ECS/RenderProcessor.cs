@@ -52,5 +52,13 @@ namespace Lotus.ECS {
                 cam.End();
             }
         }
+
+        public override void Update(float dt) {
+            foreach (Renderer r in Entity.GetAll<Renderer>()) {
+                if (Entity.Has<MeshFilter>(r.Id)) {
+                    Entity.Get<MeshFilter>(r.Id).Mesh.Update();
+                }
+            }
+        }
     }
 }

@@ -49,14 +49,12 @@ namespace Lotus {
             Engine.Processors.Add(new FreelookProcessor());
 
             Entity worldEntity = new Entity();
+            worldEntity.Add<Renderer>();
             worldEntity.Add<Attractor>().Type = Attractor.AttractionType.World;
             worldEntity.Get<Attractor>().Acceleration = 9.81f;
             worldEntity.Add<DirectionalLight>().Direction = Vector3.UnitY;
             worldEntity.Get<DirectionalLight>().Intensity = 0.125f;
-            Entity light = new Entity();
-            light.Add<Transform>();
-            light.Add<PointLight>().Radius = 2f;
-            light.Get<PointLight>().Color = Color4.Cyan;
+
             Entity ent = new Entity();
             ent.Add<Transform>().Position = new Vector3(0f, -10f, 0f);
             ent.Add<Renderer>();
@@ -66,10 +64,13 @@ namespace Lotus {
             ent.Add<Rigidbody>();
             ent.Add<Constraint>().MaxPosition = new Vector3(float.PositiveInfinity, 0f, float.PositiveInfinity);
             ent.Get<Constraint>().MinPosition = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            ent.Add<PointLight>().Radius = 2f;
+            ent.Get<PointLight>().Color = Color4.Cyan;
+
             Entity terrain = new Entity();
             terrain.Add<Transform>();
             terrain.Add<Renderer>();
-            terrain.Add<MeshFilter>().Mesh = new HexGrid(256, 256);
+            terrain.Add<MeshFilter>().Mesh = new HexGrid(64, 64);
 
             cam = new Entity();
             cam.Add<Transform>().Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
@@ -99,6 +100,10 @@ namespace Lotus {
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
             Input.Update();
+
+            time += e.Time;
+            float dt = (float)e.Time;
+            CalcAvgFrameRate(e.Time);
 
             if (Input.IsPressed(Key.Escape)) { //For now, setting escape as a switch for cursor visibility
                 CursorVisible = !CursorVisible;
@@ -153,11 +158,6 @@ namespace Lotus {
                 else if (pointType == 1) spline.Points[pointId].LeftControl = mPos - spline.Points[pointId].Position;
                 else if (pointType == 2) spline.Points[pointId].RightControl = mPos - spline.Points[pointId].Position;
             }
-
-            time += e.Time;
-            float dt = (float)e.Time;
-
-            CalcAvgFrameRate(e.Time);
 
             Engine.Update(dt); //Insert engine rev here VROOOOOOM
         }
