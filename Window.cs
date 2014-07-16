@@ -34,7 +34,7 @@ namespace Lotus {
 
         public Window()
             : base(1024, 768, GraphicsMode.Default, "Lotus", GameWindowFlags.Default, DisplayDevice.Default, 3, 0, GraphicsContextFlags.ForwardCompatible) {
-                Main = this;
+            Main = this;
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -53,10 +53,10 @@ namespace Lotus {
             worldEntity.Add<Attractor>().Type = Attractor.AttractionType.World;
             worldEntity.Get<Attractor>().Acceleration = 9.81f;
             worldEntity.Add<DirectionalLight>().Direction = Vector3.UnitY;
-            worldEntity.Get<DirectionalLight>().Intensity = 0.125f;
+            worldEntity.Get<DirectionalLight>().Intensity = 1f;
 
             Entity ent = new Entity();
-            ent.Add<Transform>().Position = new Vector3(0f, -10f, 0f);
+            ent.Add<Transform>().Position = new Vector3(10f, -10f, 0f);
             ent.Add<Renderer>();
             ent.Add<MeshFilter>();
             ent.Get<MeshFilter>().Mesh = new Sphere(1f);
@@ -67,10 +67,17 @@ namespace Lotus {
             ent.Add<PointLight>().Radius = 2f;
             ent.Get<PointLight>().Color = Color4.Cyan;
 
-            Entity terrain = new Entity();
-            terrain.Add<Transform>();
-            terrain.Add<Renderer>();
-            terrain.Add<MeshFilter>().Mesh = new HexGrid(64, 64);
+            int size = 16;
+            int f = (int)Math.Floor(size/2.0);
+            int c = (int)Math.Ceiling(size/2.0);
+            for (int x = -3; x <= 3; x++) {
+                for (int y = -3; y <= 3; y++) {
+                    Entity terrain = new Entity();
+                    terrain.Add<Transform>();
+                    terrain.Add<Renderer>();
+                    terrain.Add<MeshFilter>().Mesh = new HexGrid(size, x * size + y * -f, y * size + x * -c);
+                }
+            }
 
             cam = new Entity();
             cam.Add<Transform>().Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
@@ -218,7 +225,7 @@ namespace Lotus {
             Debug.DrawRect((float)((Width / 2) - 1), (float)((Height / 2) - 10), 2f, 20f, new Color4(1f, 1f, 1f, 1f));
             Debug.DrawRect((float)((Width / 2) - 10), (float)((Height / 2) - 1), 20f, 2f, new Color4(1f, 1f, 1f, 1f));
             Debug.Depth = -1f;
-            Debug.DrawRectFrame(Vector2.Zero, new Vector2(435, 108), Color4.White, new Color4(1f, 0f, 1f, 0.5f), border / 2);
+            Debug.DrawRectFrame(Vector2.Zero, new Vector2(435, 116), Color4.White, new Color4(1f, 0f, 1f, 0.5f), border / 2);
             Debug.Depth = -1.1f;
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(Width, Height), Color4.White, new Color4(0.1f, 0.1f, 0.5f, 0.3f), border / 2);
 
@@ -235,6 +242,36 @@ namespace Lotus {
             text.Draw(("Z: " + camPos.Z).PadRight(15) + " || Z:" + (float)(camRot.Z % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
             text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
             text.Draw("Time: " + time, new Vector2(border, spacing * n++ + border));
+
+            //Raycast from the center of the camera and display cursor
+            Vector3 hex;
+            if (HexGrid.Raycast(Entity.Get<Transform>(Camera.Main.Id).Position, Entity.Get<Transform>(Camera.Main.Id).Forward, out hex, 256f)) {
+                int mapX = (int)hex.X;
+                int mapY = (int)hex.Y;
+                Vector3 p = HexGrid.ToWorld(mapX, mapY);
+                p.Y = 0f;
+                Debug.DrawLater(() => {
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                    GL.Begin(PrimitiveType.TriangleFan);
+                    GL.Color3(1f, 0f, 1f);
+                    for (int k = 0; k < HexGrid.HexVerts.Length; k++) GL.Vertex3(p + HexGrid.HexVerts[k] + Vector3.UnitY * HexGrid.GetHeight(p.X + HexGrid.HexVerts[k].X, p.Z + HexGrid.HexVerts[k].Z) * 8f - Vector3.UnitY * 0.01f);
+                    GL.Vertex3(p + HexGrid.HexVerts[1] + Vector3.UnitY * HexGrid.GetHeight(p.X + HexGrid.HexVerts[1].X, p.Z + HexGrid.HexVerts[1].Z) * 8f - Vector3.UnitY * 0.01f);
+                    GL.End();
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                    GL.Begin(PrimitiveType.Lines);
+                    GL.Color3(Color.Red);
+                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
+                    GL.Vertex3(HexGrid.ToWorld(mapX + 1, mapY) - Vector3.UnitY * 0.02f);
+                    GL.Color3(Color.Green);
+                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
+                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY + 1) - Vector3.UnitY * 0.02f);
+                    GL.Color3(Color.Blue);
+                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
+                    GL.Vertex3(HexGrid.ToWorld(mapX - 1, mapY + 1) - Vector3.UnitY * 0.02f);
+                    GL.End();
+                });
+                text.Draw("Cursor Location: " + hex.X + ", " + hex.Y + ", " + -(hex.X + hex.Y), new Vector2(border, spacing * n++ + border));
+            }
         }
 
         protected override void OnResize(EventArgs e) {
