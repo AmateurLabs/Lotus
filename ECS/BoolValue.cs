@@ -7,6 +7,8 @@ using System.Text;
 namespace Lotus.ECS {
     public class BoolValue : DataValue<bool> {
 
+        public BoolValue(Component c, string name, bool value) : base(c, name, value) { }
+
         public override void Serialize(BinaryWriter stream) {
             stream.Write(Value);
         }

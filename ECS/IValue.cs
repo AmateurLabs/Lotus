@@ -7,6 +7,11 @@ using System.Text;
 namespace Lotus.ECS {
     public interface IValue {
 
+        string Name {
+            get;
+            set;
+        }
+
         void Serialize(BinaryWriter stream);
         void Deserialize(BinaryReader stream);
         string Export();

@@ -34,6 +34,7 @@
     <Compile Include="ECS\Attractor.cs" />
     <Compile Include="ECS\BoolValue.cs" />
     <Compile Include="ECS\Constraint.cs" />
+    <Compile Include="ECS\EnumValue.cs" />
     <Compile Include="ECS\Freelook.cs" />
     <Compile Include="ECS\FreelookProcessor.cs" />
     <Compile Include="ECS\IntValue.cs" />
@@ -44,6 +45,9 @@
     <Compile Include="ECS\PhysicsProcessor.cs" />
     <Compile Include="ECS\StringValue.cs" />
     <Compile Include="ECS\DataValue.cs" />
+    <Compile Include="ECS\TestComponent.cs" />
+    <Compile Include="ECS\Vector3Value.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Spline.cs" />
     <Compile Include="Square.cs" />
     <Compile Include="Cube.cs" />

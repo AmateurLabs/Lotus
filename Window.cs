@@ -48,14 +48,14 @@ namespace Lotus {
             Engine.Processors.Add(new PhysicsProcessor());
             Engine.Processors.Add(new FreelookProcessor());
 
-            Entity worldEntity = new Entity();
+            Entity worldEntity = Entity.WrapNew();
             worldEntity.Add<Renderer>();
             worldEntity.Add<Attractor>().Type = Attractor.AttractionType.World;
             worldEntity.Get<Attractor>().Acceleration = 9.81f;
             worldEntity.Add<DirectionalLight>().Direction = Vector3.UnitY;
-            worldEntity.Get<DirectionalLight>().Intensity = 1f;
+            worldEntity.Get<DirectionalLight>().Intensity = 0.25f;
 
-            Entity ent = new Entity();
+            Entity ent = Entity.WrapNew();
             ent.Add<Transform>().Position = new Vector3(10f, -10f, 0f);
             ent.Add<Renderer>();
             ent.Add<MeshFilter>();
@@ -67,36 +67,45 @@ namespace Lotus {
             ent.Add<PointLight>().Radius = 2f;
             ent.Get<PointLight>().Color = Color4.Cyan;
 
-            int size = 16;
+            ent.Add<TestComponent>();
+            ent.Export();
+            Console.WriteLine(ent.Get<TestComponent>().Yolo.Value);
+            ent.Get<TestComponent>().Yolo.Value = "Carpe Diem";
+            Console.WriteLine(ent.Get<TestComponent>().Yolo.Value);
+            ent.Import();
+            Console.WriteLine(ent.Get<TestComponent>().Yolo.Value);
+
+            int size = 63;
             int f = (int)Math.Floor(size/2.0);
             int c = (int)Math.Ceiling(size/2.0);
             for (int x = -3; x <= 3; x++) {
                 for (int y = -3; y <= 3; y++) {
-                    Entity terrain = new Entity();
+                    Entity terrain = Entity.WrapNew();
                     terrain.Add<Transform>();
                     terrain.Add<Renderer>();
                     terrain.Add<MeshFilter>().Mesh = new HexGrid(size, x * size + y * -f, y * size + x * -c);
                 }
             }
 
-            cam = new Entity();
+            cam = Entity.WrapNew();
             cam.Add<Transform>().Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
             cam.Get<Transform>().Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
             cam.Add<Camera>().UseLighting = true;
             cam.Add<Freelook>();
 
-            uiCam = new Entity();
+            uiCam = Entity.WrapNew();
             uiCam.Add<Transform>().Position = new Vector3(0f, 0f, 10f);
             uiCam.Add<Camera>().IsOrthographic = true;
             uiCam.Get<Camera>().UseAlphaBlend = true;
             uiCam.Get<Camera>().Layers = RenderLayers.GUI;
 
-            shape = new Entity();
+            shape = Entity.WrapNew();
             shape.Add<Renderer>().Layers = RenderLayers.GUI;
             shape.Add<MeshFilter>().Mesh = new Spline(
                 new Spline.Point(new Vector3(100f, 100f, 0f)),
                 new Spline.Point(new Vector3(200f, 200f, 0f)),
-                new Spline.Point(new Vector3(300f, 100f, 0f))
+                new Spline.Point(new Vector3(300f, 100f, 0f)),
+                new Spline.Point(new Vector3(100f, 200f, 0f))
             );
         }
 
@@ -165,6 +174,7 @@ namespace Lotus {
                 else if (pointType == 1) spline.Points[pointId].LeftControl = mPos - spline.Points[pointId].Position;
                 else if (pointType == 2) spline.Points[pointId].RightControl = mPos - spline.Points[pointId].Position;
             }
+            Entity.Get<DirectionalLight>(0).Direction = Vector3.TransformNormal(Entity.Get<DirectionalLight>(0).Direction, Matrix4.CreateRotationX((float)(time % 360)/100000f));
 
             Engine.Update(dt); //Insert engine rev here VROOOOOOM
         }

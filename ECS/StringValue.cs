@@ -7,6 +7,8 @@ using System.Text;
 namespace Lotus.ECS {
     public class StringValue : DataValue<string> {
 
+        public StringValue(Component c, string name, string value) : base(c, name, value) { }
+
         public override void Serialize(BinaryWriter stream) {
             stream.Write(Value);
         }

@@ -5,16 +5,16 @@ using System.Linq;
 using System.Text;
 
 namespace Lotus.ECS {
-    public class IntValue : DataValue<int> {
+    public class EnumValue<T> : DataValue<T> {
 
-        public IntValue(Component c, string name, int value) : base(c, name, value) { }
+        public EnumValue(Component c, string name, T value) : base(c, name, value) { }
 
         public override void Serialize(BinaryWriter stream) {
-            stream.Write(Value);
+            stream.Write((int)(object)Value);
         }
 
         public override void Deserialize(BinaryReader stream) {
-            Value = stream.ReadInt32();
+            Value = (T)Enum.ToObject(typeof(T), stream.ReadInt32());
         }
 
         public override string Export() {
@@ -22,7 +22,7 @@ namespace Lotus.ECS {
         }
 
         public override void Import(string input) {
-            Value = int.Parse(input);
+            Value = (T)Enum.Parse(typeof(T), input);
         }
     }
 }

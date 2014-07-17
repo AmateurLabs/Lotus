@@ -7,9 +7,20 @@ using System.IO;
 namespace Lotus.ECS {
     public abstract class DataValue<T> : IValue {
 
+        public string Name {
+            get;
+            set;
+        }
+
         public virtual T Value {
             get;
             set;
+        }
+
+        public DataValue(Component c, string name, T value) {
+            Name = name;
+            Value = value;
+            c.Values.Add(this);
         }
 
         public abstract void Serialize(BinaryWriter stream);
