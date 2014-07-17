@@ -69,11 +69,7 @@ namespace Lotus {
 
             ent.Add<TestComponent>();
             ent.Export();
-            Console.WriteLine(ent.Get<TestComponent>().Yolo.Value);
-            ent.Get<TestComponent>().Yolo.Value = "Carpe Diem";
-            Console.WriteLine(ent.Get<TestComponent>().Yolo.Value);
-            ent.Import();
-            Console.WriteLine(ent.Get<TestComponent>().Yolo.Value);
+            //ent.Import();
 
             int size = 63;
             int f = (int)Math.Floor(size/2.0);
