@@ -185,17 +185,18 @@ namespace Lotus {
         static HexGrid curChunk;
         static HexGrid firstChunk;
         static HexGrid lastChunk;
-        static bool updated;
+        const int UPDATES_PER_FRAME = 1;
+        static int updates;
         static int chunkId;
         int id;
 
         public override void Update() {
             if (curChunk == this) {
-                if (updated) {
-                    updated = false;
+                if (updates == 0) {
+                    updates = UPDATES_PER_FRAME;
                     return;
                 }
-                updated = true;
+                updates--;
                 curChunk = nextChunk;
 
                 int l = 0;
