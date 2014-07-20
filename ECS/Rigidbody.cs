@@ -8,11 +8,14 @@ using OpenTK;
 namespace Lotus.ECS {
     public class Rigidbody : Component {
 
-        public Vector3 Velocity = Vector3.Zero;
-        public Vector3 AngularVelocity = Vector3.Zero;
+        public Vector3Value Velocity;
+        public Vector3Value AngularVelocity;
+        public FloatValue Mass;
 
-        public float Mass = 1f;
-
-        public Rigidbody(int id) : base(id) { }
+        public Rigidbody(int id) : base(id) {
+            Velocity = new Vector3Value(this, "Velocity", Vector3.Zero);
+            AngularVelocity = new Vector3Value(this, "AngularVelocity", Vector3.Zero);
+            Mass = new FloatValue(this, "Mass", 1f);
+        }
     }
 }

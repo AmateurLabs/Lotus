@@ -12,8 +12,8 @@ namespace Lotus
     class Cube: Mesh
     {
         Vector3[,,] Points;
-        int Res;
-        float Scale;
+        public readonly int Res;
+        public readonly float Scale;
 
         public Cube(float scl, int res)
         {

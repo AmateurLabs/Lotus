@@ -50,22 +50,22 @@ namespace Lotus {
 
             Entity worldEntity = Entity.WrapNew();
             worldEntity.Add<Renderer>();
-            worldEntity.Add<Attractor>().Type = Attractor.AttractionType.World;
-            worldEntity.Get<Attractor>().Acceleration = 9.81f;
-            worldEntity.Add<DirectionalLight>().Direction = Vector3.UnitY;
-            worldEntity.Get<DirectionalLight>().Intensity = 0.25f;
+            worldEntity.Add<Attractor>().Type.Value = Attractor.AttractionType.World;
+            worldEntity.Get<Attractor>().Acceleration.Value = 9.81f;
+            worldEntity.Add<DirectionalLight>().Direction.Value = Vector3.UnitY;
+            worldEntity.Get<DirectionalLight>().Intensity.Value = 0.25f;
 
             Entity ent = Entity.WrapNew();
-            ent.Add<Transform>().Position = new Vector3(10f, -10f, 0f);
+            ent.Add<Transform>().Position.Value = new Vector3(10f, -10f, 0f);
             ent.Add<Renderer>();
             ent.Add<MeshFilter>();
-            ent.Get<MeshFilter>().Mesh = new Sphere(1f);
-            //ent.Get<MeshFilter>().Mesh = new Cube(1f, 3);
+            ent.Get<MeshFilter>().Mesh.Value = new Sphere(1f);
+            //ent.Get<MeshFilter>().Mesh.Value = new Cube(1f, 3);
             ent.Add<Rigidbody>();
-            ent.Add<Constraint>().MaxPosition = new Vector3(float.PositiveInfinity, 0f, float.PositiveInfinity);
-            ent.Get<Constraint>().MinPosition = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
-            ent.Add<PointLight>().Radius = 2f;
-            ent.Get<PointLight>().Color = Color4.Cyan;
+            ent.Add<Constraint>().MaxPosition.Value = new Vector3(float.PositiveInfinity, 0f, float.PositiveInfinity);
+            ent.Get<Constraint>().MinPosition.Value = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            ent.Add<PointLight>().Radius.Value = 2f;
+            ent.Get<PointLight>().Color.Value = Color4.Cyan;
 
             ent.Add<TestComponent>();
             ent.Export();
@@ -79,25 +79,25 @@ namespace Lotus {
                     Entity terrain = Entity.WrapNew();
                     terrain.Add<Transform>();
                     terrain.Add<Renderer>();
-                    terrain.Add<MeshFilter>().Mesh = new HexGrid(size, x * size + y * -f, y * size + x * -c);
+                    terrain.Add<MeshFilter>().Mesh.Value = new HexGrid(size, x * size + y * -f, y * size + x * -c);
                 }
             }
 
             cam = Entity.WrapNew();
-            cam.Add<Transform>().Position = new Vector3(-10.71002f, -9.084502f, -7.3577f);
-            cam.Get<Transform>().Rotation = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
-            cam.Add<Camera>().UseLighting = true;
+            cam.Add<Transform>().Position.Value = new Vector3(-10.71002f, -9.084502f, -7.3577f);
+            cam.Get<Transform>().Rotation.Value = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
+            cam.Add<Camera>().UseLighting.Value = true;
             cam.Add<Freelook>();
 
             uiCam = Entity.WrapNew();
-            uiCam.Add<Transform>().Position = new Vector3(0f, 0f, 10f);
-            uiCam.Add<Camera>().IsOrthographic = true;
-            uiCam.Get<Camera>().UseAlphaBlend = true;
-            uiCam.Get<Camera>().Layers = RenderLayers.GUI;
+            uiCam.Add<Transform>().Position.Value = new Vector3(0f, 0f, 10f);
+            uiCam.Add<Camera>().IsOrthographic.Value = true;
+            uiCam.Get<Camera>().UseAlphaBlend.Value = true;
+            uiCam.Get<Camera>().Layers.Value = RenderLayers.GUI;
 
             shape = Entity.WrapNew();
-            shape.Add<Renderer>().Layers = RenderLayers.GUI;
-            shape.Add<MeshFilter>().Mesh = new Spline(
+            shape.Add<Renderer>().Layers.Value = RenderLayers.GUI;
+            shape.Add<MeshFilter>().Mesh.Value = new Spline(
                 new Spline.Point(new Vector3(100f, 100f, 0f)),
                 new Spline.Point(new Vector3(200f, 200f, 0f)),
                 new Spline.Point(new Vector3(300f, 100f, 0f)),
@@ -134,7 +134,7 @@ namespace Lotus {
             if (Input.IsDown(Key.PageUp)) Light.AmbientColor = new Color4(Light.AmbientColor.R + step, Light.AmbientColor.G + step, Light.AmbientColor.B + step, Light.AmbientColor.A + step);
             if (Input.IsDown(Key.PageDown)) Light.AmbientColor = new Color4(Light.AmbientColor.R - step, Light.AmbientColor.G - step, Light.AmbientColor.B - step, Light.AmbientColor.A - step);
 
-            Spline spline = shape.Get<MeshFilter>().Mesh as Spline;
+            Spline spline = shape.Get<MeshFilter>().Mesh.Value as Spline;
             Vector3 mPos = new Vector3(Input.MousePosition.X, Input.MousePosition.Y, 0f);
             if (Input.IsPressed(MouseButton.Left)) {
                 float minDist = 25f;
@@ -170,7 +170,7 @@ namespace Lotus {
                 else if (pointType == 1) spline.Points[pointId].LeftControl = mPos - spline.Points[pointId].Position;
                 else if (pointType == 2) spline.Points[pointId].RightControl = mPos - spline.Points[pointId].Position;
             }
-            Entity.Get<DirectionalLight>(0).Direction = Vector3.TransformNormal(Entity.Get<DirectionalLight>(0).Direction, Matrix4.CreateRotationX((float)(time % 360)/100000f));
+            Entity.Get<DirectionalLight>(0).Direction.Value = Vector3.TransformNormal(Entity.Get<DirectionalLight>(0).Direction.Value, Matrix4.CreateRotationX((float)(time % 360)/100000f));
 
             Engine.Update(dt); //Insert engine rev here VROOOOOOM
         }
@@ -238,8 +238,8 @@ namespace Lotus {
             int n = 0;
             int spacing = 12;
 
-            Vector3 camPos = cam.Get<Transform>().Position;
-            Quaternion camRot = cam.Get<Transform>().Rotation;
+            Vector3 camPos = cam.Get<Transform>().Position.Value;
+            Quaternion camRot = cam.Get<Transform>().Rotation.Value;
 
             text.Draw("DEBUG READOUT", new Vector2(border, spacing * n++ + border));
             text.Draw("Camera Location || Camera Rotation", new Vector2(border, spacing * n++ + border));
@@ -251,7 +251,7 @@ namespace Lotus {
 
             //Raycast from the center of the camera and display cursor
             Vector3 hex;
-            if (HexGrid.Raycast(Entity.Get<Transform>(Camera.Main.Id).Position, Entity.Get<Transform>(Camera.Main.Id).Forward, out hex, 256f)) {
+            if (HexGrid.Raycast(Entity.Get<Transform>(Camera.Main.Id).Position.Value, Entity.Get<Transform>(Camera.Main.Id).Forward, out hex, 256f)) {
                 int mapX = (int)hex.X;
                 int mapY = (int)hex.Y;
                 Vector3 p = HexGrid.ToWorld(mapX, mapY);

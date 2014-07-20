@@ -17,6 +17,8 @@ namespace Lotus.ECS {
             set;
         }
 
+        public DataValue() { }
+
         public DataValue(Component c, string name, T value) {
             Name = name;
             Value = value;

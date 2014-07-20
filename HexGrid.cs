@@ -8,20 +8,23 @@ using Lotus.ECS;
 
 namespace Lotus {
 
-    //[Obsolete("HexGrid leaks graphics memory and isn't updated when lights change. Use HexTerrain instead.", true)]
     public class HexGrid : Mesh {
 
         public readonly int OffX;
         public readonly int OffY;
         public readonly int Size;
+
+        readonly int ChunkOffX;
+        readonly int ChunkOffY;
+
         public const float HEX_HEIGHT = 1f;
         public const float HEX_WIDTH = 0.8660254037844386f;
-        public readonly byte[] VBOArr;
-        public readonly uint[] IBOArr;
-        public readonly int VBOID;
-        public readonly int IBOID;
-        public Vector3[] Vertices;
-        public Vector3[] Normals;
+        readonly byte[] VBOArr;
+        readonly uint[] IBOArr;
+        readonly int VBOID;
+        readonly int IBOID;
+        Vector3[] Vertices;
+        Vector3[] Normals;
 
         public const int VERT_STRIDE = 32;
 
@@ -42,8 +45,10 @@ namespace Lotus {
 
         public HexGrid(int size, int offX, int offY) {
             Size = size;
-            OffX = offX - size / 2;
-            OffY = offY - size / 2;
+            OffX = offX;
+            OffY = offY;
+            ChunkOffX = offX - size / 2;
+            ChunkOffY = offY - size / 2;
 
             VBOArr = new byte[Size * Size * 7 * VERT_STRIDE];
             VBOID = GL.GenBuffer();
@@ -55,7 +60,7 @@ namespace Lotus {
 
             for (int x = 0; x < Size; x++) {
                 for (int y = 0; y < Size; y++) {
-                    AddHex(OffX + x, OffY + y);
+                    AddHex(ChunkOffX + x, ChunkOffY + y);
                 }
             }
 
@@ -148,7 +153,7 @@ namespace Lotus {
         }
 
         public bool OnGrid(int mapX, int mapY) {
-            return HexDist(mapX, mapY, OffX + Size / 2, OffY + Size / 2) <= Size / 2;
+            return HexDist(mapX, mapY, ChunkOffX + Size / 2, ChunkOffY + Size / 2) <= Size / 2;
         }
 
         public static float GetHeight(float x, float z) {

@@ -26,39 +26,41 @@ namespace Lotus.ECS {
 
                 foreach (Attractor atr in Entity.GetAll<Attractor>()) {
                     Vector3 pos = Vector3.Zero;
-                    Vector3 normal = atr.Normal;
+                    Vector3 normal = atr.Normal.Value;
                     if (Entity.Has<Transform>(atr.Id)) {
-                        pos = Entity.Get<Transform>(atr.Id).Position;
+                        pos = Entity.Get<Transform>(atr.Id).Position.Value;
                         normal = Entity.Get<Transform>(atr.Id).ToWorldNormal(normal);
                     }
-                    if (atr.Type == Attractor.AttractionType.World) {
-                        rb.Velocity += atr.Normal * atr.Acceleration * (atr.UseMass ? rb.Mass : 1f) * timeStep;
+                    if (atr.Type.Value == Attractor.AttractionType.World) {
+                        rb.Velocity.Value += atr.Normal.Value * atr.Acceleration.Value * (atr.UseMass.Value ? rb.Mass.Value : 1f) * timeStep;
                     }
-                    else if (atr.Type == Attractor.AttractionType.Point) {
-                        Vector3 diff = (t.Position - pos);
+                    else if (atr.Type.Value == Attractor.AttractionType.Point) {
+                        Vector3 diff = (t.Position.Value - pos);
                         float dist = diff.Length;
                         if (dist > 0f) dist = Math.Max(dist, 1f);
                         if (dist < 0f) dist = Math.Min(dist, -1f);
-                        rb.Velocity += diff.Normalized() * (atr.Acceleration * (atr.UseMass ? rb.Mass : 1f) / (dist * dist)) * timeStep;
-                        Console.WriteLine(diff.Normalized() * (atr.Acceleration * (atr.UseMass ? rb.Mass : 1f) / (dist * dist)) * timeStep);
+                        rb.Velocity.Value += diff.Normalized() * (atr.Acceleration.Value * (atr.UseMass.Value ? rb.Mass.Value : 1f) / (dist * dist)) * timeStep;
+                        Console.WriteLine(diff.Normalized() * (atr.Acceleration.Value * (atr.UseMass.Value ? rb.Mass.Value : 1f) / (dist * dist)) * timeStep);
 
                     }
-                    else if (atr.Type == Attractor.AttractionType.Plane) {
-                        float dist = Vector3.Dot(normal, pos - t.Position);
+                    else if (atr.Type.Value == Attractor.AttractionType.Plane) {
+                        float dist = Vector3.Dot(normal, pos - t.Position.Value);
                         float sign = (dist > 0f ? 1f : 0f);
                         dist = Math.Abs(dist);
-                        rb.Velocity += normal * sign * (atr.Acceleration * (atr.UseMass ? rb.Mass : 1f) / (dist * dist)) * timeStep;
+                        rb.Velocity.Value += normal * sign * (atr.Acceleration.Value * (atr.UseMass.Value ? rb.Mass.Value : 1f) / (dist * dist)) * timeStep;
                     }
                 }
 
-                t.Position += rb.Velocity * timeStep;
-                t.Rotation *= Quaternion.FromMatrix(Matrix3.CreateRotationZ(rb.AngularVelocity.Z * timeStep) * Matrix3.CreateRotationX(rb.AngularVelocity.X * timeStep) * Matrix3.CreateRotationY(rb.AngularVelocity.Y * timeStep));
+                t.Position.Value += rb.Velocity.Value * timeStep;
+                t.Rotation.Value *= Quaternion.FromMatrix(Matrix3.CreateRotationZ(rb.AngularVelocity.Value.Z * timeStep) * Matrix3.CreateRotationX(rb.AngularVelocity.Value.X * timeStep) * Matrix3.CreateRotationY(rb.AngularVelocity.Value.Y * timeStep));
 
                 if (Entity.Has<Constraint>(rb.Id)) {
                     Constraint c = Entity.Get<Constraint>(rb.Id);
-                    t.Position.X = Math.Max(c.MinPosition.X, Math.Min(c.MaxPosition.X, t.Position.X));
-                    t.Position.Y = Math.Max(c.MinPosition.Y, Math.Min(c.MaxPosition.Y, t.Position.Y));
-                    t.Position.Z = Math.Max(c.MinPosition.Z, Math.Min(c.MaxPosition.Z, t.Position.Z));
+                    Vector3 pos = t.Position.Value;
+                    pos.X = Math.Max(c.MinPosition.Value.X, Math.Min(c.MaxPosition.Value.X, pos.X));
+                    pos.Y = Math.Max(c.MinPosition.Value.Y, Math.Min(c.MaxPosition.Value.Y, pos.Y));
+                    pos.Z = Math.Max(c.MinPosition.Value.Z, Math.Min(c.MaxPosition.Value.Z, pos.Z));
+                    t.Position.Value = pos;
                 }
             }
         }

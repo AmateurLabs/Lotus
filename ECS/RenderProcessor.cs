@@ -17,7 +17,7 @@ namespace Lotus.ECS {
                     cam.Begin(Matrix4.Identity);
 
                 foreach (Renderer r in Entity.GetAll<Renderer>()) {
-                    if ((r.Layers & cam.Layers) == 0) continue; //If the camera and renderer use different layers, don't draw
+                    if ((r.Layers.Value & cam.Layers.Value) == 0) continue; //If the camera and renderer use different layers, don't draw
                     Matrix4 viewMatrix = Matrix4.Identity;
                     Matrix4 normalMatrix = Matrix4.Identity;
                     if (Entity.Has<Transform>(r.Id)) {
@@ -26,7 +26,8 @@ namespace Lotus.ECS {
                         normalMatrix = t.ScalingMatrix * t.RotationMatrix;
                     }
                     if (Entity.Has<MeshFilter>(r.Id)) { //If there is a Mesh aspect, draw that
-                        Entity.Get<MeshFilter>(r.Id).Mesh.Draw(viewMatrix, normalMatrix);
+                        MeshFilter mf = Entity.Get<MeshFilter>(r.Id);
+                        mf.Mesh.Value.Draw(viewMatrix, normalMatrix, mf.Color.Value);
                     }
                     else { //Otherwise, draw an XYZ axis gizmo so we can see where it is
                         GL.PushMatrix();
@@ -56,7 +57,7 @@ namespace Lotus.ECS {
         public override void Update(float dt) {
             foreach (Renderer r in Entity.GetAll<Renderer>()) {
                 if (Entity.Has<MeshFilter>(r.Id)) {
-                    Entity.Get<MeshFilter>(r.Id).Mesh.Update();
+                    Entity.Get<MeshFilter>(r.Id).Mesh.Value.Update();
                 }
             }
         }

@@ -7,29 +7,30 @@ using System.Text;
 using OpenTK;
 
 namespace Lotus.ECS {
-    public class Vector3Value : DataValue<Vector3> {
+    public class QuaternionValue : DataValue<Quaternion> {
 
-        public Vector3Value(Component c, string name, Vector3 value) : base(c, name, value) { }
+        public QuaternionValue(Component c, string name, Quaternion value) : base(c, name, value) { }
 
         public override void Serialize(BinaryWriter stream) {
             stream.Write(Value.X);
             stream.Write(Value.Y);
             stream.Write(Value.Z);
+            stream.Write(Value.W);
         }
 
         public override void Deserialize(BinaryReader stream) {
-            Value = new Vector3(stream.ReadSingle(), stream.ReadSingle(), stream.ReadSingle());
+            Value = new Quaternion(stream.ReadSingle(), stream.ReadSingle(), stream.ReadSingle(), stream.ReadSingle());
         }
 
         public override string Export() {
-            return "(" + Value.X + ", " + Value.Y + ", " + Value.Z + ")";
+            return "(" + Value.X + ", " + Value.Y + ", " + Value.Z + Value.W + ")";
         }
 
         public override void Import(string input) {
             input = input.Substring(1, input.Length - 2);
             input = input.Replace(" ", "");
             string[] bits = input.Split(',');
-            Value = new Vector3(float.Parse(bits[0]), float.Parse(bits[1]), float.Parse(bits[2]));
+            Value = new Quaternion(float.Parse(bits[0]), float.Parse(bits[1]), float.Parse(bits[2]), float.Parse(bits[3]));
         }
     }
 }

@@ -12,9 +12,11 @@ namespace Lotus
     class Square : Mesh
     {
         Vector3[] points = new Vector3[8];
+        public readonly float Scale;
 
         public Square(float scl)
         {
+            Scale = scl;
             points[0] = new Vector3(scl, scl, 0);
             points[1] = new Vector3(scl, -scl, 0);
             points[2] = new Vector3(-scl, scl, 0);

@@ -1,9 +1,8 @@
-﻿using System;
-
+﻿
 namespace Lotus {
 	public class Program {
 
-		[STAThread]
+		[System.STAThread]
 		public static void Main(string[] args) {
 
 			using(var game = new Window()) {

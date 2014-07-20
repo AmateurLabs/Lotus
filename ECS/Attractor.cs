@@ -8,17 +8,23 @@ using OpenTK;
 namespace Lotus.ECS {
     public class Attractor : Component {
 
-        public Attractor(int id) : base(id) { }
-
         public enum AttractionType {
             Point,
             Plane,
             World
         }
 
-        public AttractionType Type;
-        public float Acceleration;
-        public Vector3 Normal = Vector3.UnitY;
-        public bool UseMass;
+        public EnumValue<AttractionType> Type;
+        public FloatValue Acceleration;
+        public Vector3Value Normal;
+        public BoolValue UseMass;
+
+        public Attractor(int id) : base(id) {
+            Type = new EnumValue<AttractionType>(this, "Type", AttractionType.World);
+            Acceleration = new FloatValue(this, "Acceleration", 0f);
+            Normal = new Vector3Value(this, "Normal", Vector3.UnitY);
+            UseMass = new BoolValue(this, "UseMass", false);
+        }
+
     }
 }

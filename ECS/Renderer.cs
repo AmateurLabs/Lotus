@@ -6,9 +6,11 @@ using System.Text;
 namespace Lotus.ECS {
     public class Renderer : Component {
 
-        public RenderLayers Layers = RenderLayers.Default;
+        public EnumValue<RenderLayers> Layers;
 
-        public Renderer(int id) : base(id) { }
+        public Renderer(int id) : base(id) {
+            Layers = new EnumValue<RenderLayers>(this, "Layers", RenderLayers.Default);
+        }
 
     }
 }

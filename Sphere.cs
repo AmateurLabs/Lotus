@@ -17,8 +17,11 @@ namespace Lotus
         private Vector3 north, south;
         private int sec=12;
 
+        public readonly float Radius;
+
         public Sphere(float radius)
-        { //Creates a new camera, using the width and height of the screen and whether it is orthographic
+        {
+            Radius = radius;
             circles = new Vector3[sec-1, 2*sec];
             for (int i = 1; i < sec; i++)
             {

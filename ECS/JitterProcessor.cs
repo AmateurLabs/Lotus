@@ -32,9 +32,9 @@ namespace Lotus.ECS {
             world.Step(dt, false);
             foreach (JitterBody body in Entity.GetAll<JitterBody>()) {
                 Transform t = Entity.Get<Transform>(body.Id);
-                t.Position = Convert(body.Rigidbody.Position);
+                t.Position.Value = Convert(body.Rigidbody.Position);
                 JQuaternion rot = JQuaternion.CreateFromMatrix(body.Rigidbody.Orientation);
-                t.Rotation = Convert(rot);
+                t.Rotation.Value = Convert(rot);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Lotus.ECS {
             if (aspect is JitterBody) {
                 JitterBody body = aspect as JitterBody;
                 body.Rigidbody = new RigidBody(new SphereShape(1f));
-                body.Rigidbody.Position = Convert(Entity.Get<Transform>(aspect.Id).Position);
+                body.Rigidbody.Position = Convert(Entity.Get<Transform>(aspect.Id).Position.Value);
                 world.AddBody(body.Rigidbody);
             }
         }

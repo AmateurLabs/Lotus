@@ -8,11 +8,15 @@ using OpenTK;
 namespace Lotus.ECS {
     public class Transform : Component {
 
-        public Vector3 Position = Vector3.Zero;
-        public Quaternion Rotation = Quaternion.Identity;
-        public Vector3 Scale = Vector3.One;
+        public Vector3Value Position;
+        public QuaternionValue Rotation;
+        public Vector3Value Scale;
 
-        public Transform(int id) : base(id) { }
+        public Transform(int id) : base(id) {
+            Position = new Vector3Value(this, "Position", Vector3.Zero);
+            Rotation = new QuaternionValue(this, "Rotation", Quaternion.Identity);
+            Scale = new Vector3Value(this, "Scale", Vector3.One);
+        }
 
         public Matrix4 ViewMatrix {
             get {
@@ -22,19 +26,19 @@ namespace Lotus.ECS {
 
         public Matrix4 TranslationMatrix {
             get {
-                return Matrix4.CreateTranslation(Position);
+                return Matrix4.CreateTranslation(Position.Value);
             }
         }
 
         public Matrix4 RotationMatrix {
             get {
-                return Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y);
+                return Matrix4.CreateRotationZ(Rotation.Value.Z) * Matrix4.CreateRotationX(Rotation.Value.X) * Matrix4.CreateRotationY(Rotation.Value.Y);
             }
         }
 
         public Matrix4 ScalingMatrix {
             get {
-                return Matrix4.CreateScale(Scale);
+                return Matrix4.CreateScale(Scale.Value);
             }
         }
 

@@ -9,9 +9,13 @@ using OpenTK.Input;
 namespace Lotus.ECS {
     public class Freelook : Component {
 
-        public Freelook(int id) : base(id) { }
+        public FloatValue MoveSpeed; //How fast the freelook camera moves around
+        public FloatValue RotateSpeed; //How fast the freelook camera rotates
 
-        public float MoveSpeed = 10f; //How fast the freelook camera moves around
-        public float RotateSpeed = 0.005f; //How fast the freelook camera rotates
+        public Freelook(int id)
+            : base(id) {
+                MoveSpeed = new FloatValue(this, "MoveSpeed", 10f);
+                RotateSpeed = new FloatValue(this, "RotateSpeed", 0.005f);
+        }
     }
 }

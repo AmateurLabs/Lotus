@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,12 @@ using System.Text;
 namespace Lotus.ECS {
     public class MeshFilter : Component {
 
-        public Mesh Mesh;
+        public MeshValue Mesh;
+        public Color4Value Color;
 
-        public MeshFilter(int id) : base(id) { }
+        public MeshFilter(int id) : base(id) {
+            Mesh = new MeshValue(this, "Mesh", null);
+            Color = new Color4Value(this, "Color", Color4.White);
+        }
     }
 }

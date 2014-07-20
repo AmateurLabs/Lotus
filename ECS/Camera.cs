@@ -10,30 +10,29 @@ namespace Lotus.ECS {
         public static Camera Current; //The camera most recently set up with .Draw()
         Matrix4 projectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
 
-        public RenderLayers Layers = RenderLayers.Default; //Which layers this camera renders
+        public EnumValue<RenderLayers> Layers; //Which layers this camera renders
 
-        bool isOrthographic = false;
-
-        public bool IsOrthographic { //Whether this camera is orthographic or perspective
-            get { return isOrthographic; }
-            set { if (value != isOrthographic) { isOrthographic = value; ResetProjectionMatrix(); } }
-        }
-
-        public bool UseAlphaBlend = false; //Whether to use simple alpha blending for transparency
-        public bool UseLighting = false; //Whether to use lighting; currently the custom lighting
+        bool isOrthographic;
+        public BoolValue IsOrthographic; //Whether this camera is orthographic or perspective
+        public BoolValue UseAlphaBlend; //Whether to use simple alpha blending for transparency
+        public BoolValue UseLighting; //Whether to use lighting; currently the custom lighting
 
         public bool IsPerspective { //Whether this camera uses perspective projection
-            get { return !IsOrthographic;  }
-            set { IsOrthographic = !value; }
+            get { return !IsOrthographic.Value;  }
+            set { IsOrthographic.Value = !value; }
         }
 
         public Camera(int id) : base(id) {
             if (Main == null) Main = this; //If this is the first created camera, designate it as the Main camera
+            Layers = new EnumValue<RenderLayers>(this, "Layers", RenderLayers.Default);
+            IsOrthographic = new BoolValue(this, "IsOrthographic", false);
+            UseAlphaBlend = new BoolValue(this, "UseAlphaBlend", false);
+            UseLighting = new BoolValue(this, "UseLighting", false);
             ResetProjectionMatrix();
         }
 
         public void ResetProjectionMatrix() {
-            if (IsOrthographic) {
+            if (IsOrthographic.Value) {
                 projectionMatrix = Matrix4.CreateOrthographicOffCenter(0f, Window.Main.Width, Window.Main.Height, 0f, 0.1f, 256f);
             }
             else {
@@ -49,6 +48,10 @@ namespace Lotus.ECS {
         }
 
 		public void Begin(Matrix4 viewMatrix) {
+            if (IsOrthographic.Value != isOrthographic) {
+                ResetProjectionMatrix();
+                isOrthographic = IsOrthographic.Value;
+            }
             Current = this;
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadMatrix(ref projectionMatrix);
@@ -57,7 +60,7 @@ namespace Lotus.ECS {
             GL.LoadIdentity();
 			viewMatrix.Invert();
 			GL.LoadMatrix(ref viewMatrix);
-            if (UseAlphaBlend) {
+            if (UseAlphaBlend.Value) {
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 GL.Enable(EnableCap.Blend);
             }
@@ -66,7 +69,7 @@ namespace Lotus.ECS {
 
         public void End() {
             GL.PopMatrix();
-            if (UseAlphaBlend) GL.Disable(EnableCap.Blend);
+            if (UseAlphaBlend.Value) GL.Disable(EnableCap.Blend);
         }
 	}
 }

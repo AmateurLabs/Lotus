@@ -13,28 +13,26 @@ namespace Lotus.ECS {
         protected static List<DirectionalLight> dirLights = new List<DirectionalLight>();
         protected static List<PointLight> pointLights = new List<PointLight>();
 
-        public Light(int id) : base(id) { }
-
         public static Color4 AmbientColor = new Color4(0.25f, 0.25f, 0.25f, 1f);
 
         public static Color4 GetColor(Vector3 normal, Vector3 pos, Color4 baseColor) {
             Color4 result = AmbientColor;
             foreach (DirectionalLight light in dirLights) {
-                float dot = Vector3.Dot(normal, -light.Direction);
+                float dot = Vector3.Dot(normal, -light.Direction.Value);
                 if (dot < 0f) continue;
-                dot *= light.Intensity;
-                result.R += light.Color.R * dot * baseColor.R;
-                result.G += light.Color.G * dot * baseColor.G;
-                result.B += light.Color.B * dot * baseColor.B;
+                dot *= light.Intensity.Value;
+                result.R += light.Color.Value.R * dot * baseColor.R;
+                result.G += light.Color.Value.G * dot * baseColor.G;
+                result.B += light.Color.Value.B * dot * baseColor.B;
             }
             foreach (PointLight light in pointLights) {
                 Vector3 lightPos = Vector3.Zero;
-                /*if (Entity.Has<Transform>(light.Id)) */lightPos = Entity.Get<Transform>(light.Id).Position;
+                /*if (Entity.Has<Transform>(light.Id)) */lightPos = Entity.Get<Transform>(light.Id).Position.Value;
                 float dist = (pos - lightPos).LengthFast;
-                float attenuation = light.Intensity / (1f + (2f / light.Radius) * dist + (1f / (light.Radius * light.Radius)) * dist * dist);
-                result.R += light.Color.R * attenuation * baseColor.R;
-                result.G += light.Color.G * attenuation * baseColor.G;
-                result.B += light.Color.B * attenuation * baseColor.B;
+                float attenuation = light.Intensity.Value / (1f + (2f / light.Radius.Value) * dist + (1f / (light.Radius.Value * light.Radius.Value)) * dist * dist);
+                result.R += light.Color.Value.R * attenuation * baseColor.R;
+                result.G += light.Color.Value.G * attenuation * baseColor.G;
+                result.B += light.Color.Value.B * attenuation * baseColor.B;
 
                 /*Debug.DrawLater(() => {
                     GL.Begin(PrimitiveType.Lines);
@@ -48,22 +46,33 @@ namespace Lotus.ECS {
             return result;
         }
 
-        public Color4 Color = Color4.White;
+        public Color4Value Color;
+        public FloatValue Intensity;
 
-        public float Intensity = 1f;
+        public Light(int id)
+            : base(id) {
+                Color = new Color4Value(this, "Color", Color4.White);
+                Intensity = new FloatValue(this, "Intensity", 1f);
+        }
     }
 
     public class PointLight : Light {
 
-        public float Radius = 1f;
+        public FloatValue Radius;
 
-        public PointLight(int id) : base(id) { pointLights.Add(this); }
+        public PointLight(int id) : base(id) {
+            Radius = new FloatValue(this, "Radius", 1f);
+            pointLights.Add(this);
+        }
     }
 
     public class DirectionalLight : Light {
 
-        public Vector3 Direction = Vector3.UnitY;
+        public Vector3Value Direction;
 
-        public DirectionalLight(int id) : base(id) { dirLights.Add(this); }
+        public DirectionalLight(int id) : base(id) {
+            Direction = new Vector3Value(this, "Direction", Vector3.UnitY);
+            dirLights.Add(this);
+        }
     }
 }

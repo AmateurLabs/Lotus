@@ -13,12 +13,6 @@ namespace Lotus
 {
     public abstract class Mesh
     {
-        Color4 BaseColor;
-
-        public Mesh()
-        {
-            BaseColor = Color4.White;
-        }
 
         public abstract void RenGen(); // here you would program the GL to render the object at Vector3.Zero and as Quaternion.Identity for the rotation.
 
@@ -33,12 +27,14 @@ namespace Lotus
             return Vector3.Transform(n, normalMatrix);
         }
 
+        private Color4 baseColor;
+
         public Color4 GetColor(Vector3 vertex, Vector3 normal) {
-            if (Camera.Current.UseLighting) {
-                return Light.GetColor(ToWorldNormal(normal), ToWorldPoint(vertex), BaseColor);
+            if (Camera.Current.UseLighting.Value) {
+                return Light.GetColor(ToWorldNormal(normal), ToWorldPoint(vertex), baseColor);
             }
             else {
-                return BaseColor;
+                return baseColor;
             }
         }
 
@@ -49,11 +45,12 @@ namespace Lotus
 
         public virtual void Update() { }
 
-        public void Draw(Matrix4 viewMatrix, Matrix4 normalMatrix)
+        public void Draw(Matrix4 viewMatrix, Matrix4 normalMatrix, Color4 baseColor)
         {
             GL.PushMatrix();
             this.viewMatrix = viewMatrix;
             this.normalMatrix = normalMatrix;
+            this.baseColor = baseColor;
             GL.MultMatrix(ref viewMatrix);
             RenGen();
             GL.PopMatrix();
