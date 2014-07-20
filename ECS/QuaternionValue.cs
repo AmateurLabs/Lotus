@@ -23,7 +23,7 @@ namespace Lotus.ECS {
         }
 
         public override string Export() {
-            return "(" + Value.X + ", " + Value.Y + ", " + Value.Z + Value.W + ")";
+            return "(" + Value.X + ", " + Value.Y + ", " + Value.Z + ", " + Value.W + ")";
         }
 
         public override void Import(string input) {
