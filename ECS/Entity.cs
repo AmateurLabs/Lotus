@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 
 using Lotus.ECS.Internal;
+using System.IO;
 
 namespace Lotus.ECS {
     public sealed class Entity {
 
-        static Dictionary<int, Dictionary<string, Component>> entityHasFlags = new Dictionary<int, Dictionary<string, Component>>();
+        static Dictionary<int, Dictionary<string, Component>> entityComponents = new Dictionary<int, Dictionary<string, Component>>();
         static Dictionary<string, Dictionary<int, Component>> components = new Dictionary<string, Dictionary<int, Component>>();
         static int nextEntityId;
 
@@ -48,7 +49,7 @@ namespace Lotus.ECS {
         }
 
         public static bool Has(string type, int id) {
-            return entityHasFlags.GetOrCreate(id).ContainsKey(type);
+            return entityComponents.GetOrCreate(id).ContainsKey(type);
         }
 
         public static T Add<T>(int id) where T : Component {
@@ -58,7 +59,7 @@ namespace Lotus.ECS {
         public static Component Add(string type, int id) {
             Component c = (Component)Activator.CreateInstance(Type.GetType("Lotus.ECS."+type, true), id);
             components.GetOrCreate(type).Add(id, c);
-            entityHasFlags.GetOrCreate(id).Add(type, c);
+            entityComponents.GetOrCreate(id).Add(type, c);
             foreach (Processor processor in Engine.Processors) processor.Reveille(c);
             return c;
         }
@@ -71,32 +72,33 @@ namespace Lotus.ECS {
 
         public static bool Remove(string type, int id) {
             foreach (Processor processor in Engine.Processors) processor.Taps(components.GetOrCreate(type)[id]);
-            entityHasFlags.GetOrCreate(id).Remove(type);
+            entityComponents.GetOrCreate(id).Remove(type);
             return components.GetOrCreate(type).Remove(id);
         }
 
         public static void RemoveAll(int id) {
-            var keys = entityHasFlags.GetOrCreate(id).Keys.ToArray();
+            var keys = entityComponents.GetOrCreate(id).Keys.ToArray();
             foreach (string type in keys) {
                 Remove(type, id);
             }
         }
 
-        public static void Export(int id) {
+        public static string Export(int id) {
             string output = "";
-            foreach (string type in entityHasFlags[id].Keys) {
-                Component c = entityHasFlags[id][type];
+            List<string> types = entityComponents[id].Keys.ToList();
+            types.Sort();
+            foreach (string type in types) {
+                Component c = entityComponents[id][type];
                 output += type + "\n";
                 foreach (IValue value in c.Values) {
                     output += "  " + value.Name + "=" + value.Export() + "\n";
                 }
             }
-            System.IO.File.WriteAllText(id + ".ald", output);
+            return output;
         }
 
-        public static void Import(int id) {
+        public static void Import(int id, string[] lines) {
             RemoveAll(id);
-            string[] lines = System.IO.File.ReadAllLines(id + ".ald");
             int i = 0;
             Component c;
             while (i < lines.Length) {
@@ -108,6 +110,51 @@ namespace Lotus.ECS {
                     c.GetDataValue(bits[0]).Import(bits[1]);
                     i++;
                 }
+            }
+        }
+
+        public static void Serialize(int id, BinaryWriter stream) {
+            List<string> types = entityComponents[id].Keys.ToList();
+            types.Sort();
+            foreach (string type in types) {
+                stream.Write(type);
+                Component c = components[type][id];
+                foreach (IValue value in c.Values) {
+                    value.Serialize(stream);
+                }
+            }
+        }
+
+        public static void Deserialize(int id, BinaryReader stream) {
+            RemoveAll(id);
+            while (stream.BaseStream.Position < stream.BaseStream.Length) {
+                string type = stream.ReadString();
+                Component c = Add(type, id);
+                foreach (IValue value in c.Values) {
+                    value.Deserialize(stream);
+                }
+            }
+        }
+
+        public static void Save(int id) {
+            File.WriteAllText(id + ".ald", Export(id));
+        }
+
+        public static void Load(int id) {
+            Import(id, File.ReadAllLines(id + ".ald"));
+        }
+
+        public static void Save(int id, bool binary) {
+            if (!binary) Save(id);
+            using (FileStream stream = File.OpenWrite(id + ".bin")) {
+                Serialize(id, new BinaryWriter(stream));
+            }
+        }
+
+        public static void Load(int id, bool binary) {
+            if (!binary) Load(id);
+            using (FileStream stream = File.OpenRead(id + ".bin")) {
+                Deserialize(id, new BinaryReader(stream));
             }
         }
 
@@ -133,12 +180,28 @@ namespace Lotus.ECS {
             return Remove<T>(Id);
         }
 
-        public void Export() {
-            Export(Id);
+        public string Export() {
+            return Export(Id);
         }
 
-        public void Import() {
-            Import(Id);
+        public void Import(string[] lines) {
+            Import(Id, lines);
+        }
+
+        public void Save() {
+            Save(Id);
+        }
+
+        public void Load() {
+            Load(Id);
+        }
+
+        public void Save(bool binary) {
+            Save(Id, binary);
+        }
+
+        public void Load(bool binary) {
+            Load(Id, binary);
         }
     }
 }

@@ -66,10 +66,10 @@ namespace Lotus {
             ent.Get<Constraint>().MinPosition.Value = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
             ent.Add<PointLight>().Radius.Value = 2f;
             ent.Get<PointLight>().Color.Value = Color4.Cyan;
-
             ent.Add<TestComponent>();
-            ent.Export();
-            //ent.Import();
+
+            ent.Save(true);
+            ent.Load(true);
 
             int size = 63;
             int f = (int)Math.Floor(size/2.0);
