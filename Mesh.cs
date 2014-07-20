@@ -27,7 +27,7 @@ namespace Lotus
             return Vector3.Transform(n, normalMatrix);
         }
 
-        private Color4 baseColor;
+        protected Color4 baseColor;
 
         public Color4 GetColor(Vector3 vertex, Vector3 normal) {
             if (Camera.Current.UseLighting.Value) {

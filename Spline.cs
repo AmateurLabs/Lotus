@@ -41,11 +41,17 @@ namespace Lotus {
         const int SEGMENTS = 24;
 
         public override void RenGen() {
-            GL.Begin(PrimitiveType.Polygon);
+            GL.Begin(PrimitiveType.Triangles);
             GL.Color4(Color4.White);
             for (int i = 0; i < Points.Count; i++) {
                 float step = 1f/SEGMENTS;
-                for (float t = 0f; t <= 1.0001f; t += step) {
+                float t = 0f;
+                while (t <= 1.001f) {
+                    GL.Color4(Color4.White);
+                    GL.Vertex3(0f, 0f, -2f);
+                    GL.Color4(baseColor);
+                    GL.Vertex3(Evaluate(Points[i], Points[(i + 1) % Points.Count], t) - Vector3.UnitZ * 2f);
+                    t += step;
                     GL.Vertex3(Evaluate(Points[i], Points[(i + 1) % Points.Count], t) - Vector3.UnitZ * 2f);
                 }
             }
@@ -73,6 +79,10 @@ namespace Lotus {
             for (int i = 0; i < Points.Count; i++) {
                 GL.Vertex3(Points[i].Position);
             }
+            GL.End();
+            GL.Begin(PrimitiveType.Points);
+            GL.Color4(Color4.LimeGreen);
+            GL.Vertex3(0f, 0f, 0f);
             GL.End();
         }
     }

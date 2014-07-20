@@ -96,13 +96,17 @@ namespace Lotus {
             uiCam.Get<Camera>().Layers.Value = RenderLayers.GUI;
 
             shape = Entity.WrapNew();
+            shape.Add<Transform>().Position.Value = new Vector3(100f, 100f, 0f);
             shape.Add<Renderer>().Layers.Value = RenderLayers.GUI;
             shape.Add<MeshFilter>().Mesh.Value = new Spline(
-                new Spline.Point(new Vector3(100f, 100f, 0f)),
-                new Spline.Point(new Vector3(200f, 200f, 0f)),
-                new Spline.Point(new Vector3(300f, 100f, 0f)),
-                new Spline.Point(new Vector3(100f, 200f, 0f))
+                new Spline.Point(new Vector3(-56f, 32f, 0f)),
+                new Spline.Point(new Vector3(-56f, -32f, 0f)),
+                new Spline.Point(new Vector3(0f, -64f, 0f)),
+                new Spline.Point(new Vector3(56f, -32f, 0f)),
+                new Spline.Point(new Vector3(56f, 32f, 0f)),
+                new Spline.Point(new Vector3(0f, 64f, 0f))
             );
+            shape.Get<MeshFilter>().Color.Value = Color4.Red;
         }
 
         int pointId;
@@ -135,12 +139,12 @@ namespace Lotus {
             if (Input.IsDown(Key.PageDown)) Light.AmbientColor = new Color4(Light.AmbientColor.R - step, Light.AmbientColor.G - step, Light.AmbientColor.B - step, Light.AmbientColor.A - step);
 
             Spline spline = shape.Get<MeshFilter>().Mesh.Value as Spline;
-            Vector3 mPos = new Vector3(Input.MousePosition.X, Input.MousePosition.Y, 0f);
+            Vector3 mPos = new Vector3(Input.MousePosition.X, Input.MousePosition.Y, 0f) - shape.Get<Transform>().Position.Value;
             if (Input.IsPressed(MouseButton.Left)) {
                 float minDist = 25f;
                 pointType = -1;
+                float dist = float.PositiveInfinity;
                 for (int i = 0; i < spline.Points.Count; i++) {
-                    float dist = float.PositiveInfinity;
                     if (Input.Shift) {
                         dist = (spline.Points[i].Position + spline.Points[i].LeftControl - mPos).Length;
                         if (dist < minDist) {
@@ -164,11 +168,22 @@ namespace Lotus {
                         }
                     }
                 }
+                dist = (Vector3.Zero - mPos).Length;
+                if (dist < minDist) {
+                    minDist = dist;
+                    pointType = 3;
+                }
             }
             if (Input.IsDown(MouseButton.Left)) {
+                if (!Input.Control) {
+                    mPos.X = (float)Math.Round(mPos.X / 8f) * 8f;
+                    mPos.Y = (float)Math.Round(mPos.Y / 8f) * 8f;
+                    mPos.Z = (float)Math.Round(mPos.Z / 8f) * 8f;
+                }
                 if (pointType == 0) spline.Points[pointId].Position = mPos;
                 else if (pointType == 1) spline.Points[pointId].LeftControl = mPos - spline.Points[pointId].Position;
                 else if (pointType == 2) spline.Points[pointId].RightControl = mPos - spline.Points[pointId].Position;
+                else if (pointType == 3) shape.Get<Transform>().Position.Value += mPos;
             }
             Entity.Get<DirectionalLight>(0).Direction.Value = Vector3.TransformNormal(Entity.Get<DirectionalLight>(0).Direction.Value, Matrix4.CreateRotationX((float)(time % 360)/100000f));
 
