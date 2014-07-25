@@ -7,7 +7,6 @@ namespace Lotus {
 
 			using(var game = new Window()) {
 				game.Run();
-                //Magic issue-fixing comment
 			}
 		}
 	}
