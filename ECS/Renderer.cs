@@ -6,10 +6,10 @@ using System.Text;
 namespace Lotus.ECS {
     public class Renderer : Component {
 
-        public EnumValue<RenderLayers> Layers;
+        public EnumValue<Layers> LayerMask;
 
         public Renderer(int id) : base(id) {
-            Layers = new EnumValue<RenderLayers>(this, "Layers", RenderLayers.Default);
+            LayerMask = new EnumValue<Layers>(this, "LayerMask", Layers.Layer0);
         }
 
     }

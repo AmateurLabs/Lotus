@@ -10,6 +10,11 @@ namespace Lotus.ECS {
     public class RenderProcessor : Processor {
 
         public override void Render() {
+            foreach (PointLight light in Entity.GetAll<PointLight>()) {
+                if (Entity.Has<Transform>(light.Id)) {
+                    light.CachedPosition = Entity.Get<Transform>(light.Id).Position.Value;
+                }
+            }
             foreach (Camera cam in Entity.GetAll<Camera>()) {
                 if (Entity.Has<Transform>(cam.Id))
                     cam.Begin(Entity.Get<Transform>(cam.Id).ViewMatrix);
@@ -17,7 +22,7 @@ namespace Lotus.ECS {
                     cam.Begin(Matrix4.Identity);
 
                 foreach (Renderer r in Entity.GetAll<Renderer>()) {
-                    if ((r.Layers.Value & cam.Layers.Value) == 0) continue; //If the camera and renderer use different layers, don't draw
+                    if ((r.LayerMask.Value & cam.LayerMask.Value) == 0) continue; //If the camera and renderer use different layers, don't draw
                     Matrix4 viewMatrix = Matrix4.Identity;
                     Matrix4 normalMatrix = Matrix4.Identity;
                     if (Entity.Has<Transform>(r.Id)) {
@@ -27,7 +32,9 @@ namespace Lotus.ECS {
                     }
                     if (Entity.Has<MeshFilter>(r.Id)) { //If there is a Mesh aspect, draw that
                         MeshFilter mf = Entity.Get<MeshFilter>(r.Id);
-                        mf.Mesh.Value.Draw(viewMatrix, normalMatrix, mf.Color.Value);
+                        if (mf.Mesh.Value != null) {
+                            mf.Mesh.Value.Draw(viewMatrix, normalMatrix, mf.Color.Value);
+                        }
                     }
                     else { //Otherwise, draw an XYZ axis gizmo so we can see where it is
                         GL.PushMatrix();
@@ -56,7 +63,8 @@ namespace Lotus.ECS {
 
         public override void Update(float dt) {
             foreach (Renderer r in Entity.GetAll<Renderer>()) {
-                if (Entity.Has<MeshFilter>(r.Id)) {
+                MeshFilter filter = Entity.Get<MeshFilter>(r.Id);
+                if (filter != null && filter.Mesh.Value != null) {
                     Entity.Get<MeshFilter>(r.Id).Mesh.Value.Update();
                 }
             }

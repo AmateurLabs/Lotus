@@ -26,8 +26,8 @@ namespace Lotus.ECS {
                 result.B += light.Color.Value.B * dot * baseColor.B;
             }
             foreach (PointLight light in pointLights) {
-                Vector3 lightPos = Vector3.Zero;
-                /*if (Entity.Has<Transform>(light.Id)) */lightPos = Entity.Get<Transform>(light.Id).Position.Value;
+                Vector3 lightPos = light.CachedPosition;
+                /*if (Entity.Has<Transform>(light.Id)) lightPos = Entity.Get<Transform>(light.Id).Position.Value;*/
                 float dist = (pos - lightPos).LengthFast;
                 float attenuation = light.Intensity.Value / (1f + (2f / light.Radius.Value) * dist + (1f / (light.Radius.Value * light.Radius.Value)) * dist * dist);
                 result.R += light.Color.Value.R * attenuation * baseColor.R;
@@ -45,6 +45,8 @@ namespace Lotus.ECS {
             }
             return result;
         }
+
+        public Vector3 CachedPosition = Vector3.Zero;
 
         public Color4Value Color;
         public FloatValue Intensity;

@@ -10,7 +10,7 @@ namespace Lotus.ECS {
         public static Camera Current; //The camera most recently set up with .Draw()
         Matrix4 projectionMatrix; //The Matrix that determines whether the camera is orthographic, perspective, etc.
 
-        public EnumValue<RenderLayers> Layers; //Which layers this camera renders
+        public EnumValue<Layers> LayerMask; //Which layers this camera renders
 
         bool isOrthographic;
         public BoolValue IsOrthographic; //Whether this camera is orthographic or perspective
@@ -24,7 +24,7 @@ namespace Lotus.ECS {
 
         public Camera(int id) : base(id) {
             if (Main == null) Main = this; //If this is the first created camera, designate it as the Main camera
-            Layers = new EnumValue<RenderLayers>(this, "Layers", RenderLayers.Default);
+            LayerMask = new EnumValue<Layers>(this, "LayerMask", Layers.Layer0);
             IsOrthographic = new BoolValue(this, "IsOrthographic", false);
             UseAlphaBlend = new BoolValue(this, "UseAlphaBlend", false);
             UseLighting = new BoolValue(this, "UseLighting", false);
