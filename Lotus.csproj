@@ -31,7 +31,12 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="AudioClip.cs" />
     <Compile Include="ECS\Attractor.cs" />
+    <Compile Include="ECS\AudioClipValue.cs" />
+    <Compile Include="ECS\AudioListener.cs" />
+    <Compile Include="ECS\AudioProcessor.cs" />
+    <Compile Include="ECS\AudioSource.cs" />
     <Compile Include="ECS\BoolValue.cs" />
     <Compile Include="ECS\Color4Value.cs" />
     <Compile Include="ECS\Constraint.cs" />
@@ -44,7 +49,7 @@
     <Compile Include="ECS\ListValue.cs" />
     <Compile Include="ECS\MeshFilter.cs" />
     <Compile Include="ECS\MeshValue.cs" />
-    <Compile Include="ECS\RenderLayers.cs" />
+    <Compile Include="ECS\Layers.cs" />
     <Compile Include="ECS\Rigidbody.cs" />
     <Compile Include="ECS\PhysicsProcessor.cs" />
     <Compile Include="ECS\StringValue.cs" />
@@ -53,6 +58,7 @@
     <Compile Include="ECS\QuaternionValue.cs" />
     <Compile Include="ECS\Vector3Value.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spline.cs" />
     <Compile Include="Square.cs" />
     <Compile Include="Cube.cs" />
@@ -76,6 +82,7 @@
     <Compile Include="ECS\Camera.cs" />
     <Compile Include="Sphere.cs" />
     <Compile Include="Text.cs" />
+    <Compile Include="WaveClip.cs" />
     <Compile Include="Window.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -101,5 +108,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="openal32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

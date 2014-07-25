@@ -8,7 +8,7 @@ namespace Lotus.ECS {
 
         public virtual void Update(float dt) { }
         public virtual void Render() { }
-        public virtual void Reveille(Component aspect) { }
-        public virtual void Taps(Component aspect) { }
+        public virtual void Reveille(Component component) { }
+        public virtual void Taps(Component component) { }
     }
 }

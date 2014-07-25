@@ -43,10 +43,11 @@ namespace Lotus {
             text = new Text();
             CursorVisible = false;
 
-            Engine.Processors.Add(new RenderProcessor());
             Engine.Processors.Add(new JitterProcessor());
             Engine.Processors.Add(new PhysicsProcessor());
             Engine.Processors.Add(new FreelookProcessor());
+            Engine.Processors.Add(new AudioProcessor());
+            Engine.Processors.Add(new RenderProcessor());
 
             Entity worldEntity = Entity.WrapNew();
             worldEntity.Add<Renderer>();
@@ -67,7 +68,9 @@ namespace Lotus {
             ent.Add<PointLight>().Radius.Value = 2f;
             ent.Get<PointLight>().Color.Value = Color4.Cyan;
             ent.Add<TestComponent>();
-
+            ent.Add<AudioSource>().Clip.Value = new WaveClip(WaveType.Sine);
+            ent.Get<AudioSource>().Looping.Value = true;
+            ent.Get<AudioSource>().State.Value = AudioSourceState.Play;
             ent.Save(true);
             ent.Load(true);
 
@@ -88,16 +91,17 @@ namespace Lotus {
             cam.Get<Transform>().Rotation.Value = new Quaternion(0.282464295625687f, -2.12368106842041f, 0f, 0f);
             cam.Add<Camera>().UseLighting.Value = true;
             cam.Add<Freelook>();
+            cam.Add<AudioListener>();
 
             uiCam = Entity.WrapNew();
             uiCam.Add<Transform>().Position.Value = new Vector3(0f, 0f, 10f);
             uiCam.Add<Camera>().IsOrthographic.Value = true;
             uiCam.Get<Camera>().UseAlphaBlend.Value = true;
-            uiCam.Get<Camera>().Layers.Value = RenderLayers.GUI;
+            uiCam.Get<Camera>().LayerMask.Value = Layers.Layer1;
 
             shape = Entity.WrapNew();
             shape.Add<Transform>().Position.Value = new Vector3(100f, 100f, 0f);
-            shape.Add<Renderer>().Layers.Value = RenderLayers.GUI;
+            shape.Add<Renderer>().LayerMask.Value = Layers.Layer1;
             shape.Add<MeshFilter>().Mesh.Value = new Spline(
                 new Spline.Point(new Vector3(-56f, 32f, 0f)),
                 new Spline.Point(new Vector3(-56f, -32f, 0f)),
@@ -132,6 +136,8 @@ namespace Lotus {
                 Entity.Get<AJitterBody>(0).Rigidbody.IsActive = true;
                 Entity.Get<AJitterBody>(0).Rigidbody.AddTorque(Jitter.LinearMath.JVector.Forward * 100f);
             }*/
+
+            Entity.Get<AudioSource>(1).Pitch.Value = (float)Math.Pow(1.05946, 12 * ((time) % 1));
 
             if (Input.IsPressed(Key.F1)) DebugEnabled = !DebugEnabled;
 
@@ -217,6 +223,7 @@ namespace Lotus {
             uiCam.Get<Camera>().Begin(uiCam.Get<Transform>().ViewMatrix);
             if (DebugEnabled)
                 DebugReadout();
+            Debug.DrawUIStack();
             uiCam.Get<Camera>().End();
             SwapBuffers();
             GL.Disable(EnableCap.DepthTest);

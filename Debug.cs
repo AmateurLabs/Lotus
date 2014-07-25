@@ -14,6 +14,7 @@ namespace Lotus {
         public static float Depth;
         static Random rand = new Random();
         static Stack<Action> drawStack = new Stack<Action>();
+        static Stack<Action> drawUIStack = new Stack<Action>();
 
         public static void DrawRect(Vector2 p0, Vector2 p1, Color4 color) {
             GL.Begin(PrimitiveType.Quads);
@@ -91,9 +92,19 @@ namespace Lotus {
             drawStack.Push(action);
         }
 
+        public static void DrawUILater(Action action) {
+            drawUIStack.Push(action);
+        }
+
         public static void DrawStack() {
             while (drawStack.Count > 0) {
-                drawStack.Pop().Invoke();
+                drawStack.Pop()();
+            }
+        }
+
+        public static void DrawUIStack() {
+            while (drawUIStack.Count > 0) {
+                drawUIStack.Pop()();
             }
         }
     }
