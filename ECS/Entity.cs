@@ -91,7 +91,8 @@ namespace Lotus.ECS {
                 Component c = entityComponents[id][type];
                 output += type + "\n";
                 foreach (IValue value in c.Values) {
-                    output += "  " + value.Name + "=" + value.Export() + "\n";
+                    if (value.Serialized)
+                        output += "  " + value.Name + "=" + value.Export() + "\n";
                 }
             }
             return output;
@@ -120,7 +121,8 @@ namespace Lotus.ECS {
                 stream.Write(type);
                 Component c = components[type][id];
                 foreach (IValue value in c.Values) {
-                    value.Serialize(stream);
+                    if (value.Serialized)
+                        value.Serialize(stream);
                 }
             }
         }
@@ -131,7 +133,8 @@ namespace Lotus.ECS {
                 string type = stream.ReadString();
                 Component c = Add(type, id);
                 foreach (IValue value in c.Values) {
-                    value.Deserialize(stream);
+                    if (value.Serialized)
+                        value.Deserialize(stream);
                 }
             }
         }

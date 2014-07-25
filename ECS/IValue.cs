@@ -12,6 +12,11 @@ namespace Lotus.ECS {
             set;
         }
 
+        bool Serialized {
+            get;
+            set;
+        }
+
         void Serialize(BinaryWriter stream);
         void Deserialize(BinaryReader stream);
         string Export();

@@ -5,29 +5,37 @@ using System.Text;
 using System.IO;
 
 namespace Lotus.ECS {
-    public abstract class DataValue<T> : IValue {
+    public class DataValue<T> : IValue {
 
         public string Name {
             get;
             set;
         }
 
-        public virtual T Value {
+        public T Value {
+            get;
+            set;
+        }
+
+        public bool Serialized {
             get;
             set;
         }
 
         public DataValue() { }
 
-        public DataValue(Component c, string name, T value) {
+        public DataValue(Component c, string name, T value) : this(c, name, value, true) { }
+
+        public DataValue(Component c, string name, T value, bool serialized) {
             Name = name;
             Value = value;
             c.Values.Add(this);
+            Serialized = serialized;
         }
 
-        public abstract void Serialize(BinaryWriter stream);
-        public abstract void Deserialize(BinaryReader stream);
-        public abstract string Export();
-        public abstract void Import(string input);
+        public virtual void Serialize(BinaryWriter stream) { }
+        public virtual void Deserialize(BinaryReader stream) { }
+        public virtual string Export() { return ""; }
+        public virtual void Import(string input) { }
     }
 }

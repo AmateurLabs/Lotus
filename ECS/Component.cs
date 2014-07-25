@@ -7,7 +7,7 @@ namespace Lotus.ECS {
     public abstract class Component {
 
         public readonly int Id;
-        public List<IValue> Values = new List<IValue>();
+        public readonly List<IValue> Values = new List<IValue>();
 
         public Component(int id) {
             Id = id;
