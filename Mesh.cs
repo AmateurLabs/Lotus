@@ -19,19 +19,15 @@ namespace Lotus
         private Matrix4 viewMatrix;
         private Matrix4 normalMatrix;
 
-        public Vector3 ToWorldPoint(Vector3 p) {
+        public Vector3 ToWorld(Vector3 p) {
             return Vector3.Transform(p, viewMatrix);
-        }
-
-        public Vector3 ToWorldNormal(Vector3 n) {
-            return Vector3.Transform(n, normalMatrix);
         }
 
         protected Color4 baseColor;
 
         public Color4 GetColor(Vector3 vertex, Vector3 normal) {
             if (Camera.Current.UseLighting.Value) {
-                return Light.GetColor(ToWorldNormal(normal), ToWorldPoint(vertex), baseColor);
+                return Light.GetColor(ToWorld(normal), ToWorld(vertex), baseColor);
             }
             else {
                 return baseColor;

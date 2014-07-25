@@ -67,5 +67,9 @@ namespace Lotus.ECS {
         public Vector3 ToWorldNormal(Vector3 n) {
             return Vector3.TransformNormal(n, RotationMatrix).Normalized();
         }
+
+        public Vector3 ToObjectPoint(Vector3 p) {
+            return Vector3.Transform(p, ViewMatrix.Inverted());
+        }
     }
 }
