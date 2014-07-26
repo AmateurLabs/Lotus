@@ -149,14 +149,14 @@ namespace Lotus.ECS {
 
         public static void Save(int id, bool binary) {
             if (!binary) Save(id);
-            using (FileStream stream = File.OpenWrite(id + ".bin")) {
+            using (FileStream stream = File.Open(id + ".bin", FileMode.Create)) {
                 Serialize(id, new BinaryWriter(stream));
             }
         }
 
         public static void Load(int id, bool binary) {
             if (!binary) Load(id);
-            using (FileStream stream = File.OpenRead(id + ".bin")) {
+            using (FileStream stream = File.Open(id + ".bin", FileMode.Open)) {
                 Deserialize(id, new BinaryReader(stream));
             }
         }
