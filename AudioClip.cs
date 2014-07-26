@@ -8,7 +8,10 @@ using OpenTK.Audio.OpenAL;
 namespace Lotus {
     public abstract class AudioClip {
 
-        public abstract short[] GetData(out int channels, out int bits, out int sampleRate);
+        public bool Stereo = false;
+        public int SampleRate = 44100;
+
+        public abstract short[] GetData();
 
         public abstract float Length { get; }
     }

@@ -48,8 +48,7 @@ namespace Lotus.ECS {
                 foreach (AudioSource src in Entity.GetAll<AudioSource>()) {
                     Debug.DrawText(0f, 12f, "Time: " + src.Time.Value + " State: " + src.State.Value);
                     AudioClip clip = src.Clip.Value;
-                    int channels, bits, sampleRate;
-                    short[] data = clip.GetData(out channels, out bits, out sampleRate);
+                    short[] data = clip.GetData();
                     GL.Begin(PrimitiveType.LineLoop);
                     GL.Color4(1f, 0f, 0f, 1f);
                     GL.Vertex3(0.0, 512.0, 0.0);
@@ -100,9 +99,8 @@ namespace Lotus.ECS {
                             if (!Buffers.ContainsKey(src.Clip.Value)) {
                                 int bufId = AL.GenBuffer();
                                 Buffers.Add(src.Clip.Value, bufId);
-                                int channels, bits_per_sample, sample_rate;
-                                short[] soundData = src.Clip.Value.GetData(out channels, out bits_per_sample, out sample_rate);
-                                AL.BufferData(bufId, GetSoundFormat(channels, bits_per_sample), soundData, soundData.Length * 2, sample_rate);
+                                short[] soundData = src.Clip.Value.GetData();
+                                AL.BufferData(bufId, GetSoundFormat((src.Clip.Value.Stereo) ? 2 : 1, 16), soundData, soundData.Length * 2, src.Clip.Value.SampleRate);
                                 AL.Source(Sources[pair], ALSourcei.Buffer, Buffers[src.Clip.Value]);
                             }
                             AL.Source(Sources[pair], ALSourcef.Pitch, src.Pitch.Value);

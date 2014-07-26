@@ -20,12 +20,9 @@ namespace Lotus {
 
         short[] data;
 
-        public override short[] GetData(out int channels, out int bits, out int sampleRate) {
-            channels = 1;
-            bits = 16;
-            sampleRate = 44100;
+        public override short[] GetData() {
             if (data == null) {
-                data = new short[(int)(sampleRate / Frequency)];
+                data = new short[(int)(SampleRate / Frequency)];
                 for (int i = 0; i < data.Length; i++) {
                     data[i] = (short)(short.MaxValue * Sample(Wave, ((double)i / (double)data.Length)));
                 }
