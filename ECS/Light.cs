@@ -13,12 +13,15 @@ namespace Lotus.ECS {
         protected static List<DirectionalLight> dirLights = new List<DirectionalLight>();
         protected static List<PointLight> pointLights = new List<PointLight>();
 
-        public static Color4 AmbientColor = new Color4(0.25f, 0.25f, 0.25f, 1f);
+        public static Color4 AmbientColor = new Color4(0.125f, 0.125f, 0.125f, 1f);
 
         public static Color4 GetColor(Vector3 normal, Vector3 pos, Color4 baseColor) {
             Color4 result = AmbientColor;
+            normal.NormalizeFast();
             foreach (DirectionalLight light in dirLights) {
-                float dot = Vector3.Dot(normal, -light.Direction.Value);
+                Vector3 dir = -light.Direction.Value;
+                dir.NormalizeFast();
+                float dot = Vector3.Dot(normal, dir);
                 if (dot < 0f) continue;
                 dot *= light.Intensity.Value;
                 result.R += light.Color.Value.R * dot * baseColor.R;

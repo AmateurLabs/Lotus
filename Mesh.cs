@@ -19,15 +19,19 @@ namespace Lotus
         private Matrix4 viewMatrix;
         private Matrix4 normalMatrix;
 
-        public Vector3 ToWorld(Vector3 p) {
+        public Vector3 ToWorldPoint(Vector3 p) {
             return Vector3.Transform(p, viewMatrix);
+        }
+
+        public Vector3 ToWorldNormal(Vector3 n) {
+            return Vector3.Transform(n, normalMatrix);
         }
 
         protected Color4 baseColor;
 
-        public Color4 GetColor(Vector3 vertex, Vector3 normal) {
+        public Color4 GetColor(Vector3 normal, Vector3 vertex) {
             if (Camera.Current.UseLighting.Value) {
-                return Light.GetColor(ToWorld(normal), ToWorld(vertex), baseColor);
+                return Light.GetColor(ToWorldNormal(normal), ToWorldPoint(vertex), baseColor);
             }
             else {
                 return baseColor;
@@ -35,7 +39,7 @@ namespace Lotus
         }
 
         public void DrawVertex(Vector3 vertex, Vector3 normal) {
-            GL.Color4(GetColor(vertex, normal));
+            GL.Color4(GetColor(normal, vertex));
             GL.Vertex3(vertex);
         }
 

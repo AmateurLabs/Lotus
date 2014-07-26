@@ -52,9 +52,10 @@ namespace Lotus {
             Entity worldEntity = Entity.WrapNew();
             worldEntity.Add<Renderer>();
             worldEntity.Add<Attractor>().Type.Value = Attractor.AttractionType.World;
-            worldEntity.Get<Attractor>().Acceleration.Value = 9.81f;
+            //worldEntity.Get<Attractor>().Acceleration.Value = 9.81f;
+            worldEntity.Get<Attractor>().Acceleration.Value = 1f;
             worldEntity.Add<DirectionalLight>().Direction.Value = Vector3.UnitY;
-            worldEntity.Get<DirectionalLight>().Intensity.Value = 0.25f;
+            worldEntity.Get<DirectionalLight>().Intensity.Value = 1f;
 
             Entity ent = Entity.WrapNew();
             ent.Add<Transform>().Position.Value = new Vector3(10f, -10f, 0f);
@@ -65,8 +66,8 @@ namespace Lotus {
             ent.Add<Rigidbody>();
             ent.Add<Constraint>().MaxPosition.Value = new Vector3(float.PositiveInfinity, 0f, float.PositiveInfinity);
             ent.Get<Constraint>().MinPosition.Value = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
-            ent.Add<PointLight>().Radius.Value = 2f;
-            ent.Get<PointLight>().Color.Value = Color4.Cyan;
+            //ent.Add<PointLight>().Radius.Value = 2f;
+            //ent.Get<PointLight>().Color.Value = Color4.Cyan;
             ent.Add<TestComponent>();
             ent.Add<AudioSource>().Clip.Value = new WaveClip(WaveType.Sine);
             ent.Get<AudioSource>().Looping.Value = true;

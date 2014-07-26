@@ -42,27 +42,27 @@ namespace Lotus
         public override void RenGen()
         {
             GL.Begin(PrimitiveType.TriangleFan);
-            GL.Color4(Light.GetColor(ToWorld(north), ToWorld(north), Color4.White));
+            GL.Color4(GetColor(north, north));
             GL.Vertex3(north);// rendering the north pole of the sphere
             for (int i = 0; i < 2*sec; i++)
             {
-                GL.Color4(Light.GetColor(ToWorld(circles[0, i]), ToWorld(circles[0, i]), Color4.White));
+                GL.Color4(GetColor(circles[0, i], circles[0, i]));
                 GL.Vertex3(circles[0, i]);
             }
-            GL.Color4(Light.GetColor(ToWorld(circles[0, 0]), ToWorld(circles[0, 0]), Color4.White));
+            GL.Color4(GetColor(circles[0, 0], circles[0, 0]));
             GL.Vertex3(circles[0, 0]);
             GL.End();
 
             //rendering the south pole of the sphere
             GL.Begin(PrimitiveType.TriangleFan);
-            GL.Color4(Light.GetColor(ToWorld(south), ToWorld(south), Color4.White));
+            GL.Color4(GetColor(south, south));
             GL.Vertex3(south);
             for (int i = 0; i < 2*sec; i++)
             {
-                GL.Color4(Light.GetColor(ToWorld(circles[sec - 2, i]), ToWorld(circles[sec - 2, i]), Color4.White));
+                GL.Color4(GetColor(circles[sec - 2, i], circles[sec - 2, i]));
                 GL.Vertex3(circles[sec-2, i]);
             }
-            GL.Color4(Light.GetColor(ToWorld(circles[sec - 2, 0]), ToWorld(circles[sec - 2, 0]), Color4.White));
+            GL.Color4(GetColor(circles[sec - 2, 0], circles[sec - 2, 0]));
             GL.Vertex3(circles[sec-2, 0]);
             GL.End();
             //rendering the middle part
@@ -74,26 +74,26 @@ namespace Lotus
                 int m = 0;
 
 
-                GL.Color4(Light.GetColor(ToWorld(circles[row, sec * 2 - 1]), ToWorld(circles[row, sec*2-1]), Color4.White));
+                GL.Color4(GetColor((circles[row, sec * 2 - 1]), (circles[row, sec * 2 - 1])));
                 GL.Vertex3(circles[row, sec*2-1]);
                 for (int i = 0; i < sec*2-1; i++)
                 {
-                    GL.Color4(Light.GetColor(ToWorld(circles[row, n]), ToWorld(circles[row, n]), Color4.White));
+                    GL.Color4(GetColor((circles[row, n]), (circles[row, n])));
                     GL.Vertex3(circles[row, n]);
-                    GL.Color4(Light.GetColor(ToWorld(circles[row + 1, m]), ToWorld(circles[row + 1, m]), Color4.White));
+                    GL.Color4(GetColor((circles[row + 1, m]), (circles[row + 1, m])));
                     GL.Vertex3(circles[row + 1, m++]);
-                    GL.Color4(Light.GetColor(ToWorld(circles[row + 1, m]), ToWorld(circles[row + 1, m]), Color4.White));
+                    GL.Color4(GetColor((circles[row + 1, m]), (circles[row + 1, m])));
                     GL.Vertex3(circles[row + 1, m]);
-                    GL.Color4(Light.GetColor(ToWorld(circles[row, n]), ToWorld(circles[row, n]), Color4.White));
+                    GL.Color4(GetColor((circles[row, n]), (circles[row, n])));
                     GL.Vertex3(circles[row, n++]);
                 }
-                GL.Color4(Light.GetColor(ToWorld(circles[row, n]), ToWorld(circles[row, n]), Color4.White));
+                GL.Color4(GetColor((circles[row, n]), (circles[row, n])));
                 GL.Vertex3(circles[row, n]);
-                GL.Color4(Light.GetColor(ToWorld(circles[row + 1, m]), ToWorld(circles[row + 1, m]), Color4.White));
+                GL.Color4(GetColor((circles[row + 1, m]), (circles[row + 1, m])));
                 GL.Vertex3(circles[row + 1, m]);
-                GL.Color4(Light.GetColor(ToWorld(circles[row + 1, 0]), ToWorld(circles[row + 1, 0]), Color4.White));
+                GL.Color4(GetColor((circles[row + 1, 0]), (circles[row + 1, 0])));
                 GL.Vertex3(circles[row + 1, 0]);
-                //GL.Color4(Light.GetColor(ToWorldSpace(circles[row, n]), Color4.White));
+                //GL.Color4(GetColor(Space(circles[row, n])));
                 //GL.Vertex3(circles[row, 0]);
                 
                 //GL.End();
