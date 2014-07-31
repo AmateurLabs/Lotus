@@ -288,6 +288,17 @@ namespace Lotus {
             GL.DeleteBuffer(VBOID);
             GL.DeleteBuffer(IBOID);
         }
+
+        public static Vector3 NearestIntersect(Vector3 Pos)//this is intended to find the nearest point to Pos where 3 chunks meet.
+        {
+            float Pointer = -1;//this is merely to keep the raycast consistently pointed at the terrain
+            Vector3 hex;
+            if (Pos.Y < 0) Pointer = 1;
+            Raycast(Pos, Pointer * Vector3.UnitY, out hex, 256f);//get the position of whatever (specifically, a camera.) in gridspace
+
+
+            return Vector3.Zero;
+        }
     }
 }
 

@@ -176,3 +176,5 @@ UpgradeLog*.htm
 FakesAssemblies/
 *.sln
 *.sln
+*.sln
+Lotus.sln
