@@ -254,8 +254,8 @@ namespace Lotus {
         }
 
         public override Bounds GetBounds() {
-            Vector3 min = ToWorld(0, 0);
-            Vector3 max = ToWorld(Size - 1, Size - 1);
+            Vector3 min = ToWorld(ChunkOffX, ChunkOffY);
+            Vector3 max = ToWorld(ChunkOffX + Size - 1, ChunkOffY + Size - 1);
             min.Y = 0;
             max.Y = 8;
             return new Bounds(min, max);

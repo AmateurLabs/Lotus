@@ -17,6 +17,9 @@ namespace Lotus.ECS {
         public BoolValue UseAlphaBlend; //Whether to use simple alpha blending for transparency
         public BoolValue UseLighting; //Whether to use lighting; currently the custom lighting
 
+        public FloatValue FieldOfView; //The field-of-view, if the camera is a perspective camera
+        public FloatValue ViewDistance; //The maximum viewing distance
+
         public bool IsPerspective { //Whether this camera uses perspective projection
             get { return !IsOrthographic.Value;  }
             set { IsOrthographic.Value = !value; }
@@ -28,15 +31,17 @@ namespace Lotus.ECS {
             IsOrthographic = new BoolValue(this, "IsOrthographic", false);
             UseAlphaBlend = new BoolValue(this, "UseAlphaBlend", false);
             UseLighting = new BoolValue(this, "UseLighting", false);
+            FieldOfView = new FloatValue(this, "FieldOfView", 60f);
+            ViewDistance = new FloatValue(this, "ViewDistance", 256f);
             ResetProjectionMatrix();
         }
 
         public void ResetProjectionMatrix() {
             if (IsOrthographic.Value) {
-                projectionMatrix = Matrix4.CreateOrthographicOffCenter(0f, Window.Main.Width, Window.Main.Height, 0f, 0.1f, 256f);
+                projectionMatrix = Matrix4.CreateOrthographicOffCenter(0f, Window.Main.Width, Window.Main.Height, 0f, 0.1f, ViewDistance.Value);
             }
             else {
-                projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60f), (float)Window.Main.Width / (float)Window.Main.Height, 0.1f, 256f);
+                projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(FieldOfView.Value), (float)Window.Main.Width / (float)Window.Main.Height, 0.1f, ViewDistance.Value);
                 projectionMatrix *= Matrix4.CreateScale(-1f, -1f, 1f); //Invert X and Y to match screen coordinates
             }
         }
