@@ -78,8 +78,8 @@ namespace Lotus {
             int size = 63;
             int f = (int)Math.Floor(size/2.0);
             int c = (int)Math.Ceiling(size/2.0);
-            for (int x = -3; x <= 3; x++) {
-                for (int y = -3; y <= 3; y++) {
+            for (int x = -9; x <= 9; x++) {
+                for (int y = -9; y <= 9; y++) {
                     Entity terrain = Entity.WrapNew();
                     terrain.Add<Transform>();
                     terrain.Add<Renderer>();
@@ -120,6 +120,7 @@ namespace Lotus {
         float step = .01f;
         protected override void OnUpdateFrame(FrameEventArgs e) {
             base.OnUpdateFrame(e);
+            Debug.Update();
             Input.Update();
 
             time += e.Time;
@@ -194,6 +195,47 @@ namespace Lotus {
             }
             Entity.Get<DirectionalLight>(0).Direction.Value = Vector3.TransformNormal(Entity.Get<DirectionalLight>(0).Direction.Value, Matrix4.CreateRotationX((float)(time % 360)/100000f));
 
+            Vector3 camPos = cam.Get<Transform>().Position.Value;
+            Quaternion camRot = cam.Get<Transform>().Rotation.Value;
+
+            Debug.AddMsg("DEBUG READOUT");
+            Debug.AddMsg("Camera Location || Camera Rotation");
+            Debug.AddMsg(("X: " + camPos.X).PadRight(15) + " || X:" + (float)(camRot.X % (2 * Math.PI)));
+            Debug.AddMsg(("Y: " + camPos.Y).PadRight(15) + " || Y:" + (float)(camRot.Y % (2 * Math.PI)));
+            Debug.AddMsg(("Z: " + camPos.Z).PadRight(15) + " || Z:" + (float)(camRot.Z % (2 * Math.PI)));
+            Debug.AddMsg("Frame Rate: " + frameRate); //framerate readout
+            Debug.AddMsg("Time: " + time);
+
+            //Raycast from the center of the camera and display cursor
+            Vector3 hex;
+            if (HexGrid.Raycast(Entity.Get<Transform>(Camera.Main.Id).Position.Value, Entity.Get<Transform>(Camera.Main.Id).Forward, out hex, 256f)) {
+                int mapX = (int)hex.X;
+                int mapY = (int)hex.Y;
+                Vector3 p = HexGrid.ToWorld(mapX, mapY);
+                p.Y = 0f;
+                Debug.DrawLater(() => {
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                    GL.Begin(PrimitiveType.TriangleFan);
+                    GL.Color3(1f, 0f, 1f);
+                    for (int k = 0; k < HexGrid.HexVerts.Length; k++) GL.Vertex3(p + HexGrid.HexVerts[k] + Vector3.UnitY * HexGrid.GetHeight(p.X + HexGrid.HexVerts[k].X, p.Z + HexGrid.HexVerts[k].Z) * 8f - Vector3.UnitY * 0.01f);
+                    GL.Vertex3(p + HexGrid.HexVerts[1] + Vector3.UnitY * HexGrid.GetHeight(p.X + HexGrid.HexVerts[1].X, p.Z + HexGrid.HexVerts[1].Z) * 8f - Vector3.UnitY * 0.01f);
+                    GL.End();
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+                    GL.Begin(PrimitiveType.Lines);
+                    GL.Color3(Color.Red);
+                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
+                    GL.Vertex3(HexGrid.ToWorld(mapX + 1, mapY) - Vector3.UnitY * 0.02f);
+                    GL.Color3(Color.Green);
+                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
+                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY + 1) - Vector3.UnitY * 0.02f);
+                    GL.Color3(Color.Blue);
+                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
+                    GL.Vertex3(HexGrid.ToWorld(mapX - 1, mapY + 1) - Vector3.UnitY * 0.02f);
+                    GL.End();
+                });
+                Debug.AddMsg("Cursor Location: " + hex.X + ", " + hex.Y + ", " + -(hex.X + hex.Y));
+            }
+
             Engine.Update(dt); //Insert engine rev here VROOOOOOM
         }
 
@@ -249,57 +291,22 @@ namespace Lotus {
 
         private void DebugReadout()//basic dubug readout.
         {
+            IList<string> msgs = Debug.GetDebugMsgs();
             float border = 10f;
+            int spacing = 12;
+
             Debug.Depth = -0.9f;
             Debug.DrawRect((float)((Width / 2) - 1), (float)((Height / 2) - 10), 2f, 20f, new Color4(1f, 1f, 1f, 1f));
             Debug.DrawRect((float)((Width / 2) - 10), (float)((Height / 2) - 1), 20f, 2f, new Color4(1f, 1f, 1f, 1f));
             Debug.Depth = -1f;
-            Debug.DrawRectFrame(Vector2.Zero, new Vector2(435, 116), Color4.White, new Color4(1f, 0f, 1f, 0.5f), border / 2);
+            Debug.DrawRectFrame(Vector2.Zero, new Vector2(435, border + spacing * msgs.Count + border), Color4.White, new Color4(1f, 0f, 1f, 0.5f), border / 2);
             Debug.Depth = -1.1f;
             Debug.DrawRectFrame(Vector2.Zero, new Vector2(Width, Height), Color4.White, new Color4(0.1f, 0.1f, 0.5f, 0.3f), border / 2);
 
             int n = 0;
-            int spacing = 12;
-
-            Vector3 camPos = cam.Get<Transform>().Position.Value;
-            Quaternion camRot = cam.Get<Transform>().Rotation.Value;
-
-            text.Draw("DEBUG READOUT", new Vector2(border, spacing * n++ + border));
-            text.Draw("Camera Location || Camera Rotation", new Vector2(border, spacing * n++ + border));
-            text.Draw(("X: " + camPos.X).PadRight(15) + " || X:" + (float)(camRot.X % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
-            text.Draw(("Y: " + camPos.Y).PadRight(15) + " || Y:" + (float)(camRot.Y % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
-            text.Draw(("Z: " + camPos.Z).PadRight(15) + " || Z:" + (float)(camRot.Z % (2 * Math.PI)), new Vector2(border, spacing * n++ + border));
-            text.Draw("Frame Rate: " + frameRate, new Vector2(border, spacing * n++ + border)); //framerate readout
-            text.Draw("Time: " + time, new Vector2(border, spacing * n++ + border));
-
-            //Raycast from the center of the camera and display cursor
-            Vector3 hex;
-            if (HexGrid.Raycast(Entity.Get<Transform>(Camera.Main.Id).Position.Value, Entity.Get<Transform>(Camera.Main.Id).Forward, out hex, 256f)) {
-                int mapX = (int)hex.X;
-                int mapY = (int)hex.Y;
-                Vector3 p = HexGrid.ToWorld(mapX, mapY);
-                p.Y = 0f;
-                Debug.DrawLater(() => {
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-                    GL.Begin(PrimitiveType.TriangleFan);
-                    GL.Color3(1f, 0f, 1f);
-                    for (int k = 0; k < HexGrid.HexVerts.Length; k++) GL.Vertex3(p + HexGrid.HexVerts[k] + Vector3.UnitY * HexGrid.GetHeight(p.X + HexGrid.HexVerts[k].X, p.Z + HexGrid.HexVerts[k].Z) * 8f - Vector3.UnitY * 0.01f);
-                    GL.Vertex3(p + HexGrid.HexVerts[1] + Vector3.UnitY * HexGrid.GetHeight(p.X + HexGrid.HexVerts[1].X, p.Z + HexGrid.HexVerts[1].Z) * 8f - Vector3.UnitY * 0.01f);
-                    GL.End();
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-                    GL.Begin(PrimitiveType.Lines);
-                    GL.Color3(Color.Red);
-                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
-                    GL.Vertex3(HexGrid.ToWorld(mapX + 1, mapY) - Vector3.UnitY * 0.02f);
-                    GL.Color3(Color.Green);
-                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
-                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY + 1) - Vector3.UnitY * 0.02f);
-                    GL.Color3(Color.Blue);
-                    GL.Vertex3(HexGrid.ToWorld(mapX, mapY) - Vector3.UnitY * 0.02f);
-                    GL.Vertex3(HexGrid.ToWorld(mapX - 1, mapY + 1) - Vector3.UnitY * 0.02f);
-                    GL.End();
-                });
-                text.Draw("Cursor Location: " + hex.X + ", " + hex.Y + ", " + -(hex.X + hex.Y), new Vector2(border, spacing * n++ + border));
+            
+            foreach (string msg in msgs) {
+                text.Draw(msg, new Vector2(border, spacing * n++ + border));
             }
         }
 

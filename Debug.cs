@@ -15,6 +15,7 @@ namespace Lotus {
         static Random rand = new Random();
         static Stack<Action> drawStack = new Stack<Action>();
         static Stack<Action> drawUIStack = new Stack<Action>();
+        static List<string> debugMsgs = new List<string>();
 
         public static void DrawRect(Vector2 p0, Vector2 p1, Color4 color) {
             GL.Begin(PrimitiveType.Quads);
@@ -106,6 +107,18 @@ namespace Lotus {
             while (drawUIStack.Count > 0) {
                 drawUIStack.Pop()();
             }
+        }
+
+        public static void Update() {
+            debugMsgs.Clear();
+        }
+
+        public static void AddMsg(string msg) {
+            debugMsgs.Add(msg);
+        }
+
+        public static IList<string> GetDebugMsgs() {
+            return debugMsgs.AsReadOnly();
         }
     }
 }

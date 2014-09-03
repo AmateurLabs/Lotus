@@ -43,9 +43,9 @@ namespace Lotus.ECS {
         }
 
         public override void Render() {
+            
             Debug.DrawUILater(() => {
-                Debug.DrawText(0f, 0f, "Buffers: " + Buffers.Count + " Sources: " + Sources.Count + " (" + SourcePool.Count + " free)");
-                foreach (AudioSource src in Entity.GetAll<AudioSource>()) {
+                /*foreach (AudioSource src in Entity.GetAll<AudioSource>()) {
                     Debug.DrawText(0f, 12f, "Time: " + src.Time.Value + " State: " + src.State.Value);
                     AudioClip clip = src.Clip.Value;
                     short[] data = clip.GetData();
@@ -57,7 +57,7 @@ namespace Lotus.ECS {
                     }
                     GL.Vertex3(512.0, 512.0, 0.0);
                     GL.End();
-                }
+                }*/
             });
         }
 
@@ -122,6 +122,8 @@ namespace Lotus.ECS {
                     }
                 }
             }
+            Debug.AddMsg("Audio Buffers: " + Buffers.Count);
+            Debug.AddMsg("Audio Sources: " + Sources.Count + " (" + SourcePool.Count + " free)");
         }
 
         public override void Reveille(Component component) {

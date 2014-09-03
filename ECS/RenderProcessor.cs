@@ -87,6 +87,7 @@ namespace Lotus.ECS {
                 }
                 cam.End();
             }
+            Debug.AddMsg("Culled: " + culled);
         }
 
         public override void Update(float dt) {
