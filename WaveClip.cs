@@ -15,16 +15,35 @@ namespace Lotus {
 
         public WaveClip(WaveType wave, double frequency)
             : this(wave) {
-                Frequency = frequency;
+            Frequency = frequency;
+        }
+
+        public WaveClip(WaveType wave, double frequency, bool stereo)
+            : this(wave, frequency) {
+            Stereo = stereo;
+        }
+
+        public WaveClip(WaveType wave, double frequency, bool stereo, int sampleRate)
+            : this(wave, frequency, stereo) {
+            SampleRate = sampleRate;
         }
 
         short[] data;
 
         public override short[] GetData() {
             if (data == null) {
-                data = new short[(int)(SampleRate / Frequency)];
-                for (int i = 0; i < data.Length; i++) {
-                    data[i] = (short)(short.MaxValue * Sample(Wave, ((double)i / (double)data.Length)));
+                if (Stereo) {
+                    data = new short[(int)(SampleRate / Frequency) * 2];
+                    for (int i = 0; i < data.Length; i += 2) {
+                        data[i] = (short)(short.MaxValue * Sample(Wave, ((double)i / (double)data.Length)));
+                        data[i + 1] = (short)(short.MaxValue * Sample(Wave, ((double)i / (double)data.Length)));
+                    }
+                }
+                else {
+                    data = new short[(int)(SampleRate / Frequency)];
+                    for (int i = 0; i < data.Length; i++) {
+                        data[i] = (short)(short.MaxValue * Sample(Wave, ((double)i / (double)data.Length)));
+                    }
                 }
             }
             return data;
@@ -33,7 +52,7 @@ namespace Lotus {
         public static double Sample(WaveType wave, double t) {
             if (wave == WaveType.Sine) return Math.Sin(t * 2.0 * Math.PI);
             else if (wave == WaveType.Sawtooth) return (t - Math.Floor(t + 0.5));
-            else if (wave == WaveType.Triangle) return Math.Abs(t/2.0 - Math.Floor(t/2.0 + 0.5)) * ((t > 0.5) ? -1.0 : 1.0);
+            else if (wave == WaveType.Triangle) return Math.Abs(t / 2.0 - Math.Floor(t / 2.0 + 0.5)) * ((t > 0.5) ? -1.0 : 1.0);
             else if (wave == WaveType.Square) return Math.Sign(Math.Sin(t * 2.0 * Math.PI));
             return 0.0;
         }
@@ -44,10 +63,10 @@ namespace Lotus {
     }
 
     public enum WaveType {
-        None=0,
-        Sine=1,
-        Square=2,
-        Triangle=3,
-        Sawtooth=4
+        None = 0,
+        Sine = 1,
+        Square = 2,
+        Triangle = 3,
+        Sawtooth = 4
     }
 }
