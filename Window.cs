@@ -28,6 +28,8 @@ namespace Lotus {
         double frameRate = 0.0;
         public bool DebugEnabled = false;
 
+        public Queue<Action> WorkQueue = new Queue<Action>();
+
         public static double Time {
             get { return time; }
         }
@@ -75,15 +77,19 @@ namespace Lotus {
             ent.Save(true);
             ent.Load(true);
 
-            int size = 63;
+            int size = 31;
             int f = (int)Math.Floor(size/2.0);
             int c = (int)Math.Ceiling(size/2.0);
-            for (int x = -9; x <= 9; x++) {
-                for (int y = -9; y <= 9; y++) {
-                    Entity terrain = Entity.WrapNew();
-                    terrain.Add<Transform>();
-                    terrain.Add<Renderer>();
-                    terrain.Add<MeshFilter>().Mesh.Value = new HexGrid(size, x * size + y * -f, y * size + x * -c);
+            for (int x = -15; x <= 15; x++) {
+                for (int y = -15; y <= 15; y++) {
+                    int tempX = x;
+                    int tempY = y;
+                    WorkQueue.Enqueue(() => {
+                        Entity terrain = Entity.WrapNew();
+                        terrain.Add<Transform>();
+                        terrain.Add<Renderer>();
+                        terrain.Add<MeshFilter>().Mesh.Value = new HexGrid(size, tempX * size + tempY * -f, tempY * size + tempX * -c);
+                    });
                 }
             }
 
@@ -235,6 +241,8 @@ namespace Lotus {
                 });
                 Debug.AddMsg("Cursor Location: " + hex.X + ", " + hex.Y + ", " + -(hex.X + hex.Y));
             }
+
+            if (WorkQueue.Count > 0) WorkQueue.Dequeue()();
 
             Engine.Update(dt); //Insert engine rev here VROOOOOOM
         }
