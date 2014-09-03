@@ -16,10 +16,12 @@ namespace Lotus.ECS {
                 }
             }
             foreach (Camera cam in Entity.GetAll<Camera>()) {
-                if (Entity.Has<Transform>(cam.Id))
+                if (Entity.Has<Transform>(cam.Id)) {
                     cam.Begin(Entity.Get<Transform>(cam.Id).ViewMatrix);
-                else
+                }
+                else {
                     cam.Begin(Matrix4.Identity);
+                }
 
                 foreach (Renderer r in Entity.GetAll<Renderer>()) {
                     if ((r.LayerMask.Value & cam.LayerMask.Value) == 0) continue; //If the camera and renderer use different layers, don't draw
@@ -30,7 +32,7 @@ namespace Lotus.ECS {
                         viewMatrix = t.ViewMatrix;
                         normalMatrix = t.ScalingMatrix * t.RotationMatrix;
                     }
-                    if (Entity.Has<MeshFilter>(r.Id)) { //If there is a Mesh aspect, draw that
+                    if (Entity.Has<MeshFilter>(r.Id)) { //If there is a Mesh component, draw that
                         MeshFilter mf = Entity.Get<MeshFilter>(r.Id);
                         if (mf.Mesh.Value != null) {
                             mf.Mesh.Value.Draw(viewMatrix, normalMatrix, mf.Color.Value);

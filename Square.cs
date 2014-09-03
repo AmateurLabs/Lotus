@@ -32,5 +32,9 @@ namespace Lotus
             DrawVertex(points[2], -Vector3.UnitZ);
             GL.End();
         }
+
+        public override Bounds GetBounds() {
+            return new Bounds(new Vector3(-Scale, -Scale, 0), new Vector3(Scale, Scale, 0));
+        }
     }
 }

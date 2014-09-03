@@ -103,6 +103,9 @@ namespace Lotus
 
         }
 
+        public override Bounds GetBounds() {
+            return new Bounds(Vector3.One * Radius, -Vector3.One * Radius);
+        }
 
     }
 }

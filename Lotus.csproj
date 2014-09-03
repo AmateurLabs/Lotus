@@ -32,6 +32,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="AudioClip.cs" />
+    <Compile Include="Bounds.cs" />
     <Compile Include="ECS\Attractor.cs" />
     <Compile Include="ECS\AudioClipValue.cs" />
     <Compile Include="ECS\AudioListener.cs" />

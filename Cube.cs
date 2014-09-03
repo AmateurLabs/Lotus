@@ -57,6 +57,10 @@ namespace Lotus
             }
         }
 
+        public override Bounds GetBounds() {
+            return new Bounds(Vector3.One * Scale, -Vector3.One * Scale);
+        }
+
         public void PGen()
         {
             Points = new Vector3[6,Res,Res];

@@ -253,6 +253,14 @@ namespace Lotus {
             GL.DisableClientState(ArrayCap.IndexArray);
         }
 
+        public override Bounds GetBounds() {
+            Vector3 min = ToWorld(0, 0);
+            Vector3 max = ToWorld(Size - 1, Size - 1);
+            min.Y = 0;
+            max.Y = 8;
+            return new Bounds(min, max);
+        }
+
         //How far the ray in Raycast() travels each loop; smaller values are more precise but slower
         public const float RAY_STEP = 0.1f;
 

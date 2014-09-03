@@ -85,5 +85,19 @@ namespace Lotus {
             GL.Vertex3(0f, 0f, 0f);
             GL.End();
         }
+
+        public override Bounds GetBounds() {
+            Vector3 min = Vector3.Zero;
+            Vector3 max = Vector3.Zero;
+            foreach (Point pt in Points) {
+                min.X = Math.Min(min.X, pt.Position.X);
+                min.X = Math.Min(min.Y, pt.Position.Y);
+                min.X = Math.Min(min.Z, pt.Position.Z);
+                max.X = Math.Max(max.X, pt.Position.X);
+                max.Y = Math.Max(max.Y, pt.Position.Y);
+                max.Z = Math.Max(max.Z, pt.Position.Z);
+            }
+            return new Bounds(min, max);
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace Lotus
     {
 
         public abstract void RenGen(); // here you would program the GL to render the object at Vector3.Zero and as Quaternion.Identity for the rotation.
+        public abstract Bounds GetBounds(); //Returns the Axis-Aligned Bounding-Box corners of the mesh, for culling purposes
 
         private Matrix4 viewMatrix;
         private Matrix4 normalMatrix;
