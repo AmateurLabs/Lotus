@@ -73,7 +73,7 @@ namespace Lotus {
                 Dispose();
             };
 
-            id = chunkId++;
+            /*id = chunkId++;
             chunkColor = Debug.RandColor(id);
             if (firstChunk == null) {
                 lastChunk = this;
@@ -85,7 +85,7 @@ namespace Lotus {
                 nextChunk = firstChunk;
                 lastChunk.nextChunk = this;
                 lastChunk = this;
-            }
+            }*/
         }
 
         private int i = 0;
@@ -186,7 +186,7 @@ namespace Lotus {
 
         Color4 chunkColor = Color4.White;
 
-        HexGrid nextChunk;
+        /*HexGrid nextChunk;
         static HexGrid curChunk;
         static HexGrid firstChunk;
         static HexGrid lastChunk;
@@ -221,11 +221,11 @@ namespace Lotus {
             //GL.BufferSubData(BufferTarget.ArrayBuffer, new IntPtr(32), new IntPtr(4), new float[] { (float)Math.Sin(time) });
 
             //Raycasting!
-            /*Vector3 hex;
+            Vector3 hex;
             if (Raycast(Camera.Main.Position, Camera.Main.Forward, out hex, 256f)) {
                 Debug.DrawText(new Vector2(10f, 200f), "(" + hex.X + ", " + hex.Y + ")");
-            }*/
-        }
+            }
+        }*/
 
         public override void RenGen() {
             //We are drawing using vertex position data, color data, normal data, and triangle index data
