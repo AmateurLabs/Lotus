@@ -51,9 +51,9 @@ namespace Lotus.ECS {
                             foreach (Vector3 corner in b.GetCorners()) {
                                 Vector3 t = Vector3.Transform(corner, viewMatrix);
                                 Vector3 diff = (t - camPos);
-                                if (diff.LengthFast > cam.ViewDistance.Value) continue; //Out of viewing range, no need to check against FoV
+                                if (cam.IsPerspective && diff.LengthFast > cam.ViewDistance.Value) continue; //Out of viewing range, no need to check against FoV
                                 double angle = Math.Acos(Vector3.Dot(camFwd, diff.Normalized())); //Get angle between camera forward direction and direction to bound corner
-                                if (angle < MathHelper.DegreesToRadians((cam.IsPerspective) ? cam.FieldOfView.Value : 180.0)) { //If angle is inside field of view, don't cull
+                                if (cam.IsPerspective && angle < MathHelper.DegreesToRadians(cam.FieldOfView.Value)) { //If angle is inside field of view, don't cull
                                     cull = false;
                                     break;
                                 }
